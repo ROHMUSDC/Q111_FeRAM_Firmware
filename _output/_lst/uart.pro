@@ -1,0 +1,13 @@
+extern	int uart_init(unsigned char cs,unsigned short kHz,const struct  *prm);
+extern	void uart_startSend(unsigned char *data,unsigned int size,void (*func)(unsigned int size,unsigned char errStat));
+extern	void uart_startReceive(unsigned char *data,unsigned int size,void (*func)(unsigned int size,unsigned char errStat));
+extern	int uart_continue(void);
+extern	void uart_stop(void);
+extern	int uart_checkIRQ(void);
+extern	void uart_clearIRQ(void);
+extern	unsigned int uart_getTransSize(void);
+extern	void uart_ErrSet(unsigned char status);
+extern	unsigned char uart_ErrGet(void);
+extern	void uart_ErrClr(void);
+extern	void uart_PortSet(void);
+extern	void uart_PortClear(void);

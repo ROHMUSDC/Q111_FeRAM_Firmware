@@ -1,0 +1,926 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+      1 /**********************************************************************
+        *******
+      2 	uart.c
+      3 
+      4 	Copyright (C) 2013 LAPIS Semiconductor Co., Ltd.
+      5 	All rights reserved.
+      6 
+      7 	LAPIS SEMICONDUCTOR shall not be liable for any direct, indirect, 
+      8 	consequential or incidental damages arising from using or modifying th
+        is 
+      9 	program.
+     10 
+     11     History
+     12     2008.08.20  ver.1.00
+     13     2008.10.17  ver.1.20
+     14     2008.11.20  ver.1.30
+     15     2009.12.23  ver.1.40
+     16     2010.03.18  ver.1.50	improvement of the register access method.
+     17     2013.05.16  ver.1.60	Adapted to work with Q100 series micros...
+     18 ***********************************************************************
+        *******/
+     19 //Microcontroller's connections on the LaPi Development Board to the 
+     20 //  Plug 'n Play, Raspberry Pi Compatible, Universal Connectors:
+     21 //
+     22 // Updated April 22nd, 2013
+     23 //
+     24 // ================================ ML610Q111 =========================
+        ======== 
+     25 //
+     26 // Pin-01 => 3.3V Power				Pin-02 => 5.0V Power (VBUS)
+     27 // Pin-03 => I2C-SDA  (Q111 I/O B.6)	Pin-04 => no connection
+     28 // Pin-05 => I2C-SCL  (Q111 I/O B.5)*	Pin-06 => GROUND
+     29 // Pin-07 => GPIO #04 (Q111 I/O B.2)	Pin-08 => UART-TX  (Q111 I/O B.1)
+     30 // Pin-09 => no connection			Pin-10 => UART-RX  (Q111 I/O B.0) 
+     31 // Pin-11 => GPIO #17 (Q111 I/O A.0)	Pin-12 => GPIO #18 (Q111 I/O B.7)
+     32 // Pin-13 => GPIO #21 (Q111 I/O A.1)	Pin-14 => no connection
+     33 // Pin-15 => GPIO #22 (Q111 I/O A.2)	Pin-16 => GPIO #23 (Q111 I/O C.2)
+     34 // Pin-17 => no connection			Pin-18 => GPIO #24 (Q111 I/O C.3)
+     35 // Pin-19 => SPI-MOSI (Q111 I/O B.4)	Pin-20 => no connection
+     36 // Pin-21 => SPI-MISO (Q111 I/O B.3)	Pin-22 => GPIO #25 (Q111 I/O B.2)
+     37 // Pin-23 => SPI-SCLK (Q111 I/O B.5)*	Pin-24 => SPI-CS0  (Q111 I/O C.0)
+        
+     38 // Pin-25 => no connection			Pin-26 => SPI-CS1  (Q111 I/O C.1)
+     39 //
+     40 //=====================================================================
+        ========
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+     41 
+     42 // ================================ ML610Q112 =========================
+        ======== 
+     43 //
+     44 // Pin-01 => 3.3V Power				Pin-02 => 5.0V Power (VBUS)
+     45 // Pin-03 => I2C-SDA  (Q112 I/O B.6)	Pin-04 => no connection
+     46 // Pin-05 => I2C-SCL  (Q112 I/O B.5)*	Pin-06 => GROUND
+     47 // Pin-07 => GPIO #04 (Q112 I/O B.2)	Pin-08 => UART-TX  (Q112 I/O B.1)
+     48 // Pin-09 => no connection			Pin-10 => UART-RX  (Q112 I/O B.0) 
+     49 // Pin-11 => GPIO #17 (Q112 I/O C.0)	Pin-12 => GPIO #18 (Q112 I/O B.7)
+     50 // Pin-13 => GPIO #21 (Q112 I/O C.1)	Pin-14 => no connection
+     51 // Pin-15 => GPIO #22 (Q112 I/O C.2)	Pin-16 => GPIO #23 (Q112 I/O D.1)
+     52 // Pin-17 => no connection			Pin-18 => GPIO #24 (Q112 I/O D.2)
+     53 // Pin-19 => SPI-MOSI (Q112 I/O B.4)	Pin-20 => no connection
+     54 // Pin-21 => SPI-MISO (Q112 I/O B.3)	Pin-22 => GPIO #25 (Q112 I/O D.3)
+     55 // Pin-23 => SPI-SCLK (Q112 I/O B.5)*	Pin-24 => SPI-CS0  (Q112 I/O D.4)
+        
+     56 // Pin-25 => no connection			Pin-26 => SPI-CS1  (Q112 I/O D.5)
+     57 //
+     58 //=====================================================================
+        ========
+     59 
+     60 // Thus for both the Q111 & Q112, the desired UART Pins are:
+     61 //	UART-TX  (Q111/Q112 I/O B.1)
+     62 //	UART-RX  (Q111Q112  I/O B.0)
+     63 
+     64 #include "mcu.h"
+     65 #include "uart.h"
+     66 #include "common.h"	//Added - Includes Defs for Clock Speed
+     67 
+     68 /*#####################################################################
+        #######*/
+     69 /*#                                  Macro                             
+              #*/
+     70 /*#####################################################################
+        #######*/
+     71 // => THIS ENTIRE SECTION HAS BEEN ADAPTED FROM THE Q400 SERIES FOR THE
+         Q100 SERIES - C. Schell 4/22/2013
+     72 
+     73 // IRQ4 (UART 0&1 & COMP 0&1)
+     74 #define IRQ4_QUA0			( 0x01u  )			// IRQ4 Register QUA0 bit (UART0)
+     75 #define IRQ4_QUA1			( 0x02u  )			// IRQ4 Register QUA1 bit (UART1)
+     76 #define IRQ4_QCMP0		( 0x04u  )			// IRQ4 Register QCMP0 bit (COMP0)
+     77 #define IRQ4_QCMP1		( 0x08u  )			// IRQ4 Register QCMP1 bit (COMP1)
+     78 
+     79 // => Adapted from Q4xx Series for Q1xx Series
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+     80 // UAxBUF 
+     81 #define UA0BUF_U0B0		( 0x1u )		/* UA0BUF Register U0B0 bit */
+     82 #define UA0BUF_U0B1		( 0x2u )		/* UA0BUF Register U0B1 bit */
+     83 #define UA0BUF_U0B2		( 0x4u )		/* UA0BUF Register U0B2 bit */
+     84 #define UA0BUF_U0B3		( 0x8u )		/* UA0BUF Register U0B3 bit */
+     85 #define UA0BUF_U0B4		( 0x10u )		/* UA0BUF Register U0B4 bit */
+     86 #define UA0BUF_U0B5		( 0x20u )		/* UA0BUF Register U0B5 bit */
+     87 #define UA0BUF_U0B6		( 0x40u )		/* UA0BUF Register U0B6 bit */
+     88 #define UA0BUF_U0B7		( 0x80u )		/* UA0BUF Register U0B7 bit */
+     89 
+     90 #define UA1BUF_U1B0		( 0x1u )		// UA1BUF Register U1B0 bit 
+     91 #define UA1BUF_U1B1		( 0x2u )		// UA1BUF Register U1B1 bit 
+     92 #define UA1BUF_U1B2		( 0x4u )		// UA1BUF Register U1B2 bit 
+     93 #define UA1BUF_U1B3		( 0x8u )		// UA1BUF Register U1B3 bit 
+     94 #define UA1BUF_U1B4		( 0x10u )		// UA1BUF Register U1B4 bit 
+     95 #define UA1BUF_U1B5		( 0x20u )		// UA1BUF Register U1B5 bit 
+     96 #define UA1BUF_U1B6		( 0x40u )		// UA1BUF Register U1B6 bit 
+     97 #define UA1BUF_U1B7		( 0x80u )		// UA1BUF Register U1B7 bit 
+     98 
+     99 ///* UAxCON */
+    100 #define UA0CON_U0EN		( 0x1u )		/* UA0CON Register U0EN bit */
+    101 #define UA1CON_U1EN		( 0x1u )		// UA1CON Register U1EN bit 
+    102 
+    103 ///* UA0MOD0 */
+    104 #define UA0MOD0_U0IO		( 0x01u )		/* UA0MOD0 Register U0IO bit   */
+    105 #define UA0MOD0_U0CK0		( 0x02u )		/* UA0MOD0 Register U0CK0 bit  */
+    106 #define UA0MOD0_U0CK1		( 0x04u )		/* UA0MOD0 Register U0CK1 bit  */
+    107 #define UA0MOD0_U0RSEL		( 0x10u )		/* UA0MOD0 Register U0RSEL bit */
+    108 #define UA0MOD0_U0RSS		( 0x20u )		// used to select the received data i
+        nput sampling timing
+    109 
+    110 ///* UA0MOD1 */
+    111 #define UA0MOD1_U0LG0		( 0x01u )		/* UA0MOD1 Register U0LG0 bit */
+    112 #define UA0MOD1_U0LG1		( 0x02u )		/* UA0MOD1 Register U0LG1 bit */
+    113 #define UA0MOD1_U0PT0		( 0x04u )		/* UA0MOD1 Register U0PT0 bit */
+    114 #define UA0MOD1_U0PT1		( 0x08u )		/* UA0MOD1 Register U0PT1 bit */
+    115 #define UA0MOD1_U0STP		( 0x10u )		/* UA0MOD1 Register U0STP bit */
+    116 #define UA0MOD1_U0NEG		( 0x20u )		/* UA0MOD1 Register U0NEG bit */
+    117 #define UA0MOD1_U0DIR		( 0x40u )		/* UA0MOD1 Register U0DIR bit */
+    118 
+    119 ///* UA0BRTL - UART0 Baud Rate Registers LOW
+    120 #define UA0BRTL_U0BR0		( 0x01u )		/* UA0BRTL Register U0BR0 bit */
+    121 #define UA0BRTL_U0BR1		( 0x02u )		/* UA0BRTL Register U0BR1 bit */
+    122 #define UA0BRTL_U0BR2		( 0x04u )		/* UA0BRTL Register U0BR2 bit */
+    123 #define UA0BRTL_U0BR3		( 0x08u )		/* UA0BRTL Register U0BR3 bit */
+    124 #define UA0BRTL_U0BR4		( 0x10u )		/* UA0BRTL Register U0BR4 bit */
+
+                                                              Page :          4
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    125 #define UA0BRTL_U0BR5		( 0x20u )		/* UA0BRTL Register U0BR5 bit */
+    126 #define UA0BRTL_U0BR6		( 0x40u )		/* UA0BRTL Register U0BR6 bit */
+    127 #define UA0BRTL_U0BR7		( 0x80u )		/* UA0BRTL Register U0BR7 bit */
+    128 
+    129 ///* UA0BRTH - UART0 Baud Rate Registers HIGH
+    130 #define UA0BRTH_U0BR8		( 0x01u )		/* UA0BRTH Register U0BR8 bit  */
+    131 #define UA0BRTH_U0BR9		( 0x02u )		/* UA0BRTH Register U0BR9 bit  */
+    132 #define UA0BRTH_U0BR10		( 0x04u )		/* UA0BRTH Register U0BR10 bit */
+    133 #define UA0BRTH_U0BR11		( 0x08u )		/* UA0BRTH Register U0BR11 bit */
+    134 
+    135 ///* UA0STAT - UART0 Status Register
+    136 #define UA0STAT_U0FER		( 0x01u )		/* UA0STAT Register U0FER bit */
+    137 #define UA0STAT_U0OER		( 0x02u )		/* UA0STAT Register U0OER bit */
+    138 #define UA0STAT_U0PER		( 0x04u )		/* UA0STAT Register U0PER bit */
+    139 #define UA0STAT_U0FUL		( 0x08u )		/* UA0STAT Register U0FUL bit */
+    140 
+    141 ///* PORTB Direction Register */
+    142 #define PBDIR_B0DIR		( 0x01u ) // RX pin
+    143 #define PBDIR_B1DIR		( 0x02u ) // TX pin
+    144 
+    145 ///* PBCON0 */
+    146 #define PBCON0_B0C0		( 0x01u ) // RX pin
+    147 #define PBCON0_B1C0		( 0x02u ) // TX pin
+    148 
+    149 ///* PBCON1 */
+    150 #define PBCON1_B0C1		( 0x01u ) // RX pin
+    151 #define PBCON1_B1C1		( 0x02u ) // TX pin
+    152 
+    153 ///* PBMOD0 */
+    154 #define PBMOD0_B0MD0		( 0x01u ) // RX pin
+    155 #define PBMOD0_B1MD0		( 0x02u ) // TX pin
+    156 
+    157 ///* PBMOD1 */
+    158 #define PBMOD1_B0MD1		( 0x01u ) // RX pin
+    159 #define PBMOD1_B1MD1		( 0x02u ) // TX pin
+    160 
+    161 /*=== control parameter for UART ===*/
+    162 typedef struct {
+    163 	unsigned char 	*data;	/* pointer to area where the send/receive data i
+        s stored	*/
+    164 	unsigned int	size;		/* size of send/receive data						*/
+    165 	unsigned int	cnt;		/* size of data which is sent/received				*/
+    166 	cbfUart		callBack;	/* callback function							*/
+    167 	unsigned char	errStat;	/* error status								*/
+    168 } tUartCtrlParam;	//Creates Structure type tUartCtrlParam 
+    169 
+
+                                                              Page :          5
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    170 
+    171 /*#####################################################################
+        #######*/
+    172 /*#                                Variable                            
+              #*/
+    173 /*#####################################################################
+        #######*/
+    174 /*=== control parameter for UART ===*/
+    175 static tUartCtrlParam _gsCtrlParam = { (void *)0 , 0 , 0 , (void *)0 , 
+        0 }; //declares _gsCtrlParam a Structure of type tUartCtrlParam  
+    176 
+    177 static unsigned char _Err_Status;
+    178 /*#####################################################################
+        #######*/
+    179 /*#                               Prototype                            
+              #*/
+    180 /*#####################################################################
+        #######*/
+    181 
+    182 
+    183 /*#####################################################################
+        #######*/
+    184 /*#                                  API                               
+              #*/
+    185 /*#####################################################################
+        #######*/
+    186 
+    187 /**********************************************************************
+        *********
+    188 	Routine Name:	uart_init
+    189 	Form:			int uart_init( unsigned char cs,unsigned short kHz,tUartSetPar
+        am *prm)
+    190 	Parameters:		unsigned char cs : choice of the clock oscillator inputte
+        d into the baud rate generator
+    191 					UART_CS_LSCLK(=0)  : LSCLK
+    192 					UART_CS_LSCLK2(=1) : LSCLK * 2
+    193 					UART_CS_HSCLK(=2)  : HSCLK
+    194 				unsigned short kHz       : frequency of HSCLK (this parameter is re
+        ferred only HSCLK is chosen as the clock oscillator)
+    195 				const tUartSetParam *prm : setting parameters
+    196 	Return value:	int
+    197 					UART_R_OK(=0)       : the UART is initialized
+    198 					UART_R_ERR_CS(=-1)  : improper choice of the clock oscillator
+    199 					UART_R_ERR_BR(=-2)  : improper choice of baud rate
+    200 					UART_R_ERR_LG(=-3)  : data length is out of range
+    201 					UART_R_ERR_PT(=-4)  : parity setting is out of range
+
+                                                              Page :          6
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    202 					UART_R_ERR_STP(=-5) : stop bit length is out of range
+    203 					UART_R_ERR_NEG(=-6) : improper setting (positive logic/negative lo
+        gic)
+    204 					UART_R_ERR_DIR(=-7) : improper setting of significant bit (LSB/MSB
+        )
+    205 	Description:	initialize UART
+    206 ***********************************************************************
+        *******/
+    207 int uart_init( unsigned char cs, unsigned short kHz , const tUartSetPar
+        am *prm )
+    208 {
+    209 	unsigned long br_clk;	//BAUD RATE CLOCK
+    210 	unsigned long br_cnt;	//BAUD RATE COUNT
+    211 	unsigned char setbit;
+    212 	
+    213 	/*=== A parameter check. ===*/
+    214 	switch( (int)cs ){		//BAUD RATE CLOCK SET HERE...
+    215 		/*--- LSCLK ---*/
+    216 		case UART_CS_LSCLK:
+    217 			br_clk = (unsigned long)32768;	  // i.e.: 32.768 kHz
+    218 			break;
+    219 		/*--- LSCLK x 2 ---*/
+    220 		case UART_CS_LSCLK2:
+    221 			br_clk = (unsigned long)(32768 * 2);  // i.e.: 65.536 kHz
+    222 			break;
+    223 		/*--- HSCLK ---*/
+    224 		case UART_CS_HSCLK:
+    225 			br_clk = (unsigned long)kHz * 1024UL; // i.e.: 8.192 MHz	
+    226 			break;
+    227 		/*--- Others ---*/
+    228 		default:
+    229 			return ( UART_R_ERR_CS );		  // else CS error
+    230 	} 
+    231 	br_cnt = br_clk / prm->br;
+    232 	if( br_cnt == 0UL ){			//If Baud Rate Count = zero...Return Baud Rate 
+        Error Flag
+    233 		return ( UART_R_ERR_BR );
+    234 	}
+    235 	br_cnt -= 1UL;
+    236 	
+    237 
+    238 	if( prm->lg > (unsigned char)UART_LG_5BIT ){
+    239 		return ( UART_R_ERR_LG );
+    240 	}
+    241 	if( prm->pt > (unsigned char)UART_PT_NON ){
+    242 		return ( UART_R_ERR_PT );
+
+                                                              Page :          7
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    243 	}
+    244 	if( prm->stp > (unsigned char)UART_STP_2BIT ){
+    245 		return ( UART_R_ERR_STP );
+    246 	}
+    247 	if( prm->neg > (unsigned char)UART_NEG_NEG ){
+    248 		return ( UART_R_ERR_NEG );
+    249 	}
+    250 	if( prm->dir > (unsigned char)UART_DIR_MSB ){
+    251 		return ( UART_R_ERR_DIR );
+    252 	}
+    253 	
+    254 	
+    255 	/*=== Variable setting. ===*/
+    256 		_gsCtrlParam.data		= (void *)0;
+    257 		_gsCtrlParam.size		= 0;
+    258 		_gsCtrlParam.cnt		= 0;
+    259 		_gsCtrlParam.callBack	= (void *)0;
+    260 		_gsCtrlParam.errStat	= 0;
+    261 	
+    262 	/*=== Register setting. ===*/
+    263 	/*---	An uart communication stop	---*/
+    264 		U0EN = 0;
+    265 
+    266 	/*---	Port setting.	---*/
+    267 		uart_PortClear();
+    268 
+    269 	/*---	Input clock choice to the baud rate generator	---*/
+    270 		setbit = UA0MOD0;
+    271 		setbit &= (unsigned char)( ~(UA0MOD0_U0CK0|UA0MOD0_U0CK1) );
+    272 		setbit |= (unsigned char)( cs << 1 );
+    273 		setbit |= (unsigned char)UA0MOD0_U0RSEL;
+    274 		UA0MOD0 = setbit;
+    275 		U0RSEL = 0;
+    276 	
+    277 	/*---	Communication setting	---*/
+    278 		setbit = UA0MOD1;
+    279 		setbit &= (unsigned char)( ~(UA0MOD1_U0LG0|UA0MOD1_U0LG1|UA0MOD1_U0PT
+        0|UA0MOD1_U0PT1|UA0MOD1_U0STP|UA0MOD1_U0NEG|UA0MOD1_U0DIR) );
+    280 		setbit |= (unsigned char)( (prm->lg  << 0) | 
+    281 			                   (prm->pt  << 2) | 
+    282 			                   (prm->stp << 4) | 
+    283 			                   (prm->neg << 5) | 
+    284 			                   (prm->dir << 6) );
+    285 		UA0MOD1 = setbit;
+    286 
+    287 	/*---	Baud rate count value setting(1)	---*/
+
+                                                              Page :          8
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    288 		UA0BRTL = (unsigned char)(br_cnt & 0x000000FF);
+    289 
+    290 	/*---	Baud rate count value setting(2)	---*/
+    291 		setbit = UA0BRTH;
+    292 		setbit &= (unsigned char)( ~(UA0BRTH_U0BR8|UA0BRTH_U0BR9|UA0BRTH_U0BR
+        10|UA0BRTH_U0BR11) );
+    293 		setbit |= (unsigned char)( (br_cnt >> 8) & (UA0BRTH_U0BR8|UA0BRTH_U0B
+        R9|UA0BRTH_U0BR10|UA0BRTH_U0BR11) );
+    294 		UA0BRTH = setbit;
+    295 
+    296 //TO MANUALLY SET BAUD RATE:
+    297 
+    298 //With 8.192MHz Clock
+    299 //	=BAUD=	=COUNT=	=Period per Bit=		=UAxBRTH=	=UAxBRTL=	=%ERROR=
+    300 //	2400bps 	3413 		Approximately 417us 	0x0D 		0x54		 0.01
+    301 //	4800bps 	1707 		Approximately 208us 	0x06 		0xAA		-0.02
+    302 //	9600bps 	853 		Approximately 104us 	0x03 		0x54		 0.04
+    303 //	19200bps 	427 		Approximately 52us 	0x01 		0xAA		-0.08
+    304 //	38400bps 	213 		Approximately 26us 	0x00 		0xD4		 0.16
+    305 //	57600bps 	142 		Approximately 17.4us 	0x00 		0x8D		 0.16
+    306 //	115200bps 	71 		Approximately 8.7us 	0x00 		0x46		 0.16
+    307 
+    308 
+    309 	//UA0BRTH = 0x0D;	//2400 BAUD
+    310 	//UA0BRTL = 0x54;
+    311 
+    312 	/*---	Communication status is clear	---*/
+    313 		U0FER = 0;	// Clear Framing Error Flag to start...
+    314 		U0OER = 0;	// Clear Overrun Error Flag to start...
+    315 		U0PER = 0;	// Clear Parity Error Flag to start...
+    316 		U0FUL = 0;	// Clear Buffer Full Flag to start...
+    317 
+    318 	return ( UART_R_OK );
+    319 }
+    320 
+    321 
+    322 /**********************************************************************
+        *********
+    323 	Routine Name:	uart_startSend
+    324 	Form:			void uart_startSend( unsigned char *data,unsigned int size,cbf
+        Uart func)
+    325 	Parameters:		unsigned char *data 	: pointer to area where the send dat
+        a is stored
+    326 				unsigned int size 	: size of data (unit is bytes)
+    327 				cbfUart func 		: callback function
+    328 	Return value:	void
+
+                                                              Page :          9
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    329 	Description:	start to SEND the data
+    330 ***********************************************************************
+        *******/
+    331 void uart_startSend( unsigned char *data, unsigned int size, cbfUart fu
+        nc )
+    332 {
+    333 	/*=== Transmission of a message mode setting. ===*/
+    334 		U0EN = 0;	// 0 = STOP communication...
+    335 		U0IO = 0;	// The U0IO bit is used to select TX or RX Mode (0=TX Mode)
+        
+    336 
+    337 	/*=== Transmission of a message system order parameter setting. ===*/
+    338 		_gsCtrlParam.data		= data;	// pointer to area where the send/receive 
+        data is stored
+    339 		_gsCtrlParam.size		= size;	// size of send/receive data
+    340 		_gsCtrlParam.cnt		= 0;		// size of data which is sent/received
+    341 		_gsCtrlParam.callBack	= func;	// callback function
+    342 		_gsCtrlParam.errStat	= 0;		// error status
+    343 	
+    344 	if( _gsCtrlParam.size > 0 ){	//If there is valid data to send...
+    345 		/*=== transmit a message, and it is worked to start. ===*/
+    346 		UA0BUF = *data;		// Load the UART buffer with data to send
+    347 		_gsCtrlParam.data++;	// Increment pointer to area where the send/rece
+        ive data is stored
+    348 		_gsCtrlParam.cnt++;	// Increment count for size of data which is sent
+        /received 
+    349 		U0EN = 1;			// 1 = Starts communication...
+    350 	} //EndIf
+    351 }
+    352 
+    353 /**********************************************************************
+        *********
+    354 	Routine Name:	uart_startReceive
+    355 	Form:			void uart_startReceive( unsigned char *data,unsigned int size,
+        cbfUart func)
+    356 	Parameters:		unsigned char *data : pointer to area where the receive d
+        ata is stored
+    357 				unsigned int size : receive buffer size (the unit is byte)
+    358 				cbfUart func : callback function
+    359 	Return value:	void
+    360 	Description:	start to RECEIVE the data
+    361 ***********************************************************************
+        *******/
+    362 void uart_startReceive( unsigned char *data,unsigned int size, cbfUart 
+        func )
+    363 {
+
+                                                              Page :         10
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    364 
+    365 //EXAMPLE RX Call: uart_startReceive(RecWorld, 20, _funcUartFin);
+    366 
+    367 	/*===	Reception mode setting	===*/
+    368 		U0EN = 0;	// 0 = STOP communication...
+    369 	
+    370 		U0FER = 0;	// Clear Framing Error Flag to start...
+    371 		U0OER = 0;	// Clear Overrun Error Flag to start...
+    372 		U0PER = 0;	// Clear Parity Error Flag to start...
+    373 		U0IO = 1;	// 1 = Receive mode
+    374 
+    375 	/*=== Transmission of a message system order parameter setting. ===*/
+    376 		_gsCtrlParam.data		= data;	// pointer to area where the send/receive 
+        data is stored
+    377 		_gsCtrlParam.size		= size;	// size of send/receive data
+    378 		_gsCtrlParam.cnt		= 0;		// size of data which is sent/received
+    379 		_gsCtrlParam.callBack	= func;	// callback function
+    380 		_gsCtrlParam.errStat	= 0;		// error status
+    381 	
+    382 	if( _gsCtrlParam.size > 0 ){
+    383 		/*=== I receive it, and it is worked to start. ===*/
+    384 		U0EN = 1;	// 1 = Starts communication...
+    385 	}
+    386 }
+    387 
+    388 /**********************************************************************
+        *********
+    389 	Routine Name:	uart_continue
+    390 	Form:			int uart_continue( void )
+    391 	Parameters:		none
+    392 	Return value:	int
+    393 				 UART_R_TRANS_FIN		(= 1) : send and receive is finished
+    394 				 UART_R_TRANS_CONT_OK	(= 0) : send and receive is continued (succes
+        s)
+    395 				 UART_R_TRANS_CONT_NG	(=-1) : send and receive is continued (failur
+        e)
+    396 				 UART_R_TRANS_FIN_NG	(=-2) : send and receive is finished (failure)
+        
+    397 	Description:	process to continue send and receive
+    398 ***********************************************************************
+        *******/
+    399 int uart_continue( void )
+    400 {
+    401 	unsigned char u0io;	//Variable to hold SFR value for U0IO  (bit is use
+        d to select TX or RX mode)
+    402 	unsigned char u0ful;	//Variable to hold SFR value for U0FUL (bit is us
+
+                                                              Page :         11
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+        ed to indicate the state of the TX/RX buffer of the UART)
+    403 	unsigned char u0en;	//Variable to hold SFR value for U0EN  (bit is use
+        d to START / STOP UART)
+    404 	unsigned char errStat;	
+    405 	cbfUart       cbfTmpRX;
+    406 	cbfUart       cbfTmpTX;
+    407 	
+    408 	u0io = (unsigned char)( UA0MOD0 & (unsigned char)UA0MOD0_U0IO );	// Lo
+        ad the variable with the SFR value
+    409 	// IS UART in TX MODE?
+    410 	/*---	Is it a transmission of a message mode?	---*/
+    411 	if( u0io == 0 ){							// IS UART in TX MODE? (0=TX; 1=RX mode)
+    412 
+    413 		/*---	Are transmission of a message data left?	---*/
+    414 		if( _gsCtrlParam.size != _gsCtrlParam.cnt ){	// IF not all data has b
+        een sent...
+    415 			/*=== I transmit a message, and it is worked to continue. ===*/
+    416 			u0ful = (unsigned char)( UA0STAT & (unsigned char)UA0STAT_U0FUL ); /
+        /Load variable with SFR for UART Buffer
+    417 
+    418 			/*---	There are data in the transmission of a message buffer?	---*/
+    419 			if( u0ful == 0 ){ 				// IF there is no data in the transmit/receive
+         buffer...
+    420 				UA0BUF = *_gsCtrlParam.data;		  // Load buffer with next data byte
+    421 				_gsCtrlParam.data++;			  // Increment pointer to area where the sen
+        d/receive data is stored 
+    422 				_gsCtrlParam.cnt++;			  // Increment count for size of data which i
+        s sent/received 
+    423 				U0EN = 1;					  // 1 = Starts communication...DATA IS SENT HERE!
+    424 				return ( UART_R_TRANS_CONT_OK );	  // SEND is CONTINUED (SUCCESS)
+    425 			}
+    426 			else{							// ELSE IF there still is data in the transmit/receive b
+        uffer...
+    427 				return ( UART_R_TRANS_CONT_NG );	  // SEND is CONTINUED (FAILURE)
+    428 			}
+    429 		}
+    430 		else{				//If all data has been sent...
+    431 			/*---	Did the transmission of data end?	---*/
+    432 			u0en = (unsigned char)( UA0CON & (unsigned char)UA0CON_U0EN );	//Loa
+        d the variable with the SFR value
+    433 			if( u0en == 0 ){				//In transmit mode, this bit is automatically se
+        t to 0 at termination of transmission
+    434 				
+    435 				/*=== It is returned that the transmission ended. ===*/
+    436 				if( _gsCtrlParam.callBack != (void *)0 ){
+    437 					
+
+                                                              Page :         12
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    438 					cbfTmpTX = _gsCtrlParam.callBack;				//NEW 5/15/2013 - K. Bahar 
+    439 					_gsCtrlParam.callBack = (void *)0;				//NEW 5/15/2013 - K. Bahar 
+    440 					cbfTmpTX( _gsCtrlParam.size, _gsCtrlParam.errStat );	//NEW 5/15/20
+        13 - K. Bahar 
+    441 					
+    442 				}//EndIf
+    443 				return ( UART_R_TRANS_FIN );		//SEND is FINISHED (SUCCESS)
+    444 			}//EndIf
+    445 			return ( UART_R_TRANS_FIN_NG );		//SEND is FINISHED (FAILURE)
+    446 		}
+    447 	}//end if( u0io == 0 )
+    448  
+    449 
+    450 	// IS UART in RX MODE?
+    451 	/*---	A reception mode	---*/
+    452 	else{									// IS UART in RX MODE? (0=TX; 1=RX mode)
+    453 		/*---	Are reception data left?	---*/
+    454 		if( _gsCtrlParam.size != _gsCtrlParam.cnt ){	// If not all data has b
+        een sent...
+    455 			errStat = (unsigned char)( UA0STAT & (unsigned char)(UA0STAT_U0FER|U
+        A0STAT_U0OER|UA0STAT_U0PER) ); //Load variable with SFR for UART Error 
+        Flags
+    456 			_gsCtrlParam.errStat |= errStat;
+    457 				U0FER = 0;	// Clear Framing Error Flag...
+    458 				U0OER = 0;	// Clear Overrun Error Flag...
+    459 				U0PER = 0;	// Clear Parity Error Flag...
+    460 
+    461 			*_gsCtrlParam.data = UA0BUF;	// Point to Buffer Data
+    462 				_gsCtrlParam.data++;	// Increment pointer to area where the send/re
+        ceive data is stored 
+    463 				_gsCtrlParam.cnt++;	// Increment count for size of data which is se
+        nt/received
+    464 
+    465 			if( ( errStat & ( unsigned char )( UA0STAT_U0FER ) ) == 0 ) { //If N
+        O Framing Error...
+    466 
+    467 				if( _gsCtrlParam.size != _gsCtrlParam.cnt ){	// If not all data has
+         been received...
+    468 					return ( UART_R_TRANS_CONT_OK );		// RECEIVE is CONTINUED (SUCCESS
+        )
+    469 				}
+    470 			} else {								// If there is a Framing Error...
+    471 				/*---	Frame Error	---*/
+    472 				uart_ErrSet( UA0STAT_U0FER );
+    473 			}
+    474 		}
+
+                                                              Page :         13
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    475 
+    476 		if( _gsCtrlParam.callBack != (void *)0 ){				
+    477 			cbfTmpRX = _gsCtrlParam.callBack;				//Modified 5/15/2013 - K. Bahar
+         
+    478 			_gsCtrlParam.callBack = (void *)0;
+    479 			cbfTmpRX( _gsCtrlParam.size, _gsCtrlParam.errStat );	//Modified 5/15
+        /2013 - K. Bahar 
+    480 		}
+    481 		return ( UART_R_TRANS_FIN );					//RECEIVE is FINISHED (SUCCESS)
+    482 	} //end else
+    483 }
+    484 
+    485 /**********************************************************************
+        *********
+    486 	Routine Name:	uart_stop
+    487 	Form:			void uart_stop( void )
+    488 	Parameters:		none
+    489 	Return value:	void
+    490 	Description:	stop to send and receive
+    491 ***********************************************************************
+        *******/
+    492 void uart_stop( void )
+    493 {
+    494 	U0EN = 0;
+    495 	_gsCtrlParam.data		= (void *)0;
+    496 	_gsCtrlParam.size		= 0;
+    497 	_gsCtrlParam.cnt		= 0;
+    498 	_gsCtrlParam.callBack	= (void *)0;
+    499 	_gsCtrlParam.errStat	= 0;
+    500 }
+    501 
+    502 /**********************************************************************
+        *********
+    503 	Routine Name:	uart_checkIRQ
+    504 	Form:			int uart_checkIRQ( void )
+    505 	Parameters:		none
+    506 	Return value:	int
+    507 						UART_R_IRQ(=1)     : interrupt request is set
+    508 						UART_R_NON_IRQ(=0) : interrupt request is not set
+    509 	Description:	check interrupt request
+    510 ***********************************************************************
+        *******/
+    511 int uart_checkIRQ( void )
+    512 {
+    513 	unsigned char qua0;
+    514 	int ret;
+
+                                                              Page :         14
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    515 	
+    516 	qua0 = (unsigned char)( IRQ4 & (unsigned char)IRQ4_QUA0 );
+    517 	if( qua0 == 1 ){
+    518 		ret = ( UART_R_IRQ );
+    519 	}
+    520 	else{
+    521 		ret = ( UART_R_NON_IRQ );
+    522 	}
+    523 	
+    524 	return ret;
+    525 }
+    526 
+    527 /**********************************************************************
+        *********
+    528 	Routine Name:	uart_clearIRQ
+    529 	Form:			void uart_clearIRQ( void )
+    530 	Parameters:		none
+    531 	Return value:	void
+    532 	Description:	clear interrupt request
+    533 ***********************************************************************
+        *******/
+    534 void uart_clearIRQ( void )
+    535 {
+    536 	QUA0 = 0;
+    537 }
+    538 
+    539 /**********************************************************************
+        *********
+    540 	Routine Name:	uart_getTransSize
+    541 	Form:			unsigned int uart_getTransSize( void )
+    542 	Parameters:		none
+    543 	Return value:	unsigned int
+    544 						size of data which is sent or received
+    545 	Description:	get size of data which is sent or received
+    546 ***********************************************************************
+        *******/
+    547 unsigned int uart_getTransSize( void )
+    548 {
+    549 	return _gsCtrlParam.cnt;
+    550 }
+    551 
+    552 
+    553 /**********************************************************************
+        *********
+    554 	Routine Name	: uart_ErrSet
+    555 	Form			: void uart_ErrSet( unsigned char status )
+
+                                                              Page :         15
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+    556 	Parameters		: unsigned char status : Error status information
+    557 	Return value	: void
+    558 	Description		: Error status state set processing.
+    559 ***********************************************************************
+        *******/
+    560 void uart_ErrSet( unsigned char status )
+    561 {
+    562 	_Err_Status |= status;
+    563 }
+    564 
+    565 /**********************************************************************
+        *********
+    566 	Routine Name	: uart_ErrGet
+    567 	Form			: unsigned char uart_ErrGet( void )
+    568 	Parameters		: void
+    569 	Return value	: unsigned char : Error information
+    570 	Description		: Error information acquisition processing.
+    571 ***********************************************************************
+        *******/
+    572 unsigned char uart_ErrGet( void )
+    573 {
+    574 	return( _Err_Status );
+    575 }
+    576 
+    577 /**********************************************************************
+        *********
+    578 	Routine Name	: uart_ErrClr
+    579 	Form			: void uart_ErrClr( void )
+    580 	Parameters		: void
+    581 	Return value	: void
+    582 	Description		: Error information clearness processing.
+    583 ***********************************************************************
+        *******/
+    584 void uart_ErrClr( void )
+    585 {
+    586 	_Err_Status = 0;
+    587 }
+    588 
+    589 /**********************************************************************
+        *********
+    590 	Routine Name	: uart_PortSet
+    591 	Form			: void uart_PortSet( void )
+    592 	Parameters		: void
+    593 	Return value	: void
+    594 	Description		: Port setting.
+    595 ***********************************************************************
+
+                                                              Page :         16
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+ Line #  Source Line
+
+        *******/
+    596 void uart_PortSet( void )
+    597 {
+    598 	/*---	Port setting.	---*/
+    599 	/* TXD */
+    600 	PB1DIR = 0;		/* Output */
+    601 	PB1C0 = 1;
+    602 	PB1C1 = 1;		/* CMOS */
+    603 	PB1MD0 = 0;
+    604 	PB1MD1 = 1;		/* UART TXD */
+    605 	/* RXD */
+    606 	PB0DIR = 1;		/* Input */
+    607 	PB0C0 = 1;
+    608 	PB0C1 = 0;		/* Hi Impedance */
+    609 	PB0MD0 = 0;
+    610 	PB0MD1 = 0;		/* UART RXD */
+    611 }
+    612 
+    613 /**********************************************************************
+        *********
+    614 	Routine Name	: uart_PortClear
+    615 	Form			: void uart_PortClear( void )
+    616 	Parameters		: void
+    617 	Return value	: void
+    618 	Description		: Port Clear.
+    619 ***********************************************************************
+        *******/
+    620 void uart_PortClear( void )
+    621 {
+    622 	/*---	Port setting.	---*/
+    623 	/* TXD */
+    624 	PB1DIR = 0;		/* Output */
+    625 	PB1C0 = 0;
+    626 	PB1C1 = 0;		/* Hi Impedance */
+    627 	PB1MD0 = 0;
+    628 	PB1MD1 = 0;	      /* General-purpose input/output mode */
+    629 	/* RXD */
+    630 	PB0DIR = 0;		/* Output */
+    631 	PB0C0 = 0;
+    632 	PB0C1 = 0;		/* Hi Impedance */
+    633 	PB0MD0 = 0;
+    634 	PB0MD1 = 0;		/* General-purpose input/output mode */
+    635 }
+
+
+Error(s)     :  0
+Warning(s)   :  0
+
+
+
+                                                              Page :         17
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : uart\uart.c
+
+
+
+                            STACK INFORMATION
+                            -----------------
+
+  FUNCTION                         LOCALS    CONTEXT    OTHERS    TOTAL
+  --------                         ------    -------    ------    -----
+  _uart_init                       10        8          8         26        
+  _uart_startSend                  0         4          0         4         
+  _uart_startReceive               0         2          0         2         
+  _uart_continue                   10        6          0         16        
+  _uart_stop                       0         0          0         0         
+  _uart_checkIRQ                   4         2          0         6         
+  _uart_clearIRQ                   0         0          0         0         
+  _uart_getTransSize               0         0          0         0         
+  _uart_ErrSet                     0         0          0         0         
+  _uart_ErrGet                     0         0          0         0         
+  _uart_ErrClr                     0         0          0         0         
+  _uart_PortSet                    0         0          0         0         
+  _uart_PortClear                  0         0          0         0         

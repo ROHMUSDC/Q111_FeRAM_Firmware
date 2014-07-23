@@ -1,0 +1,212 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : timer\timer.c
+
+
+ Line #  Source Line
+
+      1 /**********************************************************************
+        ********
+      2 	timer.c
+      3 
+      4     Copyright (C) 2012 LAPIS Semiconductor Co., Ltd.
+      5     All rights reserved.
+      6 
+      7     This software is provided "as is" and any expressed or implied
+      8     warranties, including, but not limited to, the implied warranties o
+        f
+      9     merchantability and fitness for a particular purpose are disclaimed
+        .
+     10     LAPIS Semiconductor shall not be liable for any direct, indirect,
+     11     consequential or incidental damages arising from using or modifying
+        
+     12     this software.
+     13     You (customer) can modify and use this software in whole or part on
+        
+     14     your own responsibility, only for the purpose of developing the sof
+        tware
+     15     for use with microcontroller manufactured by LAPIS Semiconductor.
+     16 
+     17     History
+     18     2012.10.12  ver.1.00
+     19     2013.05.07  ver 1.10 	- Modifed to work with Q100 Series micros	
+     20 ***********************************************************************
+        *******/
+     21 #include "common.h"
+     22 #include "mcu.h"
+     23 #include "timer.h"
+     24 
+     25 /*#####################################################################
+        #######*/
+     26 /*#                                  Macro                             
+              #*/
+     27 /*#####################################################################
+        #######*/
+     28 /*--- Clock ---*/
+     29 #define TM_LSCLK_HZ			( LSCLK_HZ )
+     30 
+     31 /*#####################################################################
+        #######*/
+     32 /*#                                Variable                            
+              #*/
+     33 /*#####################################################################
+        #######*/
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : timer\timer.c
+
+
+ Line #  Source Line
+
+     34 
+     35 /*#####################################################################
+        #######*/
+     36 /*#                               Prototype                            
+              #*/
+     37 /*#####################################################################
+        #######*/
+     38 
+     39 /*#####################################################################
+        #######*/
+     40 /*#                                  API                               
+              #*/
+     41 /*#####################################################################
+        #######*/
+     42 /**********************************************************************
+        *********
+     43 	Routine Name:	tm_init
+     44 	Form:			void tm_init( unsigned char chNo )
+     45 	Parameters:		unsigned char chNo : Select a channel number.
+     46 						TM_CH_NO_89 : timer89
+     47 						TM_CH_NO_AB : timerAB
+     48 						TM_CH_NO_EF : timerEF
+     49 	Return value:	void
+     50 	Description:	Initialize timer.
+     51 ***********************************************************************
+        *******/
+     52 void tm_init( unsigned char chNo )
+     53 {
+     54 	switch( chNo ) {
+     55 	case TM_CH_NO_89 :
+     56 		T8RUN = 0;		/* T8RUN   = 0    ...count stop. */
+     57 		T9RUN = 0;		/* T9RUN   = 0    ...count stop. */
+     58 		T89M16 = 1;		//Sets 16-bit Mode
+     59 		break;
+     60 	case TM_CH_NO_AB :
+     61 		TARUN = 0;		/* TARUN   = 0    ...count stop. */
+     62 		TBRUN = 0;		/* TBRUN   = 0    ...count stop. */
+     63 		TABM16 = 1;		//Sets 16-bit Mode
+     64 		break;
+     65 	case TM_CH_NO_EF :
+     66 		TERUN = 0;		/* TERUN   = 0    ...count stop. */
+     67 		TFRUN = 0;		/* TFRUN   = 0    ...count stop. */
+     68 		TEFM16 = 1;		//Sets 16-bit Mode
+     69 		break;
+     70 	default:
+     71 		break;
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : timer\timer.c
+
+
+ Line #  Source Line
+
+     72 	}
+     73 }
+     74 ***** timer\timer.c(74) : Warning : W5030 : 'tm_get89Counter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_getEFSource': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_getABSource': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_get89Source': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_startAB': unreferenced static f
+        unction
+***** timer\timer.c(74) : Warning : W5030 : 'tm_restartAB': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_clrABCounter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_restartEF': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_startEF': unreferenced static f
+        unction
+***** timer\timer.c(74) : Warning : W5030 : 'tm_clrEFCounter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_getABCounter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setABData': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_getEFCounter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_stop89': unreferenced static fu
+        nction
+***** timer\timer.c(74) : Warning : W5030 : 'tm_stopEF': unreferenced static fu
+        nction
+***** timer\timer.c(74) : Warning : W5030 : 'tm_stopAB': unreferenced static fu
+        nction
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setAOneshot': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setBOneshot': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_set9Oneshot': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_set8Oneshot': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_set89Data': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setEFSource': unreferenced stat
+
+                                                              Page :          4
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : timer\timer.c
+
+
+ Line #  Source Line
+
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setABSource': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_set89Source': unreferenced stat
+        ic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_setEFData': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_clr89Counter': unreferenced sta
+        tic function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_restart89': unreferenced static
+         function
+***** timer\timer.c(74) : Warning : W5030 : 'tm_start89': unreferenced static f
+        unction
+
+
+
+Error(s)     :  0
+Warning(s)   :  28
+
+
+
+                                                              Page :          5
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:45
+CCU8 C Compiler Ver.3.41, Source List
+Source File : timer\timer.c
+
+
+
+                            STACK INFORMATION
+                            -----------------
+
+  FUNCTION                         LOCALS    CONTEXT    OTHERS    TOTAL
+  --------                         ------    -------    ------    -----
+  _tm_init                         0         0          0         0         

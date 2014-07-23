@@ -1,0 +1,98 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:44
+CCU8 C Compiler Ver.3.41, Source List
+Source File : tbc\tbc.c
+
+
+ Line #  Source Line
+
+      1 /**********************************************************************
+        ********
+      2 	tbc.c
+      3 
+      4     Copyright (C) 2012 LAPIS Semiconductor Co., Ltd.
+      5     All rights reserved.
+      6 
+      7     This software is provided "as is" and any expressed or implied
+      8     warranties, including, but not limited to, the implied warranties o
+        f
+      9     merchantability and fitness for a particular purpose are disclaimed
+        .
+     10     LAPIS Semiconductor shall not be liable for any direct, indirect,
+     11     consequential or incidental damages arising from using or modifying
+        
+     12     this software.
+     13     You (customer) can modify and use this software in whole or part on
+        
+     14     your own responsibility, only for the purpose of developing the sof
+        tware
+     15     for use with microcontroller manufactured by LAPIS Semiconductor.
+     16 
+     17     History
+     18     2012.10.12  ver.1.00
+     19 ***********************************************************************
+        *******/
+     20 #include "mcu.h"
+     21 #include "tbc.h"
+     22 
+     23 /*#####################################################################
+        #######*/
+     24 /*#                                  Macro                             
+              #*/
+     25 /*#####################################################################
+        #######*/
+     26 /*--- Register bit. ---*/
+     27 /* HTBDR */
+     28 #define HTBDR_HTD			( 0x0Fu )
+     29 
+     30 
+     31 /*#####################################################################
+        #######*/
+     32 /*#                                Variable                            
+              #*/
+     33 /*#####################################################################
+        #######*/
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:44
+CCU8 C Compiler Ver.3.41, Source List
+Source File : tbc\tbc.c
+
+
+ Line #  Source Line
+
+     34 
+     35 
+     36 /*#####################################################################
+        #######*/
+     37 /*#                               Prototype                            
+              #*/
+     38 /*#####################################################################
+        #######*/
+     39 
+     40 
+     41 /*#####################################################################
+        #######*/
+     42 /*#                                  API                               
+              #*/
+     43 /*#####################################################################
+        #######*/
+     44 ***** tbc\tbc.c(44) : Warning : W5030 : 'tb_setHtbdiv': unreferenced static fun
+        ction
+
+
+
+Error(s)     :  0
+Warning(s)   :  1
+
+
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:44
+CCU8 C Compiler Ver.3.41, Source List
+Source File : tbc\tbc.c
+

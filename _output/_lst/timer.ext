@@ -1,0 +1,4 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _tm_init
+;; End of listing.

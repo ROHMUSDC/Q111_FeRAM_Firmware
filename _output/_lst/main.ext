@@ -1,0 +1,17 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _PWM_B0_ON
+	EXTRN	CODE NEAR	: _analog_comparator
+	EXTRN	CODE NEAR	: _PortA_Digital_Inputs
+	EXTRN	CODE NEAR	: _UART_RX_TEST
+	EXTRN	CODE NEAR	: _UART_TX_TEST
+	EXTRN	CODE NEAR	: _NOPx
+	EXTRN	CODE NEAR	: _main
+	EXTRN	CODE NEAR	: _main_reqNotHalt
+	EXTRN	CODE NEAR	: _PortC_Low
+	EXTRN	CODE NEAR	: _PortB_Low
+	EXTRN	CODE NEAR	: _PortA_Low
+	EXTRN	CODE NEAR	: _PinB0_PWM
+	EXTRN	CODE NEAR	: _Jerrys_Function
+	EXTRN	CODE NEAR	: _main_clrWDT
+;; End of listing.

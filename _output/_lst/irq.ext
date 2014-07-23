@@ -1,0 +1,7 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _irq_setHdr
+	EXTRN	CODE NEAR	: _irq_init
+	EXTRN	CODE NEAR	: _irq_di
+	EXTRN	CODE NEAR	: _irq_ei
+;; End of listing.

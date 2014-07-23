@@ -1,0 +1,1882 @@
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   1 
+ Source File: _output\_obj\uart.asm
+ Object File: _output\_obj\uart.obj
+ Date  : 2014/07/23 Wed.[16:22]
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                    1   ;; Compile Options : /TML610111 /MS /ne
+                                        ar /LE /Ii2c /Iirq /Imain /Itbc /Itimer
+                                         /Iuart /Icommon /Imath /Istdio /Istdli
+                                        b /Istring /Iyvals /CT _output\_prn\uar
+                                        t.cal /SS 256 /SD /Oa /Ot /W 3 /Zg /Fa_
+                                        output\_obj\ /Lv /Zs 
+                                    2   ;; Version Number  : Ver.3.41.8
+                                    3   ;; File Name       : uart.c
+                                    4   
+                                    5           type (ML610111) 
+                                    6           model small, near
+                                    7           $$NVARuart segment data 2h #0h
+                                    8           $$NINITVAR segment data 2h #0h
+                                    9           $$NINITTAB segment table 2h any
+                                   10           $$uart_ErrClr$uart segment code
+                                         2h #0h
+                                   11           $$uart_ErrGet$uart segment code
+                                         2h #0h
+                                   12           $$uart_ErrSet$uart segment code
+                                         2h #0h
+                                   13           $$uart_PortClear$uart segment c
+                                        ode 2h #0h
+                                   14           $$uart_PortSet$uart segment cod
+                                        e 2h #0h
+                                   15           $$uart_checkIRQ$uart segment co
+                                        de 2h #0h
+                                   16           $$uart_clearIRQ$uart segment co
+                                        de 2h #0h
+                                   17           $$uart_continue$uart segment co
+                                        de 2h #0h
+                                   18           $$uart_getTransSize$uart segmen
+                                        t code 2h #0h
+                                   19           $$uart_init$uart segment code 2
+                                        h #0h
+                                   20           $$uart_startReceive$uart segmen
+                                        t code 2h #0h
+                                   21           $$uart_startSend$uart segment c
+                                        ode 2h #0h
+                                   22           $$uart_stop$uart segment code 2
+                                        h #0h
+                                   23   CVERSION 3.41.8
+                                   24   CGLOBAL 01H 02H 0000H "uart_getTransSiz
+                                        e" 08H 02H 08H 00H 80H 00H 00H 00H 01H
+                                   25   CGLOBAL 01H 03H 0000H "uart_PortSet" 08
+                                        H 02H 0CH 00H 80H 00H 00H 00H 07H
+                                   26   CGLOBAL 01H 03H 0000H "uart_startReceiv
+                                        e" 08H 02H 03H 00H 82H 02H 00H 00H 07H
+                                   27   CGLOBAL 01H 03H 0000H "uart_init" 08H 0
+                                        2H 01H 00H 83H 1aH 00H 00H 01H
+                                   28   CGLOBAL 01H 03H 0000H "uart_checkIRQ" 0
+                                        8H 02H 06H 00H 82H 06H 00H 00H 01H
+                                   29   CGLOBAL 01H 03H 0000H "uart_clearIRQ" 0
+                                        8H 02H 07H 00H 80H 00H 00H 00H 07H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   2 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                   30   CGLOBAL 01H 03H 0000H "uart_ErrClr" 08H
+                                         02H 0BH 00H 80H 00H 00H 00H 07H
+                                   31   CGLOBAL 01H 02H 0000H "uart_ErrGet" 08H
+                                         02H 0AH 00H 80H 00H 00H 00H 00H
+                                   32   CGLOBAL 01H 03H 0000H "uart_ErrSet" 08H
+                                         02H 09H 00H 80H 00H 00H 00H 07H
+                                   33   CGLOBAL 01H 03H 0000H "uart_stop" 08H 0
+                                        2H 05H 00H 80H 00H 00H 00H 07H
+                                   34   CGLOBAL 01H 03H 0000H "uart_startSend" 
+                                        08H 02H 02H 00H 82H 04H 00H 00H 07H
+                                   35   CGLOBAL 01H 03H 0000H "uart_continue" 0
+                                        8H 02H 04H 00H 83H 10H 00H 00H 01H
+                                   36   CGLOBAL 01H 03H 0000H "uart_PortClear" 
+                                        08H 02H 0DH 00H 80H 00H 00H 00H 07H
+                                   37   CSTRUCTTAG 0000H 0000H 0002H 0005H 0000
+                                        000AH "_Notag"
+                                   38   CSTRUCTMEM 42H 00000002H 00000000H "dat
+                                        a" 04H 03H 00H 00H 00H
+                                   39   CSTRUCTMEM 42H 00000002H 00000002H "siz
+                                        e" 02H 00H 01H
+                                   40   CSTRUCTMEM 42H 00000002H 00000004H "cnt
+                                        " 02H 00H 01H
+                                   41   CSTRUCTMEM 43H 00000002H 00000006H "cal
+                                        lBack" 0AH 03H 00H 02H 00H 00H 00H 00H 
+                                        00H 00H 07H
+                                   42   CSTRUCTMEM 42H 00000001H 00000008H "err
+                                        Stat" 02H 00H 00H
+                                   43   CSTRUCTTAG 0000H 0000H 0001H 0006H 0000
+                                        000AH "_Notag"
+                                   44   CSTRUCTMEM 42H 00000004H 00000000H "br"
+                                         02H 00H 02H
+                                   45   CSTRUCTMEM 42H 00000001H 00000004H "lg"
+                                         02H 00H 00H
+                                   46   CSTRUCTMEM 42H 00000001H 00000005H "pt"
+                                         02H 00H 00H
+                                   47   CSTRUCTMEM 42H 00000001H 00000006H "stp
+                                        " 02H 00H 00H
+                                   48   CSTRUCTMEM 42H 00000001H 00000007H "neg
+                                        " 02H 00H 00H
+                                   49   CSTRUCTMEM 42H 00000001H 00000008H "dir
+                                        " 02H 00H 00H
+                                   50   CSTRUCTTAG 0000H 0000H 0000H 0008H 0000
+                                        0001H "_Notag"
+                                   51   CSTRUCTMEM 52H 00000001H 00000000H "b0"
+                                         02H 00H 00H
+                                   52   CSTRUCTMEM 52H 00000001H 00000001H "b1"
+                                         02H 00H 00H
+                                   53   CSTRUCTMEM 52H 00000001H 00000002H "b2"
+                                         02H 00H 00H
+                                   54   CSTRUCTMEM 52H 00000001H 00000003H "b3"
+                                         02H 00H 00H
+                                   55   CSTRUCTMEM 52H 00000001H 00000004H "b4"
+                                         02H 00H 00H
+                                   56   CSTRUCTMEM 52H 00000001H 00000005H "b5"
+                                         02H 00H 00H
+                                   57   CSTRUCTMEM 52H 00000001H 00000006H "b6"
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   3 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                         02H 00H 00H
+                                   58   CSTRUCTMEM 52H 00000001H 00000007H "b7"
+                                         02H 00H 00H
+                                   59   CTYPEDEF 0000H 0000H 43H "tUartCtrlPara
+                                        m" 04H 00H 05H 02H 00H
+                                   60   CTYPEDEF 0000H 0000H 43H "tUartSetParam
+                                        " 04H 00H 05H 01H 00H
+                                   61   CTYPEDEF 0000H 0000H 43H "cbfUart" 0AH 
+                                        03H 00H 02H 00H 00H 00H 00H 00H 00H 07H
+                                   62   CTYPEDEF 0000H 0000H 43H "_BYTE_FIELD" 
+                                        04H 00H 05H 00H 00H
+                                   63   CSGLOBAL 42H 0001H "_Err_Status" 02H 00
+                                        H 00H
+                                   64   CSGLOBAL 43H 000AH "_gsCtrlParam" 04H 0
+                                        0H 05H 02H 00H
+                                   65   CFILE 0001H 00000024H "main\\mcu.h"
+                                   66   CFILE 0002H 000007EEH "main\\ML610111.H
+                                        "
+                                   67   CFILE 0003H 0000006FH "uart\\uart.h"
+                                   68   CFILE 0004H 00000027H "common\\common.h
+                                        "
+                                   69   CFILE 0000H 0000027BH "uart\\uart.c"
+                                   70   
+  --------------------------       71           rseg $$uart_init$uart
+                                   72   CFUNCTION 1
+                                   73   
+00:0000                            74   _uart_init      :
+                                   75   CBLOCK 1 1 208
+                                   76   
+                                   77   ;;{
+                                   78   CLINEA 0000H 0001H 00D0H 0001H 0001H
+                                   79   ;;*************************************
+                                        ****
+                                   80   ;;      register/stack information
+                                   81   ;;*************************************
+                                        ****
+    = FFFFFFFCH                    82           _br_clk$0       set     -4
+    = 00000004H                    83           _prm$4  set     4
+    = FFFFFFF8H                    84           _br_cnt$4       set     -8
+    = FFFFFFF7H                    85           _setbit$8       set     -9
+                                   86   ;;*************************************
+                                        ****
+                                   87   
+00:0000 CE-F8                      88           push    lr
+00:0002 5E-FE                      89           push    fp
+00:0004 1A-AE                      90           mov     fp,     sp
+00:0006 F6 E1                      91           add     sp,     #-010
+00:0008 5E-FC                      92           push    bp
+00:000A 5E-F8                      93           push    er8
+00:000C 00-88                      94           mov     r8,     r0
+                                   95   CBLOCK 1 2 208
+                                   96   CRET 0010H
+                                   97   CARGUMENT 46H 0001H 001CH "cs" 02H 00H 
+                                        00H
+                                   98   CARGUMENT 46H 0002H 0025H "kHz" 02H 00H
+                                         01H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   4 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                   99   CARGUMENT 41H 0002H 0004H "prm" 06H 03H
+                                         00H 00H 05H 01H 00H
+                                  100   CLOCAL 42H 0004H 0004H 0002H "br_clk" 0
+                                        2H 00H 02H
+                                  101   CLOCAL 42H 0004H 0008H 0002H "br_cnt" 0
+                                        2H 00H 02H
+                                  102   CLOCAL 42H 0001H 0009H 0002H "setbit" 0
+                                        2H 00H 00H
+                                  103   
+                                  104   ;;      switch( (int)cs ){             
+                                         //BAUD RATE CLOCK SET HERE...
+                                  105   CLINEA 0000H 0001H 00D6H 0002H 0032H
+                                  106   CBLOCK 1 3 214
+00:000E 00 70                     107           cmp     r0,     #00h
+00:0010 0E C9                     108           beq     _$L6
+                                  109   
+                                  110   ;;      switch( (int)cs ){             
+                                         //BAUD RATE CLOCK SET HERE...
+                                  111   CLINEA 0000H 0000H 00D6H 0002H 0032H
+00:0012 01 70                     112           cmp     r0,     #01h
+00:0014 02 C8                     113           bne     _$M1
+00:0016 00-F0'00-00'              114           b       _$L7
+00:001A                           115   _$M1 :
+                                  116   
+                                  117   ;;      switch( (int)cs ){             
+                                         //BAUD RATE CLOCK SET HERE...
+                                  118   CLINEA 0000H 0000H 00D6H 0002H 0032H
+00:001A 02 70                     119           cmp     r0,     #02h
+00:001C 02 C8                     120           bne     _$M2
+00:001E 00-F0'00-00'              121           b       _$L8
+00:0022                           122   _$M2 :
+                                  123   
+                                  124   ;;                      return ( UART_R
+                                        _ERR_CS );                 // else CS e
+                                        rror
+                                  125   CLINEA 0000H 0001H 00E5H 0004H 0030H
+00:0022 7F E0                     126           mov     er0,    #-1
+                                  127   CBLOCKEND 1 3 230
+                                  128   CBLOCKEND 1 2 319
+                                  129   
+                                  130   ;;}
+                                  131   CLINEA 0000H 0001H 013FH 0001H 0001H
+00:0024                           132   _$L0 :
+00:0024 1E-F8                     133           pop     er8
+00:0026 1E-FC                     134           pop     bp
+00:0028 EA-A1                     135           mov     sp,     fp
+00:002A 1E-FE                     136           pop     fp
+00:002C 8E-F2                     137           pop     pc
+                                  138   
+                                  139   ;;              case UART_CS_LSCLK:
+                                  140   CLINEA 0000H 0001H 00D8H 0003H 0015H
+00:002E                           141   _$L6 :
+                                  142   
+                                  143   ;;                      br_clk = (unsig
+                                        ned long)32768;    // i.e.: 32.768 kHz
+                                  144   CLINEA 0000H 0001H 00D9H 0004H 0037H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   5 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:002E 00 00                     145           mov     r0,     #00h
+00:0030 80 01                     146           mov     r1,     #080h
+00:0032 00 E2                     147           mov     er2,    #0 
+                                  148   
+                                  149   ;;      } 
+                                  150   CLINEA 0000H 0000H 00E6H 0002H 0003H
+00:0034                           151   _$L4 :
+00:0034 FC B0                     152           st      er0,    _br_clk$0[fp]
+00:0036 FE B2                     153           st      er2,    _br_clk$0+02h[f
+                                        p]
+                                  154   
+                                  155   ;;      br_cnt = br_clk / prm->br;
+                                  156   CLINEA 0000H 0001H 00E7H 0002H 001BH
+00:0038 44 BC                     157           l       bp,     _prm$4[fp]
+00:003A 6E-F0                     158           push    xr0
+00:003C C2-90                     159           l       er0,    [bp]
+00:003E 02 B2                     160           l       er2,    2[bp]
+00:0040 6E-F0                     161           push    xr0
+00:0042 01-F0'00-00'              162           bl      __uldivu8sw
+00:0046 04 E1                     163           add     sp,     #4 
+00:0048 2E-F0                     164           pop     xr0
+00:004A F8 B0                     165           st      er0,    _br_cnt$4[fp]
+00:004C FA B2                     166           st      er2,    _br_cnt$4+02h[f
+                                        p]
+                                  167   
+                                  168   ;;      if( br_cnt == 0UL ){           
+                                                 //If Baud Rate Count = zero...
+                                        Return Baud Rate Error Flag
+                                  169   CLINEA 0000H 0001H 00E8H 0002H 0051H
+00:004E 00 70                     170           cmp     r0,     #00h
+00:0050 00 51                     171           cmpc    r1,     #00h
+00:0052 00 52                     172           cmpc    r2,     #00h
+00:0054 00 53                     173           cmpc    r3,     #00h
+00:0056 02 C8                     174           bne     _$L9
+                                  175   CBLOCK 1 4 232
+                                  176   
+                                  177   ;;              return ( UART_R_ERR_BR 
+                                        );
+                                  178   CLINEA 0000H 0001H 00E9H 0003H 001BH
+00:0058 7E E0                     179           mov     er0,    #-2
+00:005A E4 CE                     180           bal     _$L0
+                                  181   CBLOCKEND 1 4 234
+                                  182   
+                                  183   ;;      }
+                                  184   CLINEA 0000H 0000H 00EAH 0002H 0002H
+00:005C                           185   _$L9 :
+                                  186   
+                                  187   ;;      br_cnt -= 1UL;
+                                  188   CLINEA 0000H 0001H 00EBH 0002H 000FH
+00:005C FF E0                     189           add     er0,    #-1
+00:005E FF 62                     190           addc    r2,     #0ffh
+00:0060 FF 63                     191           addc    r3,     #0ffh
+00:0062 F8 B0                     192           st      er0,    _br_cnt$4[fp]
+00:0064 FA B2                     193           st      er2,    _br_cnt$4+02h[f
+                                        p]
+                                  194   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   6 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  195   ;;      if( prm->lg > (unsigned char)UA
+                                        RT_LG_5BIT ){
+                                  196   CLINEA 0000H 0001H 00EEH 0002H 002DH
+00:0066 04 D0                     197           l       r0,     4[bp]
+00:0068 03 70                     198           cmp     r0,     #03h
+00:006A 02 C3                     199           ble     _$L11
+                                  200   CBLOCK 1 5 238
+                                  201   
+                                  202   ;;              return ( UART_R_ERR_LG 
+                                        );
+                                  203   CLINEA 0000H 0001H 00EFH 0003H 001BH
+00:006C 7D E0                     204           mov     er0,    #-3
+00:006E DA CE                     205           bal     _$L0
+                                  206   CBLOCKEND 1 5 240
+                                  207   
+                                  208   ;;      }
+                                  209   CLINEA 0000H 0000H 00F0H 0002H 0002H
+00:0070                           210   _$L11 :
+                                  211   
+                                  212   ;;      if( prm->pt > (unsigned char)UA
+                                        RT_PT_NON ){
+                                  213   CLINEA 0000H 0001H 00F1H 0002H 002CH
+00:0070 05 D0                     214           l       r0,     5[bp]
+00:0072 02 70                     215           cmp     r0,     #02h
+00:0074 02 C3                     216           ble     _$L13
+                                  217   CBLOCK 1 6 241
+                                  218   
+                                  219   ;;              return ( UART_R_ERR_PT 
+                                        );
+                                  220   CLINEA 0000H 0001H 00F2H 0003H 001BH
+00:0076 7C E0                     221           mov     er0,    #-4
+00:0078 D5 CE                     222           bal     _$L0
+                                  223   CBLOCKEND 1 6 243
+                                  224   
+                                  225   ;;      }
+                                  226   CLINEA 0000H 0000H 00F3H 0002H 0002H
+00:007A                           227   _$L13 :
+                                  228   
+                                  229   ;;      if( prm->stp > (unsigned char)U
+                                        ART_STP_2BIT ){
+                                  230   CLINEA 0000H 0001H 00F4H 0002H 002FH
+00:007A 06 D0                     231           l       r0,     6[bp]
+00:007C 01 70                     232           cmp     r0,     #01h
+00:007E 02 C3                     233           ble     _$L15
+                                  234   CBLOCK 1 7 244
+                                  235   
+                                  236   ;;              return ( UART_R_ERR_STP
+                                         );
+                                  237   CLINEA 0000H 0001H 00F5H 0003H 001CH
+00:0080 7B E0                     238           mov     er0,    #-5
+00:0082 D0 CE                     239           bal     _$L0
+                                  240   CBLOCKEND 1 7 246
+                                  241   
+                                  242   ;;      }
+                                  243   CLINEA 0000H 0000H 00F6H 0002H 0002H
+00:0084                           244   _$L15 :
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   7 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  245   
+                                  246   ;;      if( prm->neg > (unsigned char)U
+                                        ART_NEG_NEG ){
+                                  247   CLINEA 0000H 0001H 00F7H 0002H 002EH
+00:0084 07 D0                     248           l       r0,     7[bp]
+00:0086 01 70                     249           cmp     r0,     #01h
+00:0088 02 C3                     250           ble     _$L17
+                                  251   CBLOCK 1 8 247
+                                  252   
+                                  253   ;;              return ( UART_R_ERR_NEG
+                                         );
+                                  254   CLINEA 0000H 0001H 00F8H 0003H 001CH
+00:008A 7A E0                     255           mov     er0,    #-6
+00:008C CB CE                     256           bal     _$L0
+                                  257   CBLOCKEND 1 8 249
+                                  258   
+                                  259   ;;      }
+                                  260   CLINEA 0000H 0000H 00F9H 0002H 0002H
+00:008E                           261   _$L17 :
+                                  262   
+                                  263   ;;      if( prm->dir > (unsigned char)U
+                                        ART_DIR_MSB ){
+                                  264   CLINEA 0000H 0001H 00FAH 0002H 002EH
+00:008E 08 D0                     265           l       r0,     8[bp]
+00:0090 01 70                     266           cmp     r0,     #01h
+00:0092 02 C3                     267           ble     _$L19
+                                  268   CBLOCK 1 9 250
+                                  269   
+                                  270   ;;              return ( UART_R_ERR_DIR
+                                         );
+                                  271   CLINEA 0000H 0001H 00FBH 0003H 001CH
+00:0094 79 E0                     272           mov     er0,    #-7
+00:0096 C6 CE                     273           bal     _$L0
+                                  274   CBLOCKEND 1 9 252
+                                  275   
+                                  276   ;;      }
+                                  277   CLINEA 0000H 0000H 00FCH 0002H 0002H
+00:0098                           278   _$L19 :
+                                  279   
+                                  280   ;;              _gsCtrlParam.data      
+                                                 = (void *)0;
+                                  281   CLINEA 0000H 0001H 0100H 0003H 0021H
+00:0098 00 E0                     282           mov     er0,    #0 
+00:009A 13-90 00-00'              283           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  284   
+                                  285   ;;              _gsCtrlParam.size      
+                                                 = 0;
+                                  286   CLINEA 0000H 0001H 0101H 0003H 0019H
+00:009E 13-90 00-00'              287           st      er0,    NEAR __gsCtrlPa
+                                        ram+02h
+                                  288   
+                                  289   ;;              _gsCtrlParam.cnt       
+                                                 = 0;
+                                  290   CLINEA 0000H 0001H 0102H 0003H 0018H
+00:00A2 13-90 00-00'              291           st      er0,    NEAR __gsCtrlPa
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   8 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ram+04h
+                                  292   
+                                  293   ;;              _gsCtrlParam.callBack  
+                                         = (void *)0;
+                                  294   CLINEA 0000H 0001H 0103H 0003H 0024H
+00:00A6 13-90 00-00'              295           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  296   
+                                  297   ;;              _gsCtrlParam.errStat   
+                                         = 0;
+                                  298   CLINEA 0000H 0001H 0104H 0003H 001BH
+00:00AA 11-90 00-00'              299           st      r0,     NEAR __gsCtrlPa
+                                        ram+08h
+                                  300   
+                                  301   ;;              U0EN = 0;
+                                  302   CLINEA 0000H 0001H 0108H 0003H 000BH
+00:00AE 82-A0 91-F2               303           rb      0f291h.0
+                                  304   
+                                  305   ;;              uart_PortClear();
+                                  306   CLINEA 0000H 0001H 010BH 0003H 0013H
+00:00B2 01-F0'00-00'              307           bl      _uart_PortClear
+                                  308   
+                                  309   ;;              setbit = UA0MOD0;
+                                  310   CLINEA 0000H 0001H 010EH 0003H 0013H
+00:00B6 10-90 92-F2               311           l       r0,     0f292h
+                                  312   
+                                  313   ;;              setbit &= (unsigned cha
+                                        r)( ~(UA0MOD0_U0CK0|UA0MOD0_U0CK1) );
+                                  314   CLINEA 0000H 0001H 010FH 0003H 003EH
+00:00BA F9 20                     315           and     r0,     #0f9h
+00:00BC F7 D0                     316           st      r0,     _setbit$8[fp]
+                                  317   
+                                  318   ;;              setbit |= (unsigned cha
+                                        r)( cs << 1 );
+                                  319   CLINEA 0000H 0001H 0110H 0003H 0027H
+00:00BE 80-80                     320           mov     r0,     r8
+00:00C0 1A-90                     321           sll     r0,     #01h
+00:00C2 77 D1                     322           l       r1,     _setbit$8[fp]
+00:00C4 03-81                     323           or      r1,     r0
+                                  324   
+                                  325   ;;              setbit |= (unsigned cha
+                                        r)UA0MOD0_U0RSEL;
+                                  326   CLINEA 0000H 0001H 0111H 0003H 002AH
+00:00C6 10-80                     327           mov     r0,     r1
+00:00C8 10 30                     328           or      r0,     #010h
+                                  329   
+                                  330   ;;              UA0MOD0 = setbit;
+                                  331   CLINEA 0000H 0001H 0112H 0003H 0013H
+00:00CA 11-90 92-F2               332           st      r0,     0f292h
+                                  333   
+                                  334   ;;              U0RSEL = 0;
+                                  335   CLINEA 0000H 0001H 0113H 0003H 000DH
+00:00CE C2-A0 92-F2               336           rb      0f292h.4
+                                  337   
+                                  338   ;;              setbit = UA0MOD1;
+                                  339   CLINEA 0000H 0001H 0116H 0003H 0013H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   9 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:00D2 10-90 93-F2               340           l       r0,     0f293h
+                                  341   
+                                  342   ;;              setbit &= (unsigned cha
+                                        r)( ~(UA0MOD1_U0LG0|UA0MOD1_U0LG1|UA0MO
+                                        D1_U0PT0|UA0MOD1_U0PT1|UA0MOD1_U0STP|UA
+                                        0MOD1_U0NEG|UA0MOD1_U0DIR) );
+                                  343   CLINEA 0000H 0001H 0117H 0003H 0084H
+00:00D6 80 20                     344           and     r0,     #080h
+00:00D8 F7 D0                     345           st      r0,     _setbit$8[fp]
+                                  346   
+                                  347   ;;                                     
+                                            (prm->dir << 6) );
+                                  348   CLINEA 0000H 0001H 011CH 0017H 0028H
+00:00DA 44 BC                     349           l       bp,     _prm$4[fp]
+00:00DC 05 D0                     350           l       r0,     5[bp]
+00:00DE 2A-90                     351           sll     r0,     #02h
+00:00E0 04 D1                     352           l       r1,     4[bp]
+00:00E2 03-81                     353           or      r1,     r0
+00:00E4 06 D0                     354           l       r0,     6[bp]
+00:00E6 4A-90                     355           sll     r0,     #04h
+00:00E8 13-80                     356           or      r0,     r1
+00:00EA 07 D1                     357           l       r1,     7[bp]
+00:00EC 5A-91                     358           sll     r1,     #05h
+00:00EE 03-81                     359           or      r1,     r0
+00:00F0 08 D0                     360           l       r0,     8[bp]
+00:00F2 6A-90                     361           sll     r0,     #06h
+00:00F4 13-80                     362           or      r0,     r1
+00:00F6 77 D1                     363           l       r1,     _setbit$8[fp]
+00:00F8 03-81                     364           or      r1,     r0
+00:00FA F7 D1                     365           st      r1,     _setbit$8[fp]
+                                  366   
+                                  367   ;;              UA0MOD1 = setbit;
+                                  368   CLINEA 0000H 0001H 011DH 0003H 0013H
+00:00FC 11-91 93-F2               369           st      r1,     0f293h
+                                  370   
+                                  371   ;;              UA0BRTL = (unsigned cha
+                                        r)(br_cnt & 0x000000FF);
+                                  372   CLINEA 0000H 0001H 0120H 0003H 0031H
+00:0100 78 D0                     373           l       r0,     _br_cnt$4[fp]
+00:0102 11-90 94-F2               374           st      r0,     0f294h
+                                  375   
+                                  376   ;;              setbit = UA0BRTH;
+                                  377   CLINEA 0000H 0001H 0123H 0003H 0013H
+00:0106 10-90 95-F2               378           l       r0,     0f295h
+                                  379   
+                                  380   ;;              setbit &= (unsigned cha
+                                        r)( ~(UA0BRTH_U0BR8|UA0BRTH_U0BR9|UA0BR
+                                        TH_U0BR10|UA0BRTH_U0BR11) );
+                                  381   CLINEA 0000H 0001H 0124H 0003H 005CH
+00:010A F0 20                     382           and     r0,     #0f0h
+00:010C F7 D0                     383           st      r0,     _setbit$8[fp]
+                                  384   
+                                  385   ;;              setbit |= (unsigned cha
+                                        r)( (br_cnt >> 8) & (UA0BRTH_U0BR8|UA0B
+                                        RTH_U0BR9|UA0BRTH_U0BR10|UA0BRTH_U0BR11
+                                        ) );
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  10 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  386   CLINEA 0000H 0001H 0125H 0003H 006BH
+00:010E 79 D0                     387           l       r0,     _br_cnt$4+01h[f
+                                        p]
+00:0110 0F 20                     388           and     r0,     #0fh
+00:0112 77 D1                     389           l       r1,     _setbit$8[fp]
+00:0114 03-81                     390           or      r1,     r0
+00:0116 F7 D1                     391           st      r1,     _setbit$8[fp]
+                                  392   
+                                  393   ;;              UA0BRTH = setbit;
+                                  394   CLINEA 0000H 0001H 0126H 0003H 0013H
+00:0118 11-91 95-F2               395           st      r1,     0f295h
+                                  396   
+                                  397   ;;              U0FER = 0;      // Clea
+                                        r Framing Error Flag to start...
+                                  398   CLINEA 0000H 0001H 0139H 0003H 0034H
+00:011C 82-A0 96-F2               399           rb      0f296h.0
+                                  400   
+                                  401   ;;              U0OER = 0;      // Clea
+                                        r Overrun Error Flag to start...
+                                  402   CLINEA 0000H 0001H 013AH 0003H 0034H
+00:0120 92-A0 96-F2               403           rb      0f296h.1
+                                  404   
+                                  405   ;;              U0PER = 0;      // Clea
+                                        r Parity Error Flag to start...
+                                  406   CLINEA 0000H 0001H 013BH 0003H 0033H
+00:0124 A2-A0 96-F2               407           rb      0f296h.2
+                                  408   
+                                  409   ;;              U0FUL = 0;      // Clea
+                                        r Buffer Full Flag to start...
+                                  410   CLINEA 0000H 0001H 013CH 0003H 0032H
+00:0128 B2-A0 96-F2               411           rb      0f296h.3
+                                  412   
+                                  413   ;;      return ( UART_R_OK );
+                                  414   CLINEA 0000H 0001H 013EH 0002H 0016H
+00:012C 00 E0                     415           mov     er0,    #0 
+00:012E 00-F0'00-00'              416           b       _$L0
+                                  417   
+                                  418   ;;              case UART_CS_LSCLK2:
+                                  419   CLINEA 0000H 0001H 00DCH 0003H 0016H
+00:0132                           420   _$L7 :
+                                  421   
+                                  422   ;;                      br_clk = (unsig
+                                        ned long)(32768 * 2);  // i.e.: 65.536 
+                                        kHz
+                                  423   CLINEA 0000H 0001H 00DDH 0004H 003CH
+00:0132 00 E0                     424           mov     er0,    #0 
+00:0134 01 E2                     425           mov     er2,    #1 
+                                  426   
+                                  427   ;;                      break;
+                                  428   CLINEA 0000H 0001H 00DEH 0004H 0009H
+00:0136 00-F0'00-00'              429           b       _$L4
+                                  430   
+                                  431   ;;              case UART_CS_HSCLK:
+                                  432   CLINEA 0000H 0001H 00E0H 0003H 0015H
+00:013A                           433   _$L8 :
+                                  434   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  11 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  435   ;;                      br_clk = (unsig
+                                        ned long)kHz * 1024UL; // i.e.: 8.192 M
+                                        Hz        
+                                  436   CLINEA 0000H 0001H 00E1H 0004H 003CH
+00:013A 25-F0                     437           mov     er0,    er2
+00:013C 00 E2                     438           mov     er2,    #0 
+00:013E 7B-93                     439           sllc    r3,     #07h
+00:0140 7B-92                     440           sllc    r2,     #07h
+00:0142 7B-91                     441           sllc    r1,     #07h
+00:0144 7A-90                     442           sll     r0,     #07h
+00:0146 3B-93                     443           sllc    r3,     #03h
+00:0148 3B-92                     444           sllc    r2,     #03h
+00:014A 3B-91                     445           sllc    r1,     #03h
+00:014C 3A-90                     446           sll     r0,     #03h
+                                  447   
+                                  448   ;;                      break;
+                                  449   CLINEA 0000H 0001H 00E2H 0004H 0009H
+00:014E 00-F0'00-00'              450           b       _$L4
+                                  451   CBLOCKEND 1 1 319
+                                  452   CFUNCTIONEND 1
+                                  453   
+                                  454   
+  --------------------------      455           rseg $$uart_startSend$uart
+                                  456   CFUNCTION 2
+                                  457   
+00:0000                           458   _uart_startSend :
+                                  459   CBLOCK 2 1 332
+                                  460   
+                                  461   ;;{
+                                  462   CLINEA 0000H 0001H 014CH 0001H 0001H
+                                  463   ;;*************************************
+                                        ****
+                                  464   ;;      register/stack information
+                                  465   ;;*************************************
+                                        ****
+    = 00000002H                   466           _func$4 set     2
+                                  467   ;;*************************************
+                                        ****
+                                  468   
+00:0000 5E-FE                     469           push    fp
+00:0002 1A-AE                     470           mov     fp,     sp
+00:0004 5E-F8                     471           push    er8
+00:0006 05-F8                     472           mov     er8,    er0
+                                  473   CBLOCK 2 2 332
+                                  474   CARGUMENT 46H 0002H 0028H "data" 04H 03
+                                        H 00H 00H 00H
+                                  475   CARGUMENT 46H 0002H 0025H "size" 02H 00
+                                        H 01H
+                                  476   CARGUMENT 43H 0002H 0002H "func" 0AH 03
+                                        H 00H 02H 00H 00H 00H 00H 00H 00H 07H
+                                  477   
+                                  478   ;;              U0EN = 0;       // 0 = 
+                                        STOP communication...
+                                  479   CLINEA 0000H 0001H 014EH 0003H 0028H
+00:0008 82-A0 91-F2               480           rb      0f291h.0
+                                  481   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  12 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  482   ;;              U0IO = 0;       // The 
+                                        U0IO bit is used to select TX or RX Mod
+                                        e (0=TX Mode)
+                                  483   CLINEA 0000H 0001H 014FH 0003H 0047H
+00:000C 82-A0 92-F2               484           rb      0f292h.0
+                                  485   
+                                  486   ;;              _gsCtrlParam.data      
+                                                 = data; // pointer to area whe
+                                        re the send/receive data is stored
+                                  487   CLINEA 0000H 0001H 0152H 0003H 0055H
+00:0010 13-90 00-00'              488           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  489   
+                                  490   ;;              _gsCtrlParam.size      
+                                                 = size; // size of send/receiv
+                                        e data
+                                  491   CLINEA 0000H 0001H 0153H 0003H 0039H
+00:0014 13-92 00-00'              492           st      er2,    NEAR __gsCtrlPa
+                                        ram+02h
+                                  493   
+                                  494   ;;              _gsCtrlParam.cnt       
+                                                 = 0;            // size of dat
+                                        a which is sent/received
+                                  495   CLINEA 0000H 0001H 0154H 0003H 0040H
+00:0018 00 E0                     496           mov     er0,    #0 
+00:001A 13-90 00-00'              497           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  498   
+                                  499   ;;              _gsCtrlParam.callBack  
+                                         = func; // callback function
+                                  500   CLINEA 0000H 0001H 0155H 0003H 0034H
+00:001E 42 B0                     501           l       er0,    _func$4[fp]
+00:0020 13-90 00-00'              502           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  503   
+                                  504   ;;              _gsCtrlParam.errStat   
+                                         = 0;            // error status
+                                  505   CLINEA 0000H 0001H 0156H 0003H 002CH
+00:0024 00 00                     506           mov     r0,     #00h
+00:0026 11-90 00-00'              507           st      r0,     NEAR __gsCtrlPa
+                                        ram+08h
+                                  508   
+                                  509   ;;      if( _gsCtrlParam.size > 0 ){   
+                                         //If there is valid data to send...
+                                  510   CLINEA 0000H 0001H 0158H 0002H 0041H
+00:002A 00 72                     511           cmp     r2,     #00h
+00:002C 00 53                     512           cmpc    r3,     #00h
+00:002E 0F C3                     513           ble     _$L22
+                                  514   CBLOCK 2 3 344
+                                  515   
+                                  516   ;;              UA0BUF = *data;        
+                                         // Load the UART buffer with data to s
+                                        end
+                                  517   CLINEA 0000H 0001H 015AH 0003H 003CH
+00:0030 80-90                     518           l       r0,     [er8]
+00:0032 11-90 90-F2               519           st      r0,     0f290h
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  13 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  520   
+                                  521   ;;              _gsCtrlParam.data++;   
+                                         // Increment pointer to area where the
+                                         send/receive data is stored
+                                  522   CLINEA 0000H 0000H 015BH 0003H 0059H
+00:0036 12-90 00-00'              523           l       er0,    NEAR __gsCtrlPa
+                                        ram
+00:003A 81 E0                     524           add     er0,    #1 
+00:003C 13-90 00-00'              525           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  526   
+                                  527   ;;              _gsCtrlParam.cnt++;    
+                                         // Increment count for size of data wh
+                                        ich is sent/received 
+                                  528   CLINEA 0000H 0000H 015CH 0003H 0051H
+00:0040 12-90 00-00'              529           l       er0,    NEAR __gsCtrlPa
+                                        ram+04h
+00:0044 81 E0                     530           add     er0,    #1 
+00:0046 13-90 00-00'              531           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  532   
+                                  533   ;;              U0EN = 1;              
+                                                 // 1 = Starts communication...
+                                  534   CLINEA 0000H 0001H 015DH 0003H 002CH
+00:004A 80-A0 91-F2               535           sb      0f291h.0
+                                  536   CBLOCKEND 2 3 350
+                                  537   
+                                  538   ;;      } //EndIf
+                                  539   CLINEA 0000H 0000H 015EH 0002H 000AH
+00:004E                           540   _$L22 :
+                                  541   CBLOCKEND 2 2 351
+                                  542   
+                                  543   ;;}
+                                  544   CLINEA 0000H 0001H 015FH 0001H 0001H
+00:004E 1E-F8                     545           pop     er8
+00:0050 EA-A1                     546           mov     sp,     fp
+00:0052 1E-FE                     547           pop     fp
+00:0054 1F-FE                     548           rt
+                                  549   CBLOCKEND 2 1 351
+                                  550   CFUNCTIONEND 2
+                                  551   
+                                  552   
+  --------------------------      553           rseg $$uart_startReceive$uart
+                                  554   CFUNCTION 3
+                                  555   
+00:0000                           556   _uart_startReceive      :
+                                  557   CBLOCK 3 1 363
+                                  558   
+                                  559   ;;{
+                                  560   CLINEA 0000H 0001H 016BH 0001H 0001H
+                                  561   ;;*************************************
+                                        ****
+                                  562   ;;      register/stack information
+                                  563   ;;*************************************
+                                        ****
+    = 00000002H                   564           _func$4 set     2
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  14 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  565   ;;*************************************
+                                        ****
+                                  566   
+00:0000 5E-FE                     567           push    fp
+00:0002 1A-AE                     568           mov     fp,     sp
+                                  569   CBLOCK 3 2 363
+                                  570   CARGUMENT 46H 0002H 0024H "data" 04H 03
+                                        H 00H 00H 00H
+                                  571   CARGUMENT 46H 0002H 0025H "size" 02H 00
+                                        H 01H
+                                  572   CARGUMENT 43H 0002H 0002H "func" 0AH 03
+                                        H 00H 02H 00H 00H 00H 00H 00H 00H 07H
+                                  573   
+                                  574   ;;              U0EN = 0;       // 0 = 
+                                        STOP communication...
+                                  575   CLINEA 0000H 0001H 0170H 0003H 0028H
+00:0004 82-A0 91-F2               576           rb      0f291h.0
+                                  577   
+                                  578   ;;              U0FER = 0;      // Clea
+                                        r Framing Error Flag to start...
+                                  579   CLINEA 0000H 0001H 0172H 0003H 0034H
+00:0008 82-A0 96-F2               580           rb      0f296h.0
+                                  581   
+                                  582   ;;              U0OER = 0;      // Clea
+                                        r Overrun Error Flag to start...
+                                  583   CLINEA 0000H 0001H 0173H 0003H 0034H
+00:000C 92-A0 96-F2               584           rb      0f296h.1
+                                  585   
+                                  586   ;;              U0PER = 0;      // Clea
+                                        r Parity Error Flag to start...
+                                  587   CLINEA 0000H 0001H 0174H 0003H 0033H
+00:0010 A2-A0 96-F2               588           rb      0f296h.2
+                                  589   
+                                  590   ;;              U0IO = 1;       // 1 = 
+                                        Receive mode
+                                  591   CLINEA 0000H 0001H 0175H 0003H 001FH
+00:0014 80-A0 92-F2               592           sb      0f292h.0
+                                  593   
+                                  594   ;;              _gsCtrlParam.data      
+                                                 = data; // pointer to area whe
+                                        re the send/receive data is stored
+                                  595   CLINEA 0000H 0001H 0178H 0003H 0055H
+00:0018 13-90 00-00'              596           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  597   
+                                  598   ;;              _gsCtrlParam.size      
+                                                 = size; // size of send/receiv
+                                        e data
+                                  599   CLINEA 0000H 0001H 0179H 0003H 0039H
+00:001C 13-92 00-00'              600           st      er2,    NEAR __gsCtrlPa
+                                        ram+02h
+                                  601   
+                                  602   ;;              _gsCtrlParam.cnt       
+                                                 = 0;            // size of dat
+                                        a which is sent/received
+                                  603   CLINEA 0000H 0001H 017AH 0003H 0040H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  15 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0020 00 E0                     604           mov     er0,    #0 
+00:0022 13-90 00-00'              605           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  606   
+                                  607   ;;              _gsCtrlParam.callBack  
+                                         = func; // callback function
+                                  608   CLINEA 0000H 0001H 017BH 0003H 0034H
+00:0026 42 B0                     609           l       er0,    _func$4[fp]
+00:0028 13-90 00-00'              610           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  611   
+                                  612   ;;              _gsCtrlParam.errStat   
+                                         = 0;            // error status
+                                  613   CLINEA 0000H 0001H 017CH 0003H 002CH
+00:002C 00 00                     614           mov     r0,     #00h
+00:002E 11-90 00-00'              615           st      r0,     NEAR __gsCtrlPa
+                                        ram+08h
+                                  616   
+                                  617   ;;      if( _gsCtrlParam.size > 0 ){
+                                  618   CLINEA 0000H 0001H 017EH 0002H 001DH
+00:0032 00 72                     619           cmp     r2,     #00h
+00:0034 00 53                     620           cmpc    r3,     #00h
+00:0036 02 C3                     621           ble     _$L25
+                                  622   CBLOCK 3 3 382
+                                  623   
+                                  624   ;;              U0EN = 1;       // 1 = 
+                                        Starts communication...
+                                  625   CLINEA 0000H 0001H 0180H 0003H 002AH
+00:0038 80-A0 91-F2               626           sb      0f291h.0
+                                  627   CBLOCKEND 3 3 385
+                                  628   
+                                  629   ;;      }
+                                  630   CLINEA 0000H 0000H 0181H 0002H 0002H
+00:003C                           631   _$L25 :
+                                  632   CBLOCKEND 3 2 386
+                                  633   
+                                  634   ;;}
+                                  635   CLINEA 0000H 0001H 0182H 0001H 0001H
+00:003C EA-A1                     636           mov     sp,     fp
+00:003E 1E-FE                     637           pop     fp
+00:0040 1F-FE                     638           rt
+                                  639   CBLOCKEND 3 1 386
+                                  640   CFUNCTIONEND 3
+                                  641   
+                                  642   
+  --------------------------      643           rseg $$uart_continue$uart
+                                  644   CFUNCTION 4
+                                  645   
+00:0000                           646   _uart_continue  :
+                                  647   CBLOCK 4 1 400
+                                  648   
+                                  649   ;;{
+                                  650   CLINEA 0000H 0001H 0190H 0001H 0001H
+                                  651   ;;*************************************
+                                        ****
+                                  652   ;;      register/stack information
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  16 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  653   ;;*************************************
+                                        ****
+    = FFFFFFFFH                   654           _u0io$0 set     -1
+    = FFFFFFFEH                   655           _u0ful$2        set     -2
+    = FFFFFFFDH                   656           _u0en$4 set     -3
+    = FFFFFFFAH                   657           _cbfTmpTX$10    set     -6
+    = FFFFFFF9H                   658           _errStat$6      set     -7
+    = FFFFFFF6H                   659           _cbfTmpRX$8     set     -10
+                                  660   ;;*************************************
+                                        ****
+                                  661   
+00:0000 CE-F8                     662           push    lr
+00:0002 5E-FE                     663           push    fp
+00:0004 1A-AE                     664           mov     fp,     sp
+00:0006 F6 E1                     665           add     sp,     #-010
+00:0008 5E-FC                     666           push    bp
+                                  667   CBLOCK 4 2 400
+                                  668   CRET 000EH
+                                  669   CLOCAL 42H 0001H 0001H 0002H "u0io" 02H
+                                         00H 00H
+                                  670   CLOCAL 42H 0001H 0002H 0002H "u0ful" 02
+                                        H 00H 00H
+                                  671   CLOCAL 42H 0001H 0003H 0002H "u0en" 02H
+                                         00H 00H
+                                  672   CLOCAL 42H 0001H 0007H 0002H "errStat" 
+                                        02H 00H 00H
+                                  673   CLOCAL 43H 0002H 000AH 0002H "cbfTmpRX"
+                                         0AH 03H 00H 02H 00H 00H 00H 00H 00H 00
+                                        H 07H
+                                  674   CLOCAL 43H 0002H 0006H 0002H "cbfTmpTX"
+                                         0AH 03H 00H 02H 00H 00H 00H 00H 00H 00
+                                        H 07H
+                                  675   
+                                  676   ;;      u0io = (unsigned char)( UA0MOD0
+                                         & (unsigned char)UA0MOD0_U0IO );      
+                                          // Load the variable with the SFR val
+                                        ue
+                                  677   CLINEA 0000H 0001H 0198H 0002H 0069H
+00:000A 10-90 92-F2               678           l       r0,     0f292h
+00:000E 01 20                     679           and     r0,     #01h
+00:0010 FF D0                     680           st      r0,     _u0io$0[fp]
+                                  681   
+                                  682   ;;      if( u0io == 0 ){               
+                                                                               
+                                          // IS UART in TX MODE? (0=TX; 1=RX mo
+                                        de)
+                                  683   CLINEA 0000H 0001H 019BH 0002H 0040H
+00:0012 00 70                     684           cmp     r0,     #00h
+00:0014 39 C8                     685           bne     _$L28
+                                  686   CBLOCK 4 3 411
+                                  687   
+                                  688   ;;              if( _gsCtrlParam.size !
+                                        = _gsCtrlParam.cnt ){    // IF not all 
+                                        data has been sent...
+                                  689   CLINEA 0000H 0001H 019EH 0003H 0052H
+00:0016 12-90 00-00'              690           l       er0,    NEAR __gsCtrlPa
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  17 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ram+02h
+00:001A 12-92 00-00'              691           l       er2,    NEAR __gsCtrlPa
+                                        ram+04h
+00:001E 27-F0                     692           cmp     er0,    er2
+00:0020 1C C9                     693           beq     _$L30
+                                  694   CBLOCK 4 4 414
+                                  695   
+                                  696   ;;                      u0ful = (unsign
+                                        ed char)( UA0STAT & (unsigned char)UA0S
+                                        TAT_U0FUL ); //Load variable with SFR f
+                                        or UART Buffer
+                                  697   CLINEA 0000H 0001H 01A0H 0004H 006EH
+00:0022 10-90 96-F2               698           l       r0,     0f296h
+00:0026 08 20                     699           and     r0,     #08h
+00:0028 FE D0                     700           st      r0,     _u0ful$2[fp]
+                                  701   
+                                  702   ;;                      if( u0ful == 0 
+                                        ){                               // IF 
+                                        there is no data in the transmit/receiv
+                                        e buffer...
+                                  703   CLINEA 0000H 0001H 01A3H 0004H 0051H
+00:002A 00 70                     704           cmp     r0,     #00h
+00:002C 14 C8                     705           bne     _$L32
+                                  706   CBLOCK 4 5 419
+                                  707   
+                                  708   ;;                              UA0BUF 
+                                        = *_gsCtrlParam.data;              // L
+                                        oad buffer with next data byte
+                                  709   CLINEA 0000H 0001H 01A4H 0005H 0046H
+00:002E 12-9C 00-00'              710           l       bp,     NEAR __gsCtrlPa
+                                        ram
+00:0032 C0-90                     711           l       r0,     [bp]
+00:0034 11-90 90-F2               712           st      r0,     0f290h
+                                  713   
+                                  714   ;;                              _gsCtrl
+                                        Param.data++;                      // I
+                                        ncrement pointer to area where the send
+                                        /receive data is stored 
+                                  715   CLINEA 0000H 0000H 01A5H 0005H 0060H
+00:0038 C5-F0                     716           mov     er0,    bp
+00:003A 81 E0                     717           add     er0,    #1 
+00:003C 13-90 00-00'              718           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  719   
+                                  720   ;;                              _gsCtrl
+                                        Param.cnt++;                       // I
+                                        ncrement count for size of data which i
+                                        s sent/received 
+                                  721   CLINEA 0000H 0000H 01A6H 0005H 0057H
+00:0040 25-F0                     722           mov     er0,    er2
+00:0042 81 E0                     723           add     er0,    #1 
+00:0044 13-90 00-00'              724           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  725   
+                                  726   ;;                              U0EN = 
+                                        1;                                     
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  18 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                            // 1 = Starts communication...DATA 
+                                        IS SENT HERE!
+                                  727   CLINEA 0000H 0001H 01A7H 0005H 0044H
+00:0048 80-A0 91-F2               728           sb      0f291h.0
+                                  729   
+                                  730   ;;                              return 
+                                        ( UART_R_TRANS_CONT_OK );          // S
+                                        END is CONTINUED (SUCCESS)
+                                  731   CLINEA 0000H 0001H 01A8H 0005H 0045H
+00:004C 00 E0                     732           mov     er0,    #0 
+                                  733   CBLOCKEND 4 5 425
+                                  734   CBLOCKEND 4 2 483
+                                  735   
+                                  736   ;;}
+                                  737   CLINEA 0000H 0001H 01E3H 0001H 0001H
+00:004E                           738   _$L27 :
+00:004E 1E-FC                     739           pop     bp
+00:0050 EA-A1                     740           mov     sp,     fp
+00:0052 1E-FE                     741           pop     fp
+00:0054 8E-F2                     742           pop     pc
+                                  743   CBLOCKEND 4 3 483
+                                  744   CBLOCKEND 4 4 483
+                                  745   
+                                  746   ;;                      else{          
+                                                                               
+                                          // ELSE IF there still is data in the
+                                         transmit/receive buffer...
+                                  747   CLINEA 0000H 0000H 01AAH 0004H 004FH
+00:0056                           748   _$L32 :
+                                  749   CBLOCK 4 6 426
+                                  750   
+                                  751   ;;                              return 
+                                        ( UART_R_TRANS_CONT_NG );          // S
+                                        END is CONTINUED (FAILURE)
+                                  752   CLINEA 0000H 0001H 01ABH 0005H 0045H
+00:0056 7F E0                     753           mov     er0,    #-1
+00:0058 FA CE                     754           bal     _$L27
+                                  755   CBLOCKEND 4 6 428
+                                  756   
+                                  757   ;;              else{                  
+                                                 //If all data has been sent...
+                                  758   CLINEA 0000H 0000H 01AEH 0003H 0029H
+00:005A                           759   _$L30 :
+                                  760   CBLOCK 4 7 430
+                                  761   
+                                  762   ;;                      u0en = (unsigne
+                                        d char)( UA0CON & (unsigned char)UA0CON
+                                        _U0EN );  //Load the variable with the 
+                                        SFR value
+                                  763   CLINEA 0000H 0001H 01B0H 0004H 0068H
+00:005A 10-90 91-F2               764           l       r0,     0f291h
+00:005E 01 20                     765           and     r0,     #01h
+00:0060 FD D0                     766           st      r0,     _u0en$4[fp]
+                                  767   
+                                  768   ;;                      if( u0en == 0 )
+                                        {                                //In t
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  19 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ransmit mode, this bit is automatically
+                                         set to 0 at termination of transmissio
+                                        n
+                                  769   CLINEA 0000H 0001H 01B1H 0004H 006CH
+00:0062 00 70                     770           cmp     r0,     #00h
+00:0064 0F C8                     771           bne     _$L36
+                                  772   CBLOCK 4 8 433
+                                  773   
+                                  774   ;;                              if( _gs
+                                        CtrlParam.callBack != (void *)0 ){
+                                  775   CLINEA 0000H 0001H 01B4H 0005H 002DH
+00:0066 12-90 00-00'              776           l       er0,    NEAR __gsCtrlPa
+                                        ram+06h
+00:006A 0A C9                     777           beq     _$L38
+                                  778   CBLOCK 4 9 436
+                                  779   
+                                  780   ;;                                     
+                                         cbfTmpTX = _gsCtrlParam.callBack;     
+                                                                  //NEW 5/15/20
+                                        13 - K. Bahar 
+                                  781   CLINEA 0000H 0001H 01B6H 0006H 0045H
+00:006C FA B0                     782           st      er0,    _cbfTmpTX$10[fp
+                                        ]
+                                  783   
+                                  784   ;;                                     
+                                         _gsCtrlParam.callBack = (void *)0;    
+                                                                  //NEW 5/15/20
+                                        13 - K. Bahar 
+                                  785   CLINEA 0000H 0001H 01B7H 0006H 0046H
+00:006E 00 E0                     786           mov     er0,    #0 
+00:0070 13-90 00-00'              787           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  788   
+                                  789   ;;                                     
+                                         cbfTmpTX( _gsCtrlParam.size, _gsCtrlPa
+                                        ram.errStat );    //NEW 5/15/2013 - K. 
+                                        Bahar 
+                                  790   CLINEA 0000H 0001H 01B8H 0006H 0055H
+00:0074 10-92 00-00'              791           l       r2,     NEAR __gsCtrlPa
+                                        ram+08h
+00:0078 12-90 00-00'              792           l       er0,    NEAR __gsCtrlPa
+                                        ram+02h
+00:007C 7A BC                     793           l       bp,     _cbfTmpTX$10[fp
+                                        ]
+00:007E C3-F0                     794           bl      bp
+                                  795   CBLOCKEND 4 9 442
+                                  796   
+                                  797   ;;                              }//EndI
+                                        f
+                                  798   CLINEA 0000H 0000H 01BAH 0005H 000CH
+00:0080                           799   _$L38 :
+                                  800   
+                                  801   ;;                              return 
+                                        ( UART_R_TRANS_FIN );            //SEND
+                                         is FINISHED (SUCCESS)
+                                  802   CLINEA 0000H 0001H 01BBH 0005H 003EH
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  20 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0080 01 E0                     803           mov     er0,    #1 
+00:0082 E5 CE                     804           bal     _$L27
+                                  805   CBLOCKEND 4 8 444
+                                  806   
+                                  807   ;;                      }//EndIf
+                                  808   CLINEA 0000H 0000H 01BCH 0004H 000BH
+00:0084                           809   _$L36 :
+                                  810   
+                                  811   ;;                      return ( UART_R
+                                        _TRANS_FIN_NG );         //SEND is FINI
+                                        SHED (FAILURE)
+                                  812   CLINEA 0000H 0001H 01BDH 0004H 0040H
+00:0084 7E E0                     813           mov     er0,    #-2
+00:0086 E3 CE                     814           bal     _$L27
+                                  815   CBLOCKEND 4 7 446
+                                  816   
+                                  817   ;;      else{                          
+                                                                               
+                                          // IS UART in RX MODE? (0=TX; 1=RX mo
+                                        de)
+                                  818   CLINEA 0000H 0000H 01C4H 0002H 0037H
+00:0088                           819   _$L28 :
+                                  820   CBLOCK 4 10 452
+                                  821   
+                                  822   ;;              if( _gsCtrlParam.size !
+                                        = _gsCtrlParam.cnt ){    // If not all 
+                                        data has been sent...
+                                  823   CLINEA 0000H 0001H 01C6H 0003H 0052H
+00:0088 12-90 00-00'              824           l       er0,    NEAR __gsCtrlPa
+                                        ram+02h
+00:008C 12-92 00-00'              825           l       er2,    NEAR __gsCtrlPa
+                                        ram+04h
+00:0090 27-F0                     826           cmp     er0,    er2
+00:0092 2E C9                     827           beq     _$L47
+                                  828   CBLOCK 4 11 454
+                                  829   
+                                  830   ;;                      errStat = (unsi
+                                        gned char)( UA0STAT & (unsigned char)(U
+                                        A0STAT_U0FER|UA0STAT_U0OER|UA0STAT_U0PE
+                                        R) ); //Load variable with SFR for UART
+                                         Error Flags
+                                  831   CLINEA 0000H 0001H 01C7H 0004H 0093H
+00:0094 10-90 96-F2               832           l       r0,     0f296h
+00:0098 07 20                     833           and     r0,     #07h
+00:009A F9 D0                     834           st      r0,     _errStat$6[fp]
+                                  835   
+                                  836   ;;                      _gsCtrlParam.er
+                                        rStat |= errStat;
+                                  837   CLINEA 0000H 0001H 01C8H 0004H 0023H
+00:009C 10-90 00-00'              838           l       r0,     NEAR __gsCtrlPa
+                                        ram+08h
+00:00A0 79 D1                     839           l       r1,     _errStat$6[fp]
+00:00A2 13-80                     840           or      r0,     r1
+00:00A4 11-90 00-00'              841           st      r0,     NEAR __gsCtrlPa
+                                        ram+08h
+                                  842   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  21 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  843   ;;                              U0FER =
+                                         0;      // Clear Framing Error Flag...
+                                  844   CLINEA 0000H 0001H 01C9H 0005H 002DH
+00:00A8 82-A0 96-F2               845           rb      0f296h.0
+                                  846   
+                                  847   ;;                              U0OER =
+                                         0;      // Clear Overrun Error Flag...
+                                  848   CLINEA 0000H 0001H 01CAH 0005H 002DH
+00:00AC 92-A0 96-F2               849           rb      0f296h.1
+                                  850   
+                                  851   ;;                              U0PER =
+                                         0;      // Clear Parity Error Flag...
+                                  852   CLINEA 0000H 0001H 01CBH 0005H 002CH
+00:00B0 A2-A0 96-F2               853           rb      0f296h.2
+                                  854   
+                                  855   ;;                      *_gsCtrlParam.d
+                                        ata = UA0BUF;    // Point to Buffer Dat
+                                        a
+                                  856   CLINEA 0000H 0001H 01CDH 0004H 0037H
+00:00B4 12-9C 00-00'              857           l       bp,     NEAR __gsCtrlPa
+                                        ram
+00:00B8 10-90 90-F2               858           l       r0,     0f290h
+00:00BC C1-90                     859           st      r0,     [bp]
+                                  860   
+                                  861   ;;                              _gsCtrl
+                                        Param.data++;    // Increment pointer t
+                                        o area where the send/receive data is s
+                                        tored 
+                                  862   CLINEA 0000H 0000H 01CEH 0005H 005CH
+00:00BE 12-90 00-00'              863           l       er0,    NEAR __gsCtrlPa
+                                        ram
+00:00C2 81 E0                     864           add     er0,    #1 
+00:00C4 13-90 00-00'              865           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  866   
+                                  867   ;;                              _gsCtrl
+                                        Param.cnt++;     // Increment count for
+                                         size of data which is sent/received
+                                  868   CLINEA 0000H 0000H 01CFH 0005H 0052H
+00:00C8 12-90 00-00'              869           l       er0,    NEAR __gsCtrlPa
+                                        ram+04h
+00:00CC 81 E0                     870           add     er0,    #1 
+00:00CE 13-90 00-00'              871           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  872   
+                                  873   ;;                      if( ( errStat &
+                                         ( unsigned char )( UA0STAT_U0FER ) ) =
+                                        = 0 ) { //If NO Framing Error...
+                                  874   CLINEA 0000H 0001H 01D1H 0004H 0059H
+00:00D2 79 D0                     875           l       r0,     _errStat$6[fp]
+00:00D4 01-A0                     876           tb      r0.0
+00:00D6 09 C8                     877           bne     _$L43
+                                  878   CBLOCK 4 12 465
+                                  879   
+                                  880   ;;                              if( _gs
+                                        CtrlParam.size != _gsCtrlParam.cnt ){  
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  22 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                          // If not all data has been received.
+                                        ..
+                                  881   CLINEA 0000H 0001H 01D3H 0005H 0058H
+00:00D8 12-90 00-00'              882           l       er0,    NEAR __gsCtrlPa
+                                        ram+02h
+00:00DC 12-92 00-00'              883           l       er2,    NEAR __gsCtrlPa
+                                        ram+04h
+00:00E0 27-F0                     884           cmp     er0,    er2
+00:00E2 06 C9                     885           beq     _$L47
+                                  886   CBLOCK 4 13 467
+                                  887   
+                                  888   ;;                                     
+                                         return ( UART_R_TRANS_CONT_OK );      
+                                                  // RECEIVE is CONTINUED (SUCC
+                                        ESS)
+                                  889   CLINEA 0000H 0001H 01D4H 0006H 0048H
+00:00E4 00 E0                     890           mov     er0,    #0 
+00:00E6 00-F0'00-00'              891           b       _$L27
+                                  892   CBLOCKEND 4 13 469
+                                  893   
+                                  894   ;;                              }
+                                  895   CLINEA 0000H 0000H 01D5H 0005H 0005H
+                                  896   CBLOCKEND 4 12 470
+                                  897   
+                                  898   ;;                      } else {       
+                                                                               
+                                                          // If there is a Fram
+                                        ing Error...
+                                  899   CLINEA 0000H 0000H 01D6H 0004H 0034H
+00:00EA                           900   _$L43 :
+                                  901   CBLOCK 4 14 470
+                                  902   
+                                  903   ;;                              uart_Er
+                                        rSet( UA0STAT_U0FER );
+                                  904   CLINEA 0000H 0001H 01D8H 0005H 0021H
+00:00EA 01 00                     905           mov     r0,     #01h
+00:00EC 01-F0'00-00'              906           bl      _uart_ErrSet
+                                  907   CBLOCKEND 4 14 473
+                                  908   
+                                  909   ;;                      }
+                                  910   CLINEA 0000H 0000H 01D9H 0004H 0004H
+00:00F0                           911   _$L47 :
+                                  912   CBLOCKEND 4 11 474
+                                  913   
+                                  914   ;;              if( _gsCtrlParam.callBa
+                                        ck != (void *)0 ){                     
+                                                  
+                                  915   CLINEA 0000H 0001H 01DCH 0003H 002FH
+00:00F0 12-90 00-00'              916           l       er0,    NEAR __gsCtrlPa
+                                        ram+06h
+00:00F4 0A C9                     917           beq     _$L48
+                                  918   CBLOCK 4 15 476
+                                  919   
+                                  920   ;;                      cbfTmpRX = _gsC
+                                        trlParam.callBack;                     
+                                                  //Modified 5/15/2013 - K. Bah
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  23 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ar 
+                                  921   CLINEA 0000H 0001H 01DDH 0004H 0048H
+00:00F6 F6 B0                     922           st      er0,    _cbfTmpRX$8[fp]
+                                  923   
+                                  924   ;;                      _gsCtrlParam.ca
+                                        llBack = (void *)0;
+                                  925   CLINEA 0000H 0001H 01DEH 0004H 0025H
+00:00F8 00 E0                     926           mov     er0,    #0 
+00:00FA 13-90 00-00'              927           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  928   
+                                  929   ;;                      cbfTmpRX( _gsCt
+                                        rlParam.size, _gsCtrlParam.errStat );  
+                                          //Modified 5/15/2013 - K. Bahar 
+                                  930   CLINEA 0000H 0001H 01DFH 0004H 0058H
+00:00FE 10-92 00-00'              931           l       r2,     NEAR __gsCtrlPa
+                                        ram+08h
+00:0102 12-90 00-00'              932           l       er0,    NEAR __gsCtrlPa
+                                        ram+02h
+00:0106 76 BC                     933           l       bp,     _cbfTmpRX$8[fp]
+00:0108 C3-F0                     934           bl      bp
+                                  935   CBLOCKEND 4 15 480
+                                  936   
+                                  937   ;;              }
+                                  938   CLINEA 0000H 0000H 01E0H 0003H 0003H
+00:010A                           939   _$L48 :
+                                  940   
+                                  941   ;;              return ( UART_R_TRANS_F
+                                        IN );                                  
+                                          //RECEIVE is FINISHED (SUCCESS)
+                                  942   CLINEA 0000H 0001H 01E1H 0003H 0042H
+00:010A 01 E0                     943           mov     er0,    #1 
+00:010C 00-F0'00-00'              944           b       _$L27
+                                  945   CBLOCKEND 4 10 482
+                                  946   CBLOCKEND 4 1 483
+                                  947   CFUNCTIONEND 4
+                                  948   
+                                  949   
+  --------------------------      950           rseg $$uart_stop$uart
+                                  951   CFUNCTION 5
+                                  952   
+00:0000                           953   _uart_stop      :
+                                  954   CBLOCK 5 1 493
+                                  955   
+                                  956   ;;{
+                                  957   CLINEA 0000H 0001H 01EDH 0001H 0001H
+                                  958   ;;*************************************
+                                        ****
+                                  959   ;;      register/stack information
+                                  960   ;;*************************************
+                                        ****
+                                  961   ;;*************************************
+                                        ****
+                                  962   
+                                  963   CBLOCK 5 2 493
+                                  964   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  24 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  965   ;;      U0EN = 0;
+                                  966   CLINEA 0000H 0001H 01EEH 0002H 000AH
+00:0000 82-A0 91-F2               967           rb      0f291h.0
+                                  968   
+                                  969   ;;      _gsCtrlParam.data              
+                                         = (void *)0;
+                                  970   CLINEA 0000H 0001H 01EFH 0002H 0020H
+00:0004 00 E0                     971           mov     er0,    #0 
+00:0006 13-90 00-00'              972           st      er0,    NEAR __gsCtrlPa
+                                        ram
+                                  973   
+                                  974   ;;      _gsCtrlParam.size              
+                                         = 0;
+                                  975   CLINEA 0000H 0001H 01F0H 0002H 0018H
+00:000A 13-90 00-00'              976           st      er0,    NEAR __gsCtrlPa
+                                        ram+02h
+                                  977   
+                                  978   ;;      _gsCtrlParam.cnt               
+                                         = 0;
+                                  979   CLINEA 0000H 0001H 01F1H 0002H 0017H
+00:000E 13-90 00-00'              980           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                  981   
+                                  982   ;;      _gsCtrlParam.callBack   = (void
+                                         *)0;
+                                  983   CLINEA 0000H 0001H 01F2H 0002H 0023H
+00:0012 13-90 00-00'              984           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                  985   
+                                  986   ;;      _gsCtrlParam.errStat    = 0;
+                                  987   CLINEA 0000H 0001H 01F3H 0002H 001AH
+00:0016 11-90 00-00'              988           st      r0,     NEAR __gsCtrlPa
+                                        ram+08h
+                                  989   CBLOCKEND 5 2 500
+                                  990   
+                                  991   ;;}
+                                  992   CLINEA 0000H 0001H 01F4H 0001H 0001H
+00:001A 1F-FE                     993           rt
+                                  994   CBLOCKEND 5 1 500
+                                  995   CFUNCTIONEND 5
+                                  996   
+                                  997   
+  --------------------------      998           rseg $$uart_checkIRQ$uart
+                                  999   CFUNCTION 6
+                                 1000   
+00:0000                          1001   _uart_checkIRQ  :
+                                 1002   CBLOCK 6 1 512
+                                 1003   
+                                 1004   ;;{
+                                 1005   CLINEA 0000H 0001H 0200H 0001H 0001H
+                                 1006   ;;*************************************
+                                        ****
+                                 1007   ;;      register/stack information
+                                 1008   ;;*************************************
+                                        ****
+    = FFFFFFFFH                  1009           _qua0$0 set     -1
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  25 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+    = FFFFFFFCH                  1010           _ret$2  set     -4
+                                 1011   ;;*************************************
+                                        ****
+                                 1012   
+00:0000 5E-FE                    1013           push    fp
+00:0002 1A-AE                    1014           mov     fp,     sp
+00:0004 FC E1                    1015           add     sp,     #-04
+                                 1016   CBLOCK 6 2 512
+                                 1017   CLOCAL 42H 0001H 0001H 0002H "qua0" 02H
+                                         00H 00H
+                                 1018   CLOCAL 43H 0002H 0004H 0002H "ret" 02H 
+                                        00H 01H
+                                 1019   
+                                 1020   ;;      qua0 = (unsigned char)( IRQ4 & 
+                                        (unsigned char)IRQ4_QUA0 );
+                                 1021   CLINEA 0000H 0001H 0204H 0002H 003BH
+00:0006 10-90 1C-F0              1022           l       r0,     0f01ch
+00:000A 01 20                    1023           and     r0,     #01h
+00:000C FF D0                    1024           st      r0,     _qua0$0[fp]
+                                 1025   
+                                 1026   ;;      if( qua0 == 1 ){
+                                 1027   CLINEA 0000H 0001H 0205H 0002H 0011H
+00:000E 01 70                    1028           cmp     r0,     #01h
+00:0010 02 C8                    1029           bne     _$L52
+                                 1030   CBLOCK 6 3 517
+                                 1031   
+                                 1032   ;;              ret = ( UART_R_IRQ );
+                                 1033   CLINEA 0000H 0001H 0206H 0003H 0017H
+00:0012 01 E0                    1034           mov     er0,    #1 
+                                 1035   CBLOCKEND 6 3 519
+                                 1036   
+                                 1037   ;;      else{
+                                 1038   CLINEA 0000H 0001H 0208H 0002H 0006H
+00:0014 01 CE                    1039           bal     _$L54
+00:0016                          1040   _$L52 :
+                                 1041   CBLOCK 6 4 520
+                                 1042   
+                                 1043   ;;              ret = ( UART_R_NON_IRQ 
+                                        );
+                                 1044   CLINEA 0000H 0001H 0209H 0003H 001BH
+00:0016 00 E0                    1045           mov     er0,    #0 
+                                 1046   CBLOCKEND 6 4 522
+                                 1047   
+                                 1048   ;;      }
+                                 1049   CLINEA 0000H 0000H 020AH 0002H 0002H
+00:0018                          1050   _$L54 :
+00:0018 FC B0                    1051           st      er0,    _ret$2[fp]
+                                 1052   
+                                 1053   ;;      return ret;
+                                 1054   CLINEA 0000H 0001H 020CH 0002H 000CH
+                                 1055   CBLOCKEND 6 2 525
+                                 1056   
+                                 1057   ;;}
+                                 1058   CLINEA 0000H 0000H 020DH 0001H 0001H
+00:001A EA-A1                    1059           mov     sp,     fp
+00:001C 1E-FE                    1060           pop     fp
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  26 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:001E 1F-FE                    1061           rt
+                                 1062   CBLOCKEND 6 1 525
+                                 1063   CFUNCTIONEND 6
+                                 1064   
+                                 1065   
+  --------------------------     1066           rseg $$uart_clearIRQ$uart
+                                 1067   CFUNCTION 7
+                                 1068   
+00:0000                          1069   _uart_clearIRQ  :
+                                 1070   CBLOCK 7 1 535
+                                 1071   
+                                 1072   ;;{
+                                 1073   CLINEA 0000H 0001H 0217H 0001H 0001H
+                                 1074   ;;*************************************
+                                        ****
+                                 1075   ;;      register/stack information
+                                 1076   ;;*************************************
+                                        ****
+                                 1077   ;;*************************************
+                                        ****
+                                 1078   
+                                 1079   CBLOCK 7 2 535
+                                 1080   
+                                 1081   ;;      QUA0 = 0;
+                                 1082   CLINEA 0000H 0001H 0218H 0002H 000AH
+00:0000 82-A0 1C-F0              1083           rb      0f01ch.0
+                                 1084   CBLOCKEND 7 2 537
+                                 1085   
+                                 1086   ;;}
+                                 1087   CLINEA 0000H 0001H 0219H 0001H 0001H
+00:0004 1F-FE                    1088           rt
+                                 1089   CBLOCKEND 7 1 537
+                                 1090   CFUNCTIONEND 7
+                                 1091   
+                                 1092   
+  --------------------------     1093           rseg $$uart_getTransSize$uart
+                                 1094   CFUNCTION 8
+                                 1095   
+00:0000                          1096   _uart_getTransSize      :
+                                 1097   CBLOCK 8 1 548
+                                 1098   
+                                 1099   ;;{
+                                 1100   CLINEA 0000H 0001H 0224H 0001H 0001H
+                                 1101   ;;*************************************
+                                        ****
+                                 1102   ;;      register/stack information
+                                 1103   ;;*************************************
+                                        ****
+                                 1104   ;;*************************************
+                                        ****
+                                 1105   
+                                 1106   CBLOCK 8 2 548
+                                 1107   
+                                 1108   ;;      return _gsCtrlParam.cnt;
+                                 1109   CLINEA 0000H 0001H 0225H 0002H 0019H
+00:0000 12-90 00-00'             1110           l       er0,    NEAR __gsCtrlPa
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  27 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ram+04h
+                                 1111   CBLOCKEND 8 2 550
+                                 1112   
+                                 1113   ;;}
+                                 1114   CLINEA 0000H 0000H 0226H 0001H 0001H
+00:0004 1F-FE                    1115           rt
+                                 1116   CBLOCKEND 8 1 550
+                                 1117   CFUNCTIONEND 8
+                                 1118   
+                                 1119   
+  --------------------------     1120           rseg $$uart_ErrSet$uart
+                                 1121   CFUNCTION 9
+                                 1122   
+00:0000                          1123   _uart_ErrSet    :
+                                 1124   CBLOCK 9 1 561
+                                 1125   
+                                 1126   ;;{
+                                 1127   CLINEA 0000H 0001H 0231H 0001H 0001H
+                                 1128   ;;*************************************
+                                        ****
+                                 1129   ;;      register/stack information
+                                 1130   ;;*************************************
+                                        ****
+                                 1131   ;;*************************************
+                                        ****
+                                 1132   
+00:0000 00-82                    1133           mov     r2,     r0
+                                 1134   CBLOCK 9 2 561
+                                 1135   CARGUMENT 46H 0001H 0016H "status" 02H 
+                                        00H 00H
+                                 1136   
+                                 1137   ;;      _Err_Status |= status;
+                                 1138   CLINEA 0000H 0001H 0232H 0002H 0017H
+00:0002 10-90 00-00'             1139           l       r0,     NEAR __Err_Stat
+                                        us
+00:0006 23-80                    1140           or      r0,     r2
+00:0008 11-90 00-00'             1141           st      r0,     NEAR __Err_Stat
+                                        us
+                                 1142   CBLOCKEND 9 2 563
+                                 1143   
+                                 1144   ;;}
+                                 1145   CLINEA 0000H 0001H 0233H 0001H 0001H
+00:000C 1F-FE                    1146           rt
+                                 1147   CBLOCKEND 9 1 563
+                                 1148   CFUNCTIONEND 9
+                                 1149   
+                                 1150   
+  --------------------------     1151           rseg $$uart_ErrGet$uart
+                                 1152   CFUNCTION 10
+                                 1153   
+00:0000                          1154   _uart_ErrGet    :
+                                 1155   CBLOCK 10 1 573
+                                 1156   
+                                 1157   ;;{
+                                 1158   CLINEA 0000H 0001H 023DH 0001H 0001H
+                                 1159   ;;*************************************
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  28 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ****
+                                 1160   ;;      register/stack information
+                                 1161   ;;*************************************
+                                        ****
+                                 1162   ;;*************************************
+                                        ****
+                                 1163   
+                                 1164   CBLOCK 10 2 573
+                                 1165   
+                                 1166   ;;      return( _Err_Status );
+                                 1167   CLINEA 0000H 0001H 023EH 0002H 0017H
+00:0000 10-90 00-00'             1168           l       r0,     NEAR __Err_Stat
+                                        us
+                                 1169   CBLOCKEND 10 2 575
+                                 1170   
+                                 1171   ;;}
+                                 1172   CLINEA 0000H 0000H 023FH 0001H 0001H
+00:0004 1F-FE                    1173           rt
+                                 1174   CBLOCKEND 10 1 575
+                                 1175   CFUNCTIONEND 10
+                                 1176   
+                                 1177   
+  --------------------------     1178           rseg $$uart_ErrClr$uart
+                                 1179   CFUNCTION 11
+                                 1180   
+00:0000                          1181   _uart_ErrClr    :
+                                 1182   CBLOCK 11 1 585
+                                 1183   
+                                 1184   ;;{
+                                 1185   CLINEA 0000H 0001H 0249H 0001H 0001H
+                                 1186   ;;*************************************
+                                        ****
+                                 1187   ;;      register/stack information
+                                 1188   ;;*************************************
+                                        ****
+                                 1189   ;;*************************************
+                                        ****
+                                 1190   
+                                 1191   CBLOCK 11 2 585
+                                 1192   
+                                 1193   ;;      _Err_Status = 0;
+                                 1194   CLINEA 0000H 0001H 024AH 0002H 0011H
+00:0000 00 00                    1195           mov     r0,     #00h
+00:0002 11-90 00-00'             1196           st      r0,     NEAR __Err_Stat
+                                        us
+                                 1197   CBLOCKEND 11 2 587
+                                 1198   
+                                 1199   ;;}
+                                 1200   CLINEA 0000H 0001H 024BH 0001H 0001H
+00:0006 1F-FE                    1201           rt
+                                 1202   CBLOCKEND 11 1 587
+                                 1203   CFUNCTIONEND 11
+                                 1204   
+                                 1205   
+  --------------------------     1206           rseg $$uart_PortSet$uart
+                                 1207   CFUNCTION 12
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  29 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1208   
+00:0000                          1209   _uart_PortSet   :
+                                 1210   CBLOCK 12 1 597
+                                 1211   
+                                 1212   ;;{
+                                 1213   CLINEA 0000H 0001H 0255H 0001H 0001H
+                                 1214   ;;*************************************
+                                        ****
+                                 1215   ;;      register/stack information
+                                 1216   ;;*************************************
+                                        ****
+                                 1217   ;;*************************************
+                                        ****
+                                 1218   
+                                 1219   CBLOCK 12 2 597
+                                 1220   
+                                 1221   ;;      PB1DIR = 0;             /* Outp
+                                        ut */
+                                 1222   CLINEA 0000H 0001H 0258H 0002H 001AH
+00:0000 92-A0 59-F2              1223           rb      0f259h.1
+                                 1224   
+                                 1225   ;;      PB1C0 = 1;
+                                 1226   CLINEA 0000H 0001H 0259H 0002H 000BH
+00:0004 90-A0 5A-F2              1227           sb      0f25ah.1
+                                 1228   
+                                 1229   ;;      PB1C1 = 1;              /* CMOS
+                                         */
+                                 1230   CLINEA 0000H 0001H 025AH 0002H 0017H
+00:0008 90-A0 5B-F2              1231           sb      0f25bh.1
+                                 1232   
+                                 1233   ;;      PB1MD0 = 0;
+                                 1234   CLINEA 0000H 0001H 025BH 0002H 000CH
+00:000C 92-A0 5C-F2              1235           rb      0f25ch.1
+                                 1236   
+                                 1237   ;;      PB1MD1 = 1;             /* UART
+                                         TXD */
+                                 1238   CLINEA 0000H 0001H 025CH 0002H 001CH
+00:0010 90-A0 5D-F2              1239           sb      0f25dh.1
+                                 1240   
+                                 1241   ;;      PB0DIR = 1;             /* Inpu
+                                        t */
+                                 1242   CLINEA 0000H 0001H 025EH 0002H 0019H
+00:0014 80-A0 59-F2              1243           sb      0f259h.0
+                                 1244   
+                                 1245   ;;      PB0C0 = 1;
+                                 1246   CLINEA 0000H 0001H 025FH 0002H 000BH
+00:0018 80-A0 5A-F2              1247           sb      0f25ah.0
+                                 1248   
+                                 1249   ;;      PB0C1 = 0;              /* Hi I
+                                        mpedance */
+                                 1250   CLINEA 0000H 0001H 0260H 0002H 001FH
+00:001C 82-A0 5B-F2              1251           rb      0f25bh.0
+                                 1252   
+                                 1253   ;;      PB0MD0 = 0;
+                                 1254   CLINEA 0000H 0001H 0261H 0002H 000CH
+00:0020 82-A0 5C-F2              1255           rb      0f25ch.0
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  30 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1256   
+                                 1257   ;;      PB0MD1 = 0;             /* UART
+                                         RXD */
+                                 1258   CLINEA 0000H 0001H 0262H 0002H 001CH
+00:0024 82-A0 5D-F2              1259           rb      0f25dh.0
+                                 1260   CBLOCKEND 12 2 611
+                                 1261   
+                                 1262   ;;}
+                                 1263   CLINEA 0000H 0001H 0263H 0001H 0001H
+00:0028 1F-FE                    1264           rt
+                                 1265   CBLOCKEND 12 1 611
+                                 1266   CFUNCTIONEND 12
+                                 1267   
+                                 1268   
+  --------------------------     1269           rseg $$uart_PortClear$uart
+                                 1270   CFUNCTION 13
+                                 1271   
+00:0000                          1272   _uart_PortClear :
+                                 1273   CBLOCK 13 1 621
+                                 1274   
+                                 1275   ;;{
+                                 1276   CLINEA 0000H 0001H 026DH 0001H 0001H
+                                 1277   ;;*************************************
+                                        ****
+                                 1278   ;;      register/stack information
+                                 1279   ;;*************************************
+                                        ****
+                                 1280   ;;*************************************
+                                        ****
+                                 1281   
+                                 1282   CBLOCK 13 2 621
+                                 1283   
+                                 1284   ;;      PB1DIR = 0;             /* Outp
+                                        ut */
+                                 1285   CLINEA 0000H 0001H 0270H 0002H 001AH
+00:0000 92-A0 59-F2              1286           rb      0f259h.1
+                                 1287   
+                                 1288   ;;      PB1C0 = 0;
+                                 1289   CLINEA 0000H 0001H 0271H 0002H 000BH
+00:0004 92-A0 5A-F2              1290           rb      0f25ah.1
+                                 1291   
+                                 1292   ;;      PB1C1 = 0;              /* Hi I
+                                        mpedance */
+                                 1293   CLINEA 0000H 0001H 0272H 0002H 001FH
+00:0008 92-A0 5B-F2              1294           rb      0f25bh.1
+                                 1295   
+                                 1296   ;;      PB1MD0 = 0;
+                                 1297   CLINEA 0000H 0001H 0273H 0002H 000CH
+00:000C 92-A0 5C-F2              1298           rb      0f25ch.1
+                                 1299   
+                                 1300   ;;      PB1MD1 = 0;           /* Genera
+                                        l-purpose input/output mode */
+                                 1301   CLINEA 0000H 0001H 0274H 0002H 003AH
+00:0010 92-A0 5D-F2              1302           rb      0f25dh.1
+                                 1303   
+                                 1304   ;;      PB0DIR = 0;             /* Outp
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  31 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ut */
+                                 1305   CLINEA 0000H 0001H 0276H 0002H 001AH
+00:0014 82-A0 59-F2              1306           rb      0f259h.0
+                                 1307   
+                                 1308   ;;      PB0C0 = 0;
+                                 1309   CLINEA 0000H 0001H 0277H 0002H 000BH
+00:0018 82-A0 5A-F2              1310           rb      0f25ah.0
+                                 1311   
+                                 1312   ;;      PB0C1 = 0;              /* Hi I
+                                        mpedance */
+                                 1313   CLINEA 0000H 0001H 0278H 0002H 001FH
+00:001C 82-A0 5B-F2              1314           rb      0f25bh.0
+                                 1315   
+                                 1316   ;;      PB0MD0 = 0;
+                                 1317   CLINEA 0000H 0001H 0279H 0002H 000CH
+00:0020 82-A0 5C-F2              1318           rb      0f25ch.0
+                                 1319   
+                                 1320   ;;      PB0MD1 = 0;             /* Gene
+                                        ral-purpose input/output mode */
+                                 1321   CLINEA 0000H 0001H 027AH 0002H 0035H
+00:0024 82-A0 5D-F2              1322           rb      0f25dh.0
+                                 1323   CBLOCKEND 13 2 635
+                                 1324   
+                                 1325   ;;}
+                                 1326   CLINEA 0000H 0001H 027BH 0001H 0001H
+00:0028 1F-FE                    1327           rt
+                                 1328   CBLOCKEND 13 1 635
+                                 1329   CFUNCTIONEND 13
+                                 1330   
+                                 1331           public _uart_getTransSize
+                                 1332           public _uart_PortSet
+                                 1333           public _uart_startReceive
+                                 1334           public _uart_init
+                                 1335           public _uart_checkIRQ
+                                 1336           public _uart_clearIRQ
+                                 1337           public _uart_ErrClr
+                                 1338           public _uart_ErrGet
+                                 1339           public _uart_ErrSet
+                                 1340           public _uart_stop
+                                 1341           public _uart_startSend
+                                 1342           public _uart_continue
+                                 1343           public _uart_PortClear
+                                 1344           extrn code near : _main
+                                 1345   
+  --------------------------     1346           rseg $$NINITTAB
+??:0000 00-00                    1347           dw      00h
+??:0002 00-00                    1348           dw      00h
+??:0004 00-00                    1349           dw      00h
+??:0006 00-00                    1350           dw      00h
+??:0008 00                       1351           db      00h
+??:0009 00                       1352           align
+                                 1353   
+  --------------------------     1354           rseg $$NINITVAR
+00:0000                          1355   __gsCtrlParam :
+00:0000                          1356           ds      0ah
+                                 1357   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  32 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+  --------------------------     1358           rseg $$NVARuart
+00:0000                          1359   __Err_Status :
+00:0000                          1360           ds      01h
+                                 1361           extrn code : __uldivu8sw
+                                 1362   
+                                 1363           end
+
+
+
+  Target       : ML610111 (nX-U8/100)
+  Memory Model : SMALL
+  Data   Model : NEAR
+  ROM WINDOW   : (not specified)
+  Internal RAM : E000H to E7FFH
+
+  Errors   : 0
+  Warnings : 0  (/Wrpeast)
+  Lines    : 1363

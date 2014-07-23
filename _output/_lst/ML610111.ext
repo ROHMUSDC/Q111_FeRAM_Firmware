@@ -1,0 +1,4 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: $$start_up
+;; End of listing.

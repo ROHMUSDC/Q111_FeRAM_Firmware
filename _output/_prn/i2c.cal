@@ -1,0 +1,13 @@
+CCU8 C Compiler, Ver.3.41, Calltree Listing
+
+Source File : i2c\i2c.c
+
+i2c_init
+i2c_startSend
+i2c_startReceive
+i2c_continue
+i2c_stop
+i2c_checkIRQ
+i2c_clearIRQ
+i2c_getTransSize
+

@@ -1,0 +1,1921 @@
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   1 
+ Source File: _output\_obj\irq.asm
+ Object File: _output\_obj\irq.obj
+ Date  : 2014/07/23 Wed.[16:22]
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                    1   ;; Compile Options : /TML610111 /MS /ne
+                                        ar /LE /Ii2c /Iirq /Imain /Itbc /Itimer
+                                         /Iuart /Icommon /Imath /Istdio /Istdli
+                                        b /Istring /Iyvals /CT _output\_prn\irq
+                                        .cal /SS 256 /SD /Oa /Ot /W 3 /Zg /Fa_o
+                                        utput\_obj\ /Lv /Zs 
+                                    2   ;; Version Number  : Ver.3.41.8
+                                    3   ;; File Name       : irq.c
+                                    4   
+                                    5           type (ML610111) 
+                                    6           model small, near
+                                    7           $$NVARirq segment data 2h #0h
+                                    8           $$_branchHdr$irq segment code 2
+                                        h #0h
+                                    9           $$_intCMP0INT$irq segment code 
+                                        2h #0h
+                                   10           $$_intCMP1INT$irq segment code 
+                                        2h #0h
+                                   11           $$_intI2CMINT$irq segment code 
+                                        2h #0h
+                                   12           $$_intI2CSINT$irq segment code 
+                                        2h #0h
+                                   13           $$_intNullHdr$irq segment code 
+                                        2h #0h
+                                   14           $$_intPA0INT$irq segment code 2
+                                        h #0h
+                                   15           $$_intPA1INT$irq segment code 2
+                                        h #0h
+                                   16           $$_intPA2INT$irq segment code 2
+                                        h #0h
+                                   17           $$_intPB0INT$irq segment code 2
+                                        h #0h
+                                   18           $$_intPB1INT$irq segment code 2
+                                        h #0h
+                                   19           $$_intPB2INT$irq segment code 2
+                                        h #0h
+                                   20           $$_intPB3INT$irq segment code 2
+                                        h #0h
+                                   21           $$_intPWCINT$irq segment code 2
+                                        h #0h
+                                   22           $$_intPWDINT$irq segment code 2
+                                        h #0h
+                                   23           $$_intPWEINT$irq segment code 2
+                                        h #0h
+                                   24           $$_intPWFINT$irq segment code 2
+                                        h #0h
+                                   25           $$_intSADINT$irq segment code 2
+                                        h #0h
+                                   26           $$_intSIO0INT$irq segment code 
+                                        2h #0h
+                                   27           $$_intT128HINT$irq segment code
+                                         2h #0h
+                                   28           $$_intT16HINT$irq segment code 
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   2 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        2h #0h
+                                   29           $$_intT2HINT$irq segment code 2
+                                        h #0h
+                                   30           $$_intT32HINT$irq segment code 
+                                        2h #0h
+                                   31           $$_intTM8INT$irq segment code 2
+                                        h #0h
+                                   32           $$_intTM9INT$irq segment code 2
+                                        h #0h
+                                   33           $$_intTMAINT$irq segment code 2
+                                        h #0h
+                                   34           $$_intTMBINT$irq segment code 2
+                                        h #0h
+                                   35           $$_intTMEINT$irq segment code 2
+                                        h #0h
+                                   36           $$_intTMFINT$irq segment code 2
+                                        h #0h
+                                   37           $$_intUA0INT$irq segment code 2
+                                        h #0h
+                                   38           $$_intUA1INT$irq segment code 2
+                                        h #0h
+                                   39           $$_intUndefHdr$irq segment code
+                                         2h #0h
+                                   40           $$_intVLSINT$irq segment code 2
+                                        h #0h
+                                   41           $$_intWDTINT$irq segment code 2
+                                        h #0h
+                                   42           $$irq_di$irq segment code 2h #0
+                                        h
+                                   43           $$irq_ei$irq segment code 2h #0
+                                        h
+                                   44           $$irq_init$irq segment code 2h 
+                                        #0h
+                                   45           $$irq_setHdr$irq segment code 2
+                                        h #0h
+                                   46   CVERSION 3.41.8
+                                   47   CSGLOBAL 03H 0000H "_intCMP1INT" 08H 02
+                                        H 1AH 00H 91H 0aH 00H 00H 07H
+                                   48   CSGLOBAL 03H 0000H "_intT32HINT" 08H 02
+                                        H 24H 00H 91H 0aH 00H 00H 07H
+                                   49   CGLOBAL 01H 03H 0000H "irq_init" 08H 02
+                                        H 00H 00H 82H 04H 00H 00H 07H
+                                   50   CSGLOBAL 03H 0000H "_intCMP0INT" 08H 02
+                                        H 19H 00H 91H 0aH 00H 00H 07H
+                                   51   CSGLOBAL 03H 0000H "_intTM8INT" 08H 02H
+                                         15H 00H 91H 0aH 00H 00H 07H
+                                   52   CSGLOBAL 03H 0000H "_intTM9INT" 08H 02H
+                                         16H 00H 91H 0aH 00H 00H 07H
+                                   53   CSGLOBAL 03H 0000H "_intT128HINT" 08H 0
+                                        2H 23H 00H 91H 0aH 00H 00H 07H
+                                   54   CSGLOBAL 03H 0000H "_intT2HINT" 08H 02H
+                                         26H 00H 91H 0aH 00H 00H 07H
+                                   55   CSGLOBAL 03H 0000H "_intI2CMINT" 08H 02
+                                        H 14H 00H 91H 0aH 00H 00H 07H
+                                   56   CGLOBAL 01H 03H 0000H "irq_di" 08H 02H 
+                                        02H 00H 80H 00H 00H 00H 07H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   3 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                   57   CGLOBAL 01H 03H 0000H "irq_ei" 08H 02H 
+                                        01H 00H 80H 00H 00H 00H 07H
+                                   58   CSGLOBAL 03H 0000H "_intWDTINT" 08H 02H
+                                         08H 00H 91H 0eH 00H 00H 07H
+                                   59   CSGLOBAL 03H 0000H "_intPA0INT" 08H 02H
+                                         0AH 00H 91H 0aH 00H 00H 07H
+                                   60   CSGLOBAL 03H 0000H "_intTMAINT" 08H 02H
+                                         1DH 00H 91H 0aH 00H 00H 07H
+                                   61   CSGLOBAL 03H 0000H "_intPA1INT" 08H 02H
+                                         0BH 00H 91H 0aH 00H 00H 07H
+                                   62   CGLOBAL 01H 03H 0000H "irq_setHdr" 08H 
+                                        02H 04H 00H 80H 04H 00H 00H 01H
+                                   63   CSGLOBAL 03H 0000H "_intSIO0INT" 08H 02
+                                        H 11H 00H 91H 0aH 00H 00H 07H
+                                   64   CSGLOBAL 03H 0000H "_intI2CSINT" 08H 02
+                                        H 13H 00H 91H 0aH 00H 00H 07H
+                                   65   CSGLOBAL 03H 0000H "_intSADINT" 08H 02H
+                                         12H 00H 91H 0aH 00H 00H 07H
+                                   66   CSGLOBAL 03H 0000H "_intPB0INT" 08H 02H
+                                         0DH 00H 91H 0aH 00H 00H 07H
+                                   67   CSGLOBAL 03H 0000H "_branchHdr" 08H 02H
+                                         30H 00H 80H 00H 00H 00H 07H
+                                   68   CSGLOBAL 03H 0000H "_intTMEINT" 08H 02H
+                                         1BH 00H 91H 0aH 00H 00H 07H
+                                   69   CSGLOBAL 03H 0000H "_intPB1INT" 08H 02H
+                                         0EH 00H 91H 0aH 00H 00H 07H
+                                   70   CSGLOBAL 03H 0000H "_intTMBINT" 08H 02H
+                                         1EH 00H 91H 0aH 00H 00H 07H
+                                   71   CSGLOBAL 03H 0000H "_intPA2INT" 08H 02H
+                                         0CH 00H 91H 0aH 00H 00H 07H
+                                   72   CSGLOBAL 03H 0000H "_intT16HINT" 08H 02
+                                        H 25H 00H 91H 0aH 00H 00H 07H
+                                   73   CSGLOBAL 03H 0000H "_intTMFINT" 08H 02H
+                                         1CH 00H 91H 0aH 00H 00H 07H
+                                   74   CSGLOBAL 03H 0000H "_intPB2INT" 08H 02H
+                                         0FH 00H 91H 0aH 00H 00H 07H
+                                   75   CSGLOBAL 03H 0000H "_intPB3INT" 08H 02H
+                                         10H 00H 91H 0aH 00H 00H 07H
+                                   76   CSGLOBAL 03H 0000H "_intPWDINT" 08H 02H
+                                         20H 00H 91H 0aH 00H 00H 07H
+                                   77   CSGLOBAL 03H 0000H "_intPWEINT" 08H 02H
+                                         21H 00H 91H 0aH 00H 00H 07H
+                                   78   CSGLOBAL 03H 0000H "_intPWCINT" 08H 02H
+                                         1FH 00H 91H 0aH 00H 00H 07H
+                                   79   CSGLOBAL 03H 0000H "_intUA0INT" 08H 02H
+                                         17H 00H 91H 0aH 00H 00H 07H
+                                   80   CSGLOBAL 03H 0000H "_intUndefHdr" 08H 0
+                                        2H 06H 00H 90H 00H 00H 00H 07H
+                                   81   CSGLOBAL 03H 0000H "_intUA1INT" 08H 02H
+                                         18H 00H 91H 0aH 00H 00H 07H
+                                   82   CSGLOBAL 03H 0000H "_intPWFINT" 08H 02H
+                                         22H 00H 91H 0aH 00H 00H 07H
+                                   83   CSGLOBAL 03H 0000H "_intVLSINT" 08H 02H
+                                         09H 00H 91H 0aH 00H 00H 07H
+                                   84   CSGLOBAL 03H 0000H "_intNullHdr" 08H 02
+                                        H 07H 00H 80H 00H 00H 00H 07H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   4 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                   85   CSTRUCTTAG 0000H 0000H 0000H 0008H 0000
+                                        0001H "_Notag"
+                                   86   CSTRUCTMEM 52H 00000001H 00000000H "b0"
+                                         02H 00H 00H
+                                   87   CSTRUCTMEM 52H 00000001H 00000001H "b1"
+                                         02H 00H 00H
+                                   88   CSTRUCTMEM 52H 00000001H 00000002H "b2"
+                                         02H 00H 00H
+                                   89   CSTRUCTMEM 52H 00000001H 00000003H "b3"
+                                         02H 00H 00H
+                                   90   CSTRUCTMEM 52H 00000001H 00000004H "b4"
+                                         02H 00H 00H
+                                   91   CSTRUCTMEM 52H 00000001H 00000005H "b5"
+                                         02H 00H 00H
+                                   92   CSTRUCTMEM 52H 00000001H 00000006H "b6"
+                                         02H 00H 00H
+                                   93   CSTRUCTMEM 52H 00000001H 00000007H "b7"
+                                         02H 00H 00H
+                                   94   CTYPEDEF 0000H 0000H 43H "_BYTE_FIELD" 
+                                        04H 00H 05H 00H 00H
+                                   95   CSGLOBAL 43H 003EH "_sIrqHdr" 0DH 01H 1
+                                        FH 00H 03H 00H 02H 05H 00H 10H 00H 00H 
+                                        00H 07H
+                                   96   CFILE 0001H 00000024H "main\\mcu.h"
+                                   97   CFILE 0002H 000007EEH "main\\ML610111.H
+                                        "
+                                   98   CFILE 0003H 00000057H "irq\\irq.h"
+                                   99   CFILE 0000H 00000141H "irq\\irq.c"
+                                  100   
+  --------------------------      101           rseg $$irq_init$irq
+                                  102   CFUNCTION 0
+                                  103   
+00:0000                           104   _irq_init       :
+                                  105   CBLOCK 0 1 151
+                                  106   
+                                  107   ;;{
+                                  108   CLINEA 0000H 0001H 0097H 0001H 0001H
+                                  109   ;;*************************************
+                                        ****
+                                  110   ;;      register/stack information
+                                  111   ;;*************************************
+                                        ****
+    = FFFFFFFEH                   112           _irqNo$0        set     -2
+                                  113   ;;*************************************
+                                        ****
+                                  114   
+00:0000 5E-FE                     115           push    fp
+00:0002 1A-AE                     116           mov     fp,     sp
+00:0004 FE E1                     117           add     sp,     #-02
+                                  118   CBLOCK 0 2 151
+                                  119   CLOCAL 43H 0002H 0002H 0002H "irqNo" 02
+                                        H 00H 01H
+                                  120   
+                                  121   ;;      IE1 = (unsigned char)0x00u;
+                                  122   CLINEA 0000H 0001H 009BH 0002H 001CH
+00:0006 00 00                     123           mov     r0,     #00h
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   5 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0008 11-90 11-F0               124           st      r0,     0f011h
+                                  125   
+                                  126   ;;      IE2 = (unsigned char)0x00u;
+                                  127   CLINEA 0000H 0001H 009CH 0002H 001CH
+00:000C 11-90 12-F0               128           st      r0,     0f012h
+                                  129   
+                                  130   ;;      IE3 = (unsigned char)0x00u;
+                                  131   CLINEA 0000H 0001H 009DH 0002H 001CH
+00:0010 11-90 13-F0               132           st      r0,     0f013h
+                                  133   
+                                  134   ;;      IE4 = (unsigned char)0x00u;
+                                  135   CLINEA 0000H 0001H 009EH 0002H 001CH
+00:0014 11-90 14-F0               136           st      r0,     0f014h
+                                  137   
+                                  138   ;;      IE5 = (unsigned char)0x00u;
+                                  139   CLINEA 0000H 0001H 009FH 0002H 001CH
+00:0018 11-90 15-F0               140           st      r0,     0f015h
+                                  141   
+                                  142   ;;      IE6 = (unsigned char)0x00u;
+                                  143   CLINEA 0000H 0001H 00A0H 0002H 001CH
+00:001C 11-90 16-F0               144           st      r0,     0f016h
+                                  145   
+                                  146   ;;      IE7 =  (unsigned char)0x00u;
+                                  147   CLINEA 0000H 0001H 00A1H 0002H 001DH
+00:0020 11-90 17-F0               148           st      r0,     0f017h
+                                  149   
+                                  150   ;;      IRQ0 = (unsigned char)0x00u;
+                                  151   CLINEA 0000H 0001H 00A3H 0002H 001DH
+00:0024 11-90 18-F0               152           st      r0,     0f018h
+                                  153   
+                                  154   ;;      IRQ1 = (unsigned char)0x00u;
+                                  155   CLINEA 0000H 0001H 00A4H 0002H 001DH
+00:0028 11-90 19-F0               156           st      r0,     0f019h
+                                  157   
+                                  158   ;;      IRQ2 = (unsigned char)0x00u;
+                                  159   CLINEA 0000H 0001H 00A5H 0002H 001DH
+00:002C 11-90 1A-F0               160           st      r0,     0f01ah
+                                  161   
+                                  162   ;;      IRQ3 = (unsigned char)0x00u;
+                                  163   CLINEA 0000H 0001H 00A6H 0002H 001DH
+00:0030 11-90 1B-F0               164           st      r0,     0f01bh
+                                  165   
+                                  166   ;;      IRQ4 = (unsigned char)0x00u;
+                                  167   CLINEA 0000H 0001H 00A7H 0002H 001DH
+00:0034 11-90 1C-F0               168           st      r0,     0f01ch
+                                  169   
+                                  170   ;;      IRQ5 = (unsigned char)0x00u;
+                                  171   CLINEA 0000H 0001H 00A8H 0002H 001DH
+00:0038 11-90 1D-F0               172           st      r0,     0f01dh
+                                  173   
+                                  174   ;;      IRQ6 = (unsigned char)0x00u;
+                                  175   CLINEA 0000H 0001H 00A9H 0002H 001DH
+00:003C 11-90 1E-F0               176           st      r0,     0f01eh
+                                  177   
+                                  178   ;;      IRQ7 = (unsigned char)0x00u;
+                                  179   CLINEA 0000H 0001H 00AAH 0002H 001DH
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   6 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0040 11-90 1F-F0               180           st      r0,     0f01fh
+                                  181   
+                                  182   ;;      for( irqNo = 0; irqNo < IRQ_SIZ
+                                        E; irqNo++ ) {
+                                  183   CLINEA 0000H 0001H 00ADH 0002H 002EH
+00:0044 00 E0                     184           mov     er0,    #0 
+00:0046 FE B0                     185           st      er0,    _irqNo$0[fp]
+00:0048                           186   _$L3 :
+                                  187   CBLOCK 0 3 173
+                                  188   
+                                  189   ;;              _sIrqHdr[irqNo] = _intN
+                                        ullHdr;
+                                  190   CLINEA 0000H 0001H 00AEH 0003H 0020H
+00:0048 06-F0                     191           add     er0,    er0
+00:004A 00'02                     192           mov     r2,     #BYTE1 OFFSET _
+                                        _intNullHdr
+00:004C 00'03                     193           mov     r3,     #BYTE2 OFFSET _
+                                        _intNullHdr
+00:004E 09-A2 00-00'              194           st      er2,    NEAR __sIrqHdr[
+                                        er0]
+                                  195   CBLOCKEND 0 3 175
+                                  196   
+                                  197   ;;      for( irqNo = 0; irqNo < IRQ_SIZ
+                                        E; irqNo++ ) {
+                                  198   CLINEA 0000H 0000H 00ADH 0002H 002EH
+00:0052 7E B0                     199           l       er0,    _irqNo$0[fp]
+00:0054 81 E0                     200           add     er0,    #1 
+00:0056 FE B0                     201           st      er0,    _irqNo$0[fp]
+00:0058 1F 70                     202           cmp     r0,     #01fh
+00:005A 00 51                     203           cmpc    r1,     #00h
+00:005C F5 C5                     204           blts    _$L3
+                                  205   CBLOCKEND 0 2 176
+                                  206   
+                                  207   ;;}
+                                  208   CLINEA 0000H 0001H 00B0H 0001H 0001H
+00:005E EA-A1                     209           mov     sp,     fp
+00:0060 1E-FE                     210           pop     fp
+00:0062 1F-FE                     211           rt
+                                  212   CBLOCKEND 0 1 176
+                                  213   CFUNCTIONEND 0
+                                  214   
+                                  215   
+  --------------------------      216           rseg $$irq_ei$irq
+                                  217   CFUNCTION 1
+                                  218   
+00:0000                           219   _irq_ei :
+                                  220   CBLOCK 1 1 186
+                                  221   
+                                  222   ;;{
+                                  223   CLINEA 0000H 0001H 00BAH 0001H 0001H
+                                  224   ;;*************************************
+                                        ****
+                                  225   ;;      register/stack information
+                                  226   ;;*************************************
+                                        ****
+                                  227   ;;*************************************
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   7 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        ****
+                                  228   
+                                  229   CBLOCK 1 2 186
+                                  230   
+                                  231   ;;      __EI();
+                                  232   CLINEA 0000H 0001H 00BBH 0002H 0008H
+00:0000 08-ED                     233           ei
+                                  234   CBLOCKEND 1 2 188
+                                  235   
+                                  236   ;;}
+                                  237   CLINEA 0000H 0001H 00BCH 0001H 0001H
+00:0002 1F-FE                     238           rt
+                                  239   CBLOCKEND 1 1 188
+                                  240   CFUNCTIONEND 1
+                                  241   
+                                  242   
+  --------------------------      243           rseg $$irq_di$irq
+                                  244   CFUNCTION 2
+                                  245   
+00:0000                           246   _irq_di :
+                                  247   CBLOCK 2 1 198
+                                  248   
+                                  249   ;;{
+                                  250   CLINEA 0000H 0001H 00C6H 0001H 0001H
+                                  251   ;;*************************************
+                                        ****
+                                  252   ;;      register/stack information
+                                  253   ;;*************************************
+                                        ****
+                                  254   ;;*************************************
+                                        ****
+                                  255   
+                                  256   CBLOCK 2 2 198
+                                  257   
+                                  258   ;;      __DI();
+                                  259   CLINEA 0000H 0001H 00C7H 0002H 0008H
+00:0000 F7-EB                     260           di
+                                  261   CBLOCKEND 2 2 200
+                                  262   
+                                  263   ;;}
+                                  264   CLINEA 0000H 0001H 00C8H 0001H 0001H
+00:0002 1F-FE                     265           rt
+                                  266   CBLOCKEND 2 1 200
+                                  267   CFUNCTIONEND 2
+                                  268   
+                                  269   
+  --------------------------      270           rseg $$irq_setHdr$irq
+                                  271   CFUNCTION 4
+                                  272   
+00:0000                           273   _irq_setHdr     :
+                                  274   CBLOCK 4 1 216
+                                  275   
+                                  276   ;;{
+                                  277   CLINEA 0000H 0001H 00D8H 0001H 0001H
+                                  278   ;;*************************************
+                                        ****
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   8 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  279   ;;      register/stack information
+                                  280   ;;*************************************
+                                        ****
+                                  281   ;;*************************************
+                                        ****
+                                  282   
+00:0000 6E-F8                     283           push    xr8
+00:0002 00-88                     284           mov     r8,     r0
+00:0004 25-FA                     285           mov     er10,   er2
+                                  286   CBLOCK 4 2 216
+                                  287   CARGUMENT 46H 0001H 001CH "intNo" 02H 0
+                                        0H 00H
+                                  288   CARGUMENT 47H 0002H 0029H "func" 0AH 03
+                                        H 00H 02H 2CH 00H 00H 00H 00H 00H 07H
+                                  289   
+                                  290   ;;      if( intNo >= (unsigned char)IRQ
+                                        _SIZE ) {
+                                  291   CLINEA 0000H 0001H 00DBH 0002H 0029H
+00:0006 1F 70                     292           cmp     r0,     #01fh
+00:0008 03 C1                     293           blt     _$L10
+                                  294   CBLOCK 4 3 219
+                                  295   
+                                  296   ;;              return ( IRQ_R_ERR_INTN
+                                        O );
+                                  297   CLINEA 0000H 0001H 00DCH 0003H 001DH
+00:000A 7F E0                     298           mov     er0,    #-1
+                                  299   CBLOCKEND 4 3 221
+                                  300   CBLOCKEND 4 2 230
+                                  301   
+                                  302   ;;}
+                                  303   CLINEA 0000H 0001H 00E6H 0001H 0001H
+00:000C                           304   _$L9 :
+00:000C 2E-F8                     305           pop     xr8
+00:000E 1F-FE                     306           rt
+                                  307   
+                                  308   ;;      }
+                                  309   CLINEA 0000H 0000H 00DDH 0002H 0002H
+00:0010                           310   _$L10 :
+                                  311   
+                                  312   ;;      if( func != (void *)0 ) {
+                                  313   CLINEA 0000H 0001H 00DFH 0002H 001AH
+00:0010 25-F2                     314           mov     er2,    er2
+00:0012 06 C9                     315           beq     _$L12
+                                  316   CBLOCK 4 4 223
+                                  317   
+                                  318   ;;              _sIrqHdr[intNo] = func;
+                                  319   CLINEA 0000H 0001H 00E0H 0003H 0019H
+00:0014 80-80                     320           mov     r0,     r8
+00:0016 00 01                     321           mov     r1,     #00h
+00:0018 06-F0                     322           add     er0,    er0
+00:001A 09-AA 00-00'              323           st      er10,   NEAR __sIrqHdr[
+                                        er0]
+                                  324   CBLOCKEND 4 4 225
+                                  325   
+                                  326   ;;      else {
+                                  327   CLINEA 0000H 0001H 00E2H 0002H 0007H
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   9 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:001E 07 CE                     328           bal     _$L14
+00:0020                           329   _$L12 :
+                                  330   CBLOCK 4 5 226
+                                  331   
+                                  332   ;;              _sIrqHdr[intNo] = _intN
+                                        ullHdr;
+                                  333   CLINEA 0000H 0001H 00E3H 0003H 0020H
+00:0020 80-80                     334           mov     r0,     r8
+00:0022 00 01                     335           mov     r1,     #00h
+00:0024 06-F0                     336           add     er0,    er0
+00:0026 00'02                     337           mov     r2,     #BYTE1 OFFSET _
+                                        _intNullHdr
+00:0028 00'03                     338           mov     r3,     #BYTE2 OFFSET _
+                                        _intNullHdr
+00:002A 09-A2 00-00'              339           st      er2,    NEAR __sIrqHdr[
+                                        er0]
+                                  340   CBLOCKEND 4 5 228
+                                  341   
+                                  342   ;;      }
+                                  343   CLINEA 0000H 0000H 00E4H 0002H 0002H
+00:002E                           344   _$L14 :
+                                  345   
+                                  346   ;;      return ( IRQ_R_OK );
+                                  347   CLINEA 0000H 0001H 00E5H 0002H 0015H
+00:002E 00 E0                     348           mov     er0,    #0 
+00:0030 ED CE                     349           bal     _$L9
+                                  350   CBLOCKEND 4 1 230
+                                  351   CFUNCTIONEND 4
+                                  352   
+                                  353   
+  --------------------------      354           rseg $$_intUndefHdr$irq
+                                  355   CFUNCTION 6
+                                  356   
+00:0000                           357   __intUndefHdr   :
+                                  358   CBLOCK 6 1 244
+                                  359   
+                                  360   ;;{
+                                  361   CLINEA 0000H 0001H 00F4H 0001H 0001H
+                                  362   ;;*************************************
+                                        ****
+                                  363   ;;      register/stack information
+                                  364   ;;*************************************
+                                        ****
+                                  365   ;;*************************************
+                                        ****
+                                  366   
+                                  367   CBLOCK 6 2 244
+                                  368   CBLOCKEND 6 2 246
+                                  369   
+                                  370   ;;}
+                                  371   CLINEA 0000H 0000H 00F6H 0001H 0001H
+00:0000 0F-FE                     372           rti
+                                  373   CBLOCKEND 6 1 246
+                                  374   CFUNCTIONEND 6
+                                  375   
+                                  376   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  10 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+  --------------------------      377           rseg $$_intNullHdr$irq
+                                  378   CFUNCTION 7
+                                  379   
+00:0000                           380   __intNullHdr    :
+                                  381   CBLOCK 7 1 256
+                                  382   
+                                  383   ;;{
+                                  384   CLINEA 0000H 0001H 0100H 0001H 0001H
+                                  385   ;;*************************************
+                                        ****
+                                  386   ;;      register/stack information
+                                  387   ;;*************************************
+                                        ****
+                                  388   ;;*************************************
+                                        ****
+                                  389   
+                                  390   CBLOCK 7 2 256
+                                  391   CBLOCKEND 7 2 258
+                                  392   
+                                  393   ;;}
+                                  394   CLINEA 0000H 0000H 0102H 0001H 0001H
+00:0000 1F-FE                     395           rt
+                                  396   CBLOCKEND 7 1 258
+                                  397   CFUNCTIONEND 7
+                                  398   
+                                  399   
+  --------------------------      400           rseg $$_branchHdr$irq
+                                  401   CFUNCTION 48
+                                  402   
+00:0000                           403   __branchHdr     :
+                                  404   CBLOCK 48 1 271
+                                  405   
+                                  406   ;;{
+                                  407   CLINEA 0000H 0001H 010FH 0001H 0001H
+                                  408   ;;*************************************
+                                        ****
+                                  409   ;;      register/stack information
+                                  410   ;;*************************************
+                                        ****
+                                  411   ;;*************************************
+                                        ****
+                                  412   
+                                  413   CBLOCK 48 2 271
+                                  414   CARGUMENT 46H 0001H 0014H "intNo" 02H 0
+                                        0H 00H
+                                  415   
+                                  416   ;;      _sIrqHdr[intNo]();
+                                  417   CLINEA 0000H 0001H 0110H 0002H 0013H
+00:0000 00 01                     418           mov     r1,     #00h
+00:0002 06-F0                     419           add     er0,    er0
+00:0004 08-A0 00-00'              420           l       er0,    NEAR __sIrqHdr[
+                                        er0]
+00:0008 02-F0                     421           b       er0
+                                  422   CBLOCKEND 48 2 273
+                                  423   CLINEA 0000H 0001H 0111H 0001H 0001H
+                                  424   CBLOCKEND 48 1 273
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  11 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  425   CFUNCTIONEND 48
+                                  426   
+                                  427   
+  --------------------------      428           rseg $$_intWDTINT$irq
+                                  429   CFUNCTION 8
+                                  430   
+00:0000                           431   __intWDTINT     :
+                                  432   CBLOCK 8 1 279
+                                  433   
+                                  434   ;;static void _intWDTINT(void)  {      
+                                         _branchHdr(IRQ_NO_WDTINT);      }
+                                  435   CLINEA 0000H 0001H 0117H 0001H 003BH
+                                  436   ;;*************************************
+                                        ****
+                                  437   ;;      register/stack information
+                                  438   ;;*************************************
+                                        ****
+                                  439   ;;*************************************
+                                        ****
+                                  440   
+00:0000 CE-FF                     441           push    elr, epsw, lr, ea
+00:0002 6E-F0                     442           push    xr0
+00:0004 10-90 00-F0               443           l       r0,     DSR
+00:0008 4E-F0                     444           push    r0
+                                  445   CBLOCK 8 2 279
+                                  446   CRET 000CH
+                                  447   
+                                  448   ;;static void _intWDTINT(void)  {      
+                                         _branchHdr(IRQ_NO_WDTINT);      }
+                                  449   CLINEA 0000H 0000H 0117H 0001H 003BH
+00:000A 00 00                     450           mov     r0,     #00h
+00:000C 01-F0'00-00'              451           bl      __branchHdr
+00:0010 0E-F0                     452           pop     r0
+00:0012 11-90 00-F0               453           st      r0,     DSR
+00:0016 2E-F0                     454           pop     xr0
+00:0018 8E-FF                     455           pop     ea, lr, psw, pc
+                                  456   CBLOCKEND 8 1 279
+                                  457   CFUNCTIONEND 8
+                                  458   
+                                  459   
+  --------------------------      460           rseg $$_intVLSINT$irq
+                                  461   CFUNCTION 9
+                                  462   
+00:0000                           463   __intVLSINT     :
+                                  464   CBLOCK 9 1 280
+                                  465   
+                                  466   ;;static void _intVLSINT(void)  {      
+                                         _branchHdr(IRQ_NO_VLSINT);      }
+                                  467   CLINEA 0000H 0001H 0118H 0001H 003BH
+                                  468   ;;*************************************
+                                        ****
+                                  469   ;;      register/stack information
+                                  470   ;;*************************************
+                                        ****
+                                  471   ;;*************************************
+                                        ****
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  12 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  472   
+00:0000 CE-F9                     473           push    lr, ea
+00:0002 6E-F0                     474           push    xr0
+00:0004 10-90 00-F0               475           l       r0,     DSR
+00:0008 4E-F0                     476           push    r0
+                                  477   CBLOCK 9 2 280
+                                  478   
+                                  479   ;;static void _intVLSINT(void)  {      
+                                         _branchHdr(IRQ_NO_VLSINT);      }
+                                  480   CLINEA 0000H 0000H 0118H 0001H 003BH
+00:000A 01 00                     481           mov     r0,     #01h
+00:000C 01-F0'00-00'              482           bl      __branchHdr
+00:0010 0E-F0                     483           pop     r0
+00:0012 11-90 00-F0               484           st      r0,     DSR
+00:0016 2E-F0                     485           pop     xr0
+00:0018 8E-F9                     486           pop     ea, lr
+00:001A 0F-FE                     487           rti
+                                  488   CBLOCKEND 9 1 280
+                                  489   CFUNCTIONEND 9
+                                  490   
+                                  491   
+  --------------------------      492           rseg $$_intPA0INT$irq
+                                  493   CFUNCTION 10
+                                  494   
+00:0000                           495   __intPA0INT     :
+                                  496   CBLOCK 10 1 282
+                                  497   
+                                  498   ;;static void _intPA0INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA0INT);      }
+                                  499   CLINEA 0000H 0001H 011AH 0001H 003BH
+                                  500   ;;*************************************
+                                        ****
+                                  501   ;;      register/stack information
+                                  502   ;;*************************************
+                                        ****
+                                  503   ;;*************************************
+                                        ****
+                                  504   
+00:0000 CE-F9                     505           push    lr, ea
+00:0002 6E-F0                     506           push    xr0
+00:0004 10-90 00-F0               507           l       r0,     DSR
+00:0008 4E-F0                     508           push    r0
+                                  509   CBLOCK 10 2 282
+                                  510   
+                                  511   ;;static void _intPA0INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA0INT);      }
+                                  512   CLINEA 0000H 0000H 011AH 0001H 003BH
+00:000A 02 00                     513           mov     r0,     #02h
+00:000C 01-F0'00-00'              514           bl      __branchHdr
+00:0010 0E-F0                     515           pop     r0
+00:0012 11-90 00-F0               516           st      r0,     DSR
+00:0016 2E-F0                     517           pop     xr0
+00:0018 8E-F9                     518           pop     ea, lr
+00:001A 0F-FE                     519           rti
+                                  520   CBLOCKEND 10 1 282
+                                  521   CFUNCTIONEND 10
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  13 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  522   
+                                  523   
+  --------------------------      524           rseg $$_intPA1INT$irq
+                                  525   CFUNCTION 11
+                                  526   
+00:0000                           527   __intPA1INT     :
+                                  528   CBLOCK 11 1 283
+                                  529   
+                                  530   ;;static void _intPA1INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA1INT);      }
+                                  531   CLINEA 0000H 0001H 011BH 0001H 003BH
+                                  532   ;;*************************************
+                                        ****
+                                  533   ;;      register/stack information
+                                  534   ;;*************************************
+                                        ****
+                                  535   ;;*************************************
+                                        ****
+                                  536   
+00:0000 CE-F9                     537           push    lr, ea
+00:0002 6E-F0                     538           push    xr0
+00:0004 10-90 00-F0               539           l       r0,     DSR
+00:0008 4E-F0                     540           push    r0
+                                  541   CBLOCK 11 2 283
+                                  542   
+                                  543   ;;static void _intPA1INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA1INT);      }
+                                  544   CLINEA 0000H 0000H 011BH 0001H 003BH
+00:000A 03 00                     545           mov     r0,     #03h
+00:000C 01-F0'00-00'              546           bl      __branchHdr
+00:0010 0E-F0                     547           pop     r0
+00:0012 11-90 00-F0               548           st      r0,     DSR
+00:0016 2E-F0                     549           pop     xr0
+00:0018 8E-F9                     550           pop     ea, lr
+00:001A 0F-FE                     551           rti
+                                  552   CBLOCKEND 11 1 283
+                                  553   CFUNCTIONEND 11
+                                  554   
+                                  555   
+  --------------------------      556           rseg $$_intPA2INT$irq
+                                  557   CFUNCTION 12
+                                  558   
+00:0000                           559   __intPA2INT     :
+                                  560   CBLOCK 12 1 284
+                                  561   
+                                  562   ;;static void _intPA2INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA2INT);      }
+                                  563   CLINEA 0000H 0001H 011CH 0001H 003BH
+                                  564   ;;*************************************
+                                        ****
+                                  565   ;;      register/stack information
+                                  566   ;;*************************************
+                                        ****
+                                  567   ;;*************************************
+                                        ****
+                                  568   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  14 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0000 CE-F9                     569           push    lr, ea
+00:0002 6E-F0                     570           push    xr0
+00:0004 10-90 00-F0               571           l       r0,     DSR
+00:0008 4E-F0                     572           push    r0
+                                  573   CBLOCK 12 2 284
+                                  574   
+                                  575   ;;static void _intPA2INT(void)  {      
+                                         _branchHdr(IRQ_NO_PA2INT);      }
+                                  576   CLINEA 0000H 0000H 011CH 0001H 003BH
+00:000A 04 00                     577           mov     r0,     #04h
+00:000C 01-F0'00-00'              578           bl      __branchHdr
+00:0010 0E-F0                     579           pop     r0
+00:0012 11-90 00-F0               580           st      r0,     DSR
+00:0016 2E-F0                     581           pop     xr0
+00:0018 8E-F9                     582           pop     ea, lr
+00:001A 0F-FE                     583           rti
+                                  584   CBLOCKEND 12 1 284
+                                  585   CFUNCTIONEND 12
+                                  586   
+                                  587   
+  --------------------------      588           rseg $$_intPB0INT$irq
+                                  589   CFUNCTION 13
+                                  590   
+00:0000                           591   __intPB0INT     :
+                                  592   CBLOCK 13 1 286
+                                  593   
+                                  594   ;;static void _intPB0INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB0INT);      }
+                                  595   CLINEA 0000H 0001H 011EH 0001H 003BH
+                                  596   ;;*************************************
+                                        ****
+                                  597   ;;      register/stack information
+                                  598   ;;*************************************
+                                        ****
+                                  599   ;;*************************************
+                                        ****
+                                  600   
+00:0000 CE-F9                     601           push    lr, ea
+00:0002 6E-F0                     602           push    xr0
+00:0004 10-90 00-F0               603           l       r0,     DSR
+00:0008 4E-F0                     604           push    r0
+                                  605   CBLOCK 13 2 286
+                                  606   
+                                  607   ;;static void _intPB0INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB0INT);      }
+                                  608   CLINEA 0000H 0000H 011EH 0001H 003BH
+00:000A 05 00                     609           mov     r0,     #05h
+00:000C 01-F0'00-00'              610           bl      __branchHdr
+00:0010 0E-F0                     611           pop     r0
+00:0012 11-90 00-F0               612           st      r0,     DSR
+00:0016 2E-F0                     613           pop     xr0
+00:0018 8E-F9                     614           pop     ea, lr
+00:001A 0F-FE                     615           rti
+                                  616   CBLOCKEND 13 1 286
+                                  617   CFUNCTIONEND 13
+                                  618   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  15 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  619   
+  --------------------------      620           rseg $$_intPB1INT$irq
+                                  621   CFUNCTION 14
+                                  622   
+00:0000                           623   __intPB1INT     :
+                                  624   CBLOCK 14 1 287
+                                  625   
+                                  626   ;;static void _intPB1INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB1INT);      }
+                                  627   CLINEA 0000H 0001H 011FH 0001H 003BH
+                                  628   ;;*************************************
+                                        ****
+                                  629   ;;      register/stack information
+                                  630   ;;*************************************
+                                        ****
+                                  631   ;;*************************************
+                                        ****
+                                  632   
+00:0000 CE-F9                     633           push    lr, ea
+00:0002 6E-F0                     634           push    xr0
+00:0004 10-90 00-F0               635           l       r0,     DSR
+00:0008 4E-F0                     636           push    r0
+                                  637   CBLOCK 14 2 287
+                                  638   
+                                  639   ;;static void _intPB1INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB1INT);      }
+                                  640   CLINEA 0000H 0000H 011FH 0001H 003BH
+00:000A 06 00                     641           mov     r0,     #06h
+00:000C 01-F0'00-00'              642           bl      __branchHdr
+00:0010 0E-F0                     643           pop     r0
+00:0012 11-90 00-F0               644           st      r0,     DSR
+00:0016 2E-F0                     645           pop     xr0
+00:0018 8E-F9                     646           pop     ea, lr
+00:001A 0F-FE                     647           rti
+                                  648   CBLOCKEND 14 1 287
+                                  649   CFUNCTIONEND 14
+                                  650   
+                                  651   
+  --------------------------      652           rseg $$_intPB2INT$irq
+                                  653   CFUNCTION 15
+                                  654   
+00:0000                           655   __intPB2INT     :
+                                  656   CBLOCK 15 1 288
+                                  657   
+                                  658   ;;static void _intPB2INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB2INT);      }
+                                  659   CLINEA 0000H 0001H 0120H 0001H 003BH
+                                  660   ;;*************************************
+                                        ****
+                                  661   ;;      register/stack information
+                                  662   ;;*************************************
+                                        ****
+                                  663   ;;*************************************
+                                        ****
+                                  664   
+00:0000 CE-F9                     665           push    lr, ea
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  16 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0002 6E-F0                     666           push    xr0
+00:0004 10-90 00-F0               667           l       r0,     DSR
+00:0008 4E-F0                     668           push    r0
+                                  669   CBLOCK 15 2 288
+                                  670   
+                                  671   ;;static void _intPB2INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB2INT);      }
+                                  672   CLINEA 0000H 0000H 0120H 0001H 003BH
+00:000A 07 00                     673           mov     r0,     #07h
+00:000C 01-F0'00-00'              674           bl      __branchHdr
+00:0010 0E-F0                     675           pop     r0
+00:0012 11-90 00-F0               676           st      r0,     DSR
+00:0016 2E-F0                     677           pop     xr0
+00:0018 8E-F9                     678           pop     ea, lr
+00:001A 0F-FE                     679           rti
+                                  680   CBLOCKEND 15 1 288
+                                  681   CFUNCTIONEND 15
+                                  682   
+                                  683   
+  --------------------------      684           rseg $$_intPB3INT$irq
+                                  685   CFUNCTION 16
+                                  686   
+00:0000                           687   __intPB3INT     :
+                                  688   CBLOCK 16 1 289
+                                  689   
+                                  690   ;;static void _intPB3INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB3INT);      }
+                                  691   CLINEA 0000H 0001H 0121H 0001H 003BH
+                                  692   ;;*************************************
+                                        ****
+                                  693   ;;      register/stack information
+                                  694   ;;*************************************
+                                        ****
+                                  695   ;;*************************************
+                                        ****
+                                  696   
+00:0000 CE-F9                     697           push    lr, ea
+00:0002 6E-F0                     698           push    xr0
+00:0004 10-90 00-F0               699           l       r0,     DSR
+00:0008 4E-F0                     700           push    r0
+                                  701   CBLOCK 16 2 289
+                                  702   
+                                  703   ;;static void _intPB3INT(void)  {      
+                                         _branchHdr(IRQ_NO_PB3INT);      }
+                                  704   CLINEA 0000H 0000H 0121H 0001H 003BH
+00:000A 08 00                     705           mov     r0,     #08h
+00:000C 01-F0'00-00'              706           bl      __branchHdr
+00:0010 0E-F0                     707           pop     r0
+00:0012 11-90 00-F0               708           st      r0,     DSR
+00:0016 2E-F0                     709           pop     xr0
+00:0018 8E-F9                     710           pop     ea, lr
+00:001A 0F-FE                     711           rti
+                                  712   CBLOCKEND 16 1 289
+                                  713   CFUNCTIONEND 16
+                                  714   
+                                  715   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  17 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+  --------------------------      716           rseg $$_intSIO0INT$irq
+                                  717   CFUNCTION 17
+                                  718   
+00:0000                           719   __intSIO0INT    :
+                                  720   CBLOCK 17 1 291
+                                  721   
+                                  722   ;;static void _intSIO0INT(void) {      
+                                         _branchHdr(IRQ_NO_SIO0INT);     }
+                                  723   CLINEA 0000H 0001H 0123H 0001H 003DH
+                                  724   ;;*************************************
+                                        ****
+                                  725   ;;      register/stack information
+                                  726   ;;*************************************
+                                        ****
+                                  727   ;;*************************************
+                                        ****
+                                  728   
+00:0000 CE-F9                     729           push    lr, ea
+00:0002 6E-F0                     730           push    xr0
+00:0004 10-90 00-F0               731           l       r0,     DSR
+00:0008 4E-F0                     732           push    r0
+                                  733   CBLOCK 17 2 291
+                                  734   
+                                  735   ;;static void _intSIO0INT(void) {      
+                                         _branchHdr(IRQ_NO_SIO0INT);     }
+                                  736   CLINEA 0000H 0000H 0123H 0001H 003DH
+00:000A 09 00                     737           mov     r0,     #09h
+00:000C 01-F0'00-00'              738           bl      __branchHdr
+00:0010 0E-F0                     739           pop     r0
+00:0012 11-90 00-F0               740           st      r0,     DSR
+00:0016 2E-F0                     741           pop     xr0
+00:0018 8E-F9                     742           pop     ea, lr
+00:001A 0F-FE                     743           rti
+                                  744   CBLOCKEND 17 1 291
+                                  745   CFUNCTIONEND 17
+                                  746   
+                                  747   
+  --------------------------      748           rseg $$_intSADINT$irq
+                                  749   CFUNCTION 18
+                                  750   
+00:0000                           751   __intSADINT     :
+                                  752   CBLOCK 18 1 293
+                                  753   
+                                  754   ;;static void _intSADINT(void)  {      
+                                         _branchHdr(IRQ_NO_SADINT);      }
+                                  755   CLINEA 0000H 0001H 0125H 0001H 003BH
+                                  756   ;;*************************************
+                                        ****
+                                  757   ;;      register/stack information
+                                  758   ;;*************************************
+                                        ****
+                                  759   ;;*************************************
+                                        ****
+                                  760   
+00:0000 CE-F9                     761           push    lr, ea
+00:0002 6E-F0                     762           push    xr0
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  18 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0004 10-90 00-F0               763           l       r0,     DSR
+00:0008 4E-F0                     764           push    r0
+                                  765   CBLOCK 18 2 293
+                                  766   
+                                  767   ;;static void _intSADINT(void)  {      
+                                         _branchHdr(IRQ_NO_SADINT);      }
+                                  768   CLINEA 0000H 0000H 0125H 0001H 003BH
+00:000A 0A 00                     769           mov     r0,     #0ah
+00:000C 01-F0'00-00'              770           bl      __branchHdr
+00:0010 0E-F0                     771           pop     r0
+00:0012 11-90 00-F0               772           st      r0,     DSR
+00:0016 2E-F0                     773           pop     xr0
+00:0018 8E-F9                     774           pop     ea, lr
+00:001A 0F-FE                     775           rti
+                                  776   CBLOCKEND 18 1 293
+                                  777   CFUNCTIONEND 18
+                                  778   
+                                  779   
+  --------------------------      780           rseg $$_intI2CSINT$irq
+                                  781   CFUNCTION 19
+                                  782   
+00:0000                           783   __intI2CSINT    :
+                                  784   CBLOCK 19 1 295
+                                  785   
+                                  786   ;;static void _intI2CSINT(void) {      
+                                         _branchHdr(IRQ_NO_I2CSINT);     }
+                                  787   CLINEA 0000H 0001H 0127H 0001H 003DH
+                                  788   ;;*************************************
+                                        ****
+                                  789   ;;      register/stack information
+                                  790   ;;*************************************
+                                        ****
+                                  791   ;;*************************************
+                                        ****
+                                  792   
+00:0000 CE-F9                     793           push    lr, ea
+00:0002 6E-F0                     794           push    xr0
+00:0004 10-90 00-F0               795           l       r0,     DSR
+00:0008 4E-F0                     796           push    r0
+                                  797   CBLOCK 19 2 295
+                                  798   
+                                  799   ;;static void _intI2CSINT(void) {      
+                                         _branchHdr(IRQ_NO_I2CSINT);     }
+                                  800   CLINEA 0000H 0000H 0127H 0001H 003DH
+00:000A 0B 00                     801           mov     r0,     #0bh
+00:000C 01-F0'00-00'              802           bl      __branchHdr
+00:0010 0E-F0                     803           pop     r0
+00:0012 11-90 00-F0               804           st      r0,     DSR
+00:0016 2E-F0                     805           pop     xr0
+00:0018 8E-F9                     806           pop     ea, lr
+00:001A 0F-FE                     807           rti
+                                  808   CBLOCKEND 19 1 295
+                                  809   CFUNCTIONEND 19
+                                  810   
+                                  811   
+  --------------------------      812           rseg $$_intI2CMINT$irq
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  19 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  813   CFUNCTION 20
+                                  814   
+00:0000                           815   __intI2CMINT    :
+                                  816   CBLOCK 20 1 296
+                                  817   
+                                  818   ;;static void _intI2CMINT(void) {      
+                                         _branchHdr(IRQ_NO_I2CMINT);     }
+                                  819   CLINEA 0000H 0001H 0128H 0001H 003DH
+                                  820   ;;*************************************
+                                        ****
+                                  821   ;;      register/stack information
+                                  822   ;;*************************************
+                                        ****
+                                  823   ;;*************************************
+                                        ****
+                                  824   
+00:0000 CE-F9                     825           push    lr, ea
+00:0002 6E-F0                     826           push    xr0
+00:0004 10-90 00-F0               827           l       r0,     DSR
+00:0008 4E-F0                     828           push    r0
+                                  829   CBLOCK 20 2 296
+                                  830   
+                                  831   ;;static void _intI2CMINT(void) {      
+                                         _branchHdr(IRQ_NO_I2CMINT);     }
+                                  832   CLINEA 0000H 0000H 0128H 0001H 003DH
+00:000A 0C 00                     833           mov     r0,     #0ch
+00:000C 01-F0'00-00'              834           bl      __branchHdr
+00:0010 0E-F0                     835           pop     r0
+00:0012 11-90 00-F0               836           st      r0,     DSR
+00:0016 2E-F0                     837           pop     xr0
+00:0018 8E-F9                     838           pop     ea, lr
+00:001A 0F-FE                     839           rti
+                                  840   CBLOCKEND 20 1 296
+                                  841   CFUNCTIONEND 20
+                                  842   
+                                  843   
+  --------------------------      844           rseg $$_intTM8INT$irq
+                                  845   CFUNCTION 21
+                                  846   
+00:0000                           847   __intTM8INT     :
+                                  848   CBLOCK 21 1 298
+                                  849   
+                                  850   ;;static void _intTM8INT(void)  {      
+                                         _branchHdr(IRQ_NO_TM8INT);      }
+                                  851   CLINEA 0000H 0001H 012AH 0001H 003BH
+                                  852   ;;*************************************
+                                        ****
+                                  853   ;;      register/stack information
+                                  854   ;;*************************************
+                                        ****
+                                  855   ;;*************************************
+                                        ****
+                                  856   
+00:0000 CE-F9                     857           push    lr, ea
+00:0002 6E-F0                     858           push    xr0
+00:0004 10-90 00-F0               859           l       r0,     DSR
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  20 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0008 4E-F0                     860           push    r0
+                                  861   CBLOCK 21 2 298
+                                  862   
+                                  863   ;;static void _intTM8INT(void)  {      
+                                         _branchHdr(IRQ_NO_TM8INT);      }
+                                  864   CLINEA 0000H 0000H 012AH 0001H 003BH
+00:000A 0D 00                     865           mov     r0,     #0dh
+00:000C 01-F0'00-00'              866           bl      __branchHdr
+00:0010 0E-F0                     867           pop     r0
+00:0012 11-90 00-F0               868           st      r0,     DSR
+00:0016 2E-F0                     869           pop     xr0
+00:0018 8E-F9                     870           pop     ea, lr
+00:001A 0F-FE                     871           rti
+                                  872   CBLOCKEND 21 1 298
+                                  873   CFUNCTIONEND 21
+                                  874   
+                                  875   
+  --------------------------      876           rseg $$_intTM9INT$irq
+                                  877   CFUNCTION 22
+                                  878   
+00:0000                           879   __intTM9INT     :
+                                  880   CBLOCK 22 1 299
+                                  881   
+                                  882   ;;static void _intTM9INT(void)  {      
+                                         _branchHdr(IRQ_NO_TM9INT);      }
+                                  883   CLINEA 0000H 0001H 012BH 0001H 003BH
+                                  884   ;;*************************************
+                                        ****
+                                  885   ;;      register/stack information
+                                  886   ;;*************************************
+                                        ****
+                                  887   ;;*************************************
+                                        ****
+                                  888   
+00:0000 CE-F9                     889           push    lr, ea
+00:0002 6E-F0                     890           push    xr0
+00:0004 10-90 00-F0               891           l       r0,     DSR
+00:0008 4E-F0                     892           push    r0
+                                  893   CBLOCK 22 2 299
+                                  894   
+                                  895   ;;static void _intTM9INT(void)  {      
+                                         _branchHdr(IRQ_NO_TM9INT);      }
+                                  896   CLINEA 0000H 0000H 012BH 0001H 003BH
+00:000A 0E 00                     897           mov     r0,     #0eh
+00:000C 01-F0'00-00'              898           bl      __branchHdr
+00:0010 0E-F0                     899           pop     r0
+00:0012 11-90 00-F0               900           st      r0,     DSR
+00:0016 2E-F0                     901           pop     xr0
+00:0018 8E-F9                     902           pop     ea, lr
+00:001A 0F-FE                     903           rti
+                                  904   CBLOCKEND 22 1 299
+                                  905   CFUNCTIONEND 22
+                                  906   
+                                  907   
+  --------------------------      908           rseg $$_intUA0INT$irq
+                                  909   CFUNCTION 23
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  21 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  910   
+00:0000                           911   __intUA0INT     :
+                                  912   CBLOCK 23 1 301
+                                  913   
+                                  914   ;;static void _intUA0INT(void)  {      
+                                         _branchHdr(IRQ_NO_UA0INT);      }
+                                  915   CLINEA 0000H 0001H 012DH 0001H 003BH
+                                  916   ;;*************************************
+                                        ****
+                                  917   ;;      register/stack information
+                                  918   ;;*************************************
+                                        ****
+                                  919   ;;*************************************
+                                        ****
+                                  920   
+00:0000 CE-F9                     921           push    lr, ea
+00:0002 6E-F0                     922           push    xr0
+00:0004 10-90 00-F0               923           l       r0,     DSR
+00:0008 4E-F0                     924           push    r0
+                                  925   CBLOCK 23 2 301
+                                  926   
+                                  927   ;;static void _intUA0INT(void)  {      
+                                         _branchHdr(IRQ_NO_UA0INT);      }
+                                  928   CLINEA 0000H 0000H 012DH 0001H 003BH
+00:000A 0F 00                     929           mov     r0,     #0fh
+00:000C 01-F0'00-00'              930           bl      __branchHdr
+00:0010 0E-F0                     931           pop     r0
+00:0012 11-90 00-F0               932           st      r0,     DSR
+00:0016 2E-F0                     933           pop     xr0
+00:0018 8E-F9                     934           pop     ea, lr
+00:001A 0F-FE                     935           rti
+                                  936   CBLOCKEND 23 1 301
+                                  937   CFUNCTIONEND 23
+                                  938   
+                                  939   
+  --------------------------      940           rseg $$_intUA1INT$irq
+                                  941   CFUNCTION 24
+                                  942   
+00:0000                           943   __intUA1INT     :
+                                  944   CBLOCK 24 1 302
+                                  945   
+                                  946   ;;static void _intUA1INT(void)  {      
+                                         _branchHdr(IRQ_NO_UA1INT);      }
+                                  947   CLINEA 0000H 0001H 012EH 0001H 003BH
+                                  948   ;;*************************************
+                                        ****
+                                  949   ;;      register/stack information
+                                  950   ;;*************************************
+                                        ****
+                                  951   ;;*************************************
+                                        ****
+                                  952   
+00:0000 CE-F9                     953           push    lr, ea
+00:0002 6E-F0                     954           push    xr0
+00:0004 10-90 00-F0               955           l       r0,     DSR
+00:0008 4E-F0                     956           push    r0
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  22 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                  957   CBLOCK 24 2 302
+                                  958   
+                                  959   ;;static void _intUA1INT(void)  {      
+                                         _branchHdr(IRQ_NO_UA1INT);      }
+                                  960   CLINEA 0000H 0000H 012EH 0001H 003BH
+00:000A 10 00                     961           mov     r0,     #010h
+00:000C 01-F0'00-00'              962           bl      __branchHdr
+00:0010 0E-F0                     963           pop     r0
+00:0012 11-90 00-F0               964           st      r0,     DSR
+00:0016 2E-F0                     965           pop     xr0
+00:0018 8E-F9                     966           pop     ea, lr
+00:001A 0F-FE                     967           rti
+                                  968   CBLOCKEND 24 1 302
+                                  969   CFUNCTIONEND 24
+                                  970   
+                                  971   
+  --------------------------      972           rseg $$_intCMP0INT$irq
+                                  973   CFUNCTION 25
+                                  974   
+00:0000                           975   __intCMP0INT    :
+                                  976   CBLOCK 25 1 304
+                                  977   
+                                  978   ;;static void _intCMP0INT(void) {      
+                                         _branchHdr(IRQ_NO_CMP0INT);     }
+                                  979   CLINEA 0000H 0001H 0130H 0001H 003DH
+                                  980   ;;*************************************
+                                        ****
+                                  981   ;;      register/stack information
+                                  982   ;;*************************************
+                                        ****
+                                  983   ;;*************************************
+                                        ****
+                                  984   
+00:0000 CE-F9                     985           push    lr, ea
+00:0002 6E-F0                     986           push    xr0
+00:0004 10-90 00-F0               987           l       r0,     DSR
+00:0008 4E-F0                     988           push    r0
+                                  989   CBLOCK 25 2 304
+                                  990   
+                                  991   ;;static void _intCMP0INT(void) {      
+                                         _branchHdr(IRQ_NO_CMP0INT);     }
+                                  992   CLINEA 0000H 0000H 0130H 0001H 003DH
+00:000A 11 00                     993           mov     r0,     #011h
+00:000C 01-F0'00-00'              994           bl      __branchHdr
+00:0010 0E-F0                     995           pop     r0
+00:0012 11-90 00-F0               996           st      r0,     DSR
+00:0016 2E-F0                     997           pop     xr0
+00:0018 8E-F9                     998           pop     ea, lr
+00:001A 0F-FE                     999           rti
+                                 1000   CBLOCKEND 25 1 304
+                                 1001   CFUNCTIONEND 25
+                                 1002   
+                                 1003   
+  --------------------------     1004           rseg $$_intCMP1INT$irq
+                                 1005   CFUNCTION 26
+                                 1006   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  23 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0000                          1007   __intCMP1INT    :
+                                 1008   CBLOCK 26 1 305
+                                 1009   
+                                 1010   ;;static void _intCMP1INT(void) {      
+                                         _branchHdr(IRQ_NO_CMP1INT);     }
+                                 1011   CLINEA 0000H 0001H 0131H 0001H 003DH
+                                 1012   ;;*************************************
+                                        ****
+                                 1013   ;;      register/stack information
+                                 1014   ;;*************************************
+                                        ****
+                                 1015   ;;*************************************
+                                        ****
+                                 1016   
+00:0000 CE-F9                    1017           push    lr, ea
+00:0002 6E-F0                    1018           push    xr0
+00:0004 10-90 00-F0              1019           l       r0,     DSR
+00:0008 4E-F0                    1020           push    r0
+                                 1021   CBLOCK 26 2 305
+                                 1022   
+                                 1023   ;;static void _intCMP1INT(void) {      
+                                         _branchHdr(IRQ_NO_CMP1INT);     }
+                                 1024   CLINEA 0000H 0000H 0131H 0001H 003DH
+00:000A 12 00                    1025           mov     r0,     #012h
+00:000C 01-F0'00-00'             1026           bl      __branchHdr
+00:0010 0E-F0                    1027           pop     r0
+00:0012 11-90 00-F0              1028           st      r0,     DSR
+00:0016 2E-F0                    1029           pop     xr0
+00:0018 8E-F9                    1030           pop     ea, lr
+00:001A 0F-FE                    1031           rti
+                                 1032   CBLOCKEND 26 1 305
+                                 1033   CFUNCTIONEND 26
+                                 1034   
+                                 1035   
+  --------------------------     1036           rseg $$_intTMEINT$irq
+                                 1037   CFUNCTION 27
+                                 1038   
+00:0000                          1039   __intTMEINT     :
+                                 1040   CBLOCK 27 1 307
+                                 1041   
+                                 1042   ;;static void _intTMEINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMEINT);      }
+                                 1043   CLINEA 0000H 0001H 0133H 0001H 003BH
+                                 1044   ;;*************************************
+                                        ****
+                                 1045   ;;      register/stack information
+                                 1046   ;;*************************************
+                                        ****
+                                 1047   ;;*************************************
+                                        ****
+                                 1048   
+00:0000 CE-F9                    1049           push    lr, ea
+00:0002 6E-F0                    1050           push    xr0
+00:0004 10-90 00-F0              1051           l       r0,     DSR
+00:0008 4E-F0                    1052           push    r0
+                                 1053   CBLOCK 27 2 307
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  24 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1054   
+                                 1055   ;;static void _intTMEINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMEINT);      }
+                                 1056   CLINEA 0000H 0000H 0133H 0001H 003BH
+00:000A 13 00                    1057           mov     r0,     #013h
+00:000C 01-F0'00-00'             1058           bl      __branchHdr
+00:0010 0E-F0                    1059           pop     r0
+00:0012 11-90 00-F0              1060           st      r0,     DSR
+00:0016 2E-F0                    1061           pop     xr0
+00:0018 8E-F9                    1062           pop     ea, lr
+00:001A 0F-FE                    1063           rti
+                                 1064   CBLOCKEND 27 1 307
+                                 1065   CFUNCTIONEND 27
+                                 1066   
+                                 1067   
+  --------------------------     1068           rseg $$_intTMFINT$irq
+                                 1069   CFUNCTION 28
+                                 1070   
+00:0000                          1071   __intTMFINT     :
+                                 1072   CBLOCK 28 1 308
+                                 1073   
+                                 1074   ;;static void _intTMFINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMFINT);      }
+                                 1075   CLINEA 0000H 0001H 0134H 0001H 003BH
+                                 1076   ;;*************************************
+                                        ****
+                                 1077   ;;      register/stack information
+                                 1078   ;;*************************************
+                                        ****
+                                 1079   ;;*************************************
+                                        ****
+                                 1080   
+00:0000 CE-F9                    1081           push    lr, ea
+00:0002 6E-F0                    1082           push    xr0
+00:0004 10-90 00-F0              1083           l       r0,     DSR
+00:0008 4E-F0                    1084           push    r0
+                                 1085   CBLOCK 28 2 308
+                                 1086   
+                                 1087   ;;static void _intTMFINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMFINT);      }
+                                 1088   CLINEA 0000H 0000H 0134H 0001H 003BH
+00:000A 14 00                    1089           mov     r0,     #014h
+00:000C 01-F0'00-00'             1090           bl      __branchHdr
+00:0010 0E-F0                    1091           pop     r0
+00:0012 11-90 00-F0              1092           st      r0,     DSR
+00:0016 2E-F0                    1093           pop     xr0
+00:0018 8E-F9                    1094           pop     ea, lr
+00:001A 0F-FE                    1095           rti
+                                 1096   CBLOCKEND 28 1 308
+                                 1097   CFUNCTIONEND 28
+                                 1098   
+                                 1099   
+  --------------------------     1100           rseg $$_intTMAINT$irq
+                                 1101   CFUNCTION 29
+                                 1102   
+00:0000                          1103   __intTMAINT     :
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  25 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1104   CBLOCK 29 1 309
+                                 1105   
+                                 1106   ;;static void _intTMAINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMAINT);      }
+                                 1107   CLINEA 0000H 0001H 0135H 0001H 003BH
+                                 1108   ;;*************************************
+                                        ****
+                                 1109   ;;      register/stack information
+                                 1110   ;;*************************************
+                                        ****
+                                 1111   ;;*************************************
+                                        ****
+                                 1112   
+00:0000 CE-F9                    1113           push    lr, ea
+00:0002 6E-F0                    1114           push    xr0
+00:0004 10-90 00-F0              1115           l       r0,     DSR
+00:0008 4E-F0                    1116           push    r0
+                                 1117   CBLOCK 29 2 309
+                                 1118   
+                                 1119   ;;static void _intTMAINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMAINT);      }
+                                 1120   CLINEA 0000H 0000H 0135H 0001H 003BH
+00:000A 15 00                    1121           mov     r0,     #015h
+00:000C 01-F0'00-00'             1122           bl      __branchHdr
+00:0010 0E-F0                    1123           pop     r0
+00:0012 11-90 00-F0              1124           st      r0,     DSR
+00:0016 2E-F0                    1125           pop     xr0
+00:0018 8E-F9                    1126           pop     ea, lr
+00:001A 0F-FE                    1127           rti
+                                 1128   CBLOCKEND 29 1 309
+                                 1129   CFUNCTIONEND 29
+                                 1130   
+                                 1131   
+  --------------------------     1132           rseg $$_intTMBINT$irq
+                                 1133   CFUNCTION 30
+                                 1134   
+00:0000                          1135   __intTMBINT     :
+                                 1136   CBLOCK 30 1 310
+                                 1137   
+                                 1138   ;;static void _intTMBINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMBINT);      }
+                                 1139   CLINEA 0000H 0001H 0136H 0001H 003BH
+                                 1140   ;;*************************************
+                                        ****
+                                 1141   ;;      register/stack information
+                                 1142   ;;*************************************
+                                        ****
+                                 1143   ;;*************************************
+                                        ****
+                                 1144   
+00:0000 CE-F9                    1145           push    lr, ea
+00:0002 6E-F0                    1146           push    xr0
+00:0004 10-90 00-F0              1147           l       r0,     DSR
+00:0008 4E-F0                    1148           push    r0
+                                 1149   CBLOCK 30 2 310
+                                 1150   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  26 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1151   ;;static void _intTMBINT(void)  {      
+                                         _branchHdr(IRQ_NO_TMBINT);      }
+                                 1152   CLINEA 0000H 0000H 0136H 0001H 003BH
+00:000A 16 00                    1153           mov     r0,     #016h
+00:000C 01-F0'00-00'             1154           bl      __branchHdr
+00:0010 0E-F0                    1155           pop     r0
+00:0012 11-90 00-F0              1156           st      r0,     DSR
+00:0016 2E-F0                    1157           pop     xr0
+00:0018 8E-F9                    1158           pop     ea, lr
+00:001A 0F-FE                    1159           rti
+                                 1160   CBLOCKEND 30 1 310
+                                 1161   CFUNCTIONEND 30
+                                 1162   
+                                 1163   
+  --------------------------     1164           rseg $$_intPWCINT$irq
+                                 1165   CFUNCTION 31
+                                 1166   
+00:0000                          1167   __intPWCINT     :
+                                 1168   CBLOCK 31 1 312
+                                 1169   
+                                 1170   ;;static void _intPWCINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWCINT);      }
+                                 1171   CLINEA 0000H 0001H 0138H 0001H 003BH
+                                 1172   ;;*************************************
+                                        ****
+                                 1173   ;;      register/stack information
+                                 1174   ;;*************************************
+                                        ****
+                                 1175   ;;*************************************
+                                        ****
+                                 1176   
+00:0000 CE-F9                    1177           push    lr, ea
+00:0002 6E-F0                    1178           push    xr0
+00:0004 10-90 00-F0              1179           l       r0,     DSR
+00:0008 4E-F0                    1180           push    r0
+                                 1181   CBLOCK 31 2 312
+                                 1182   
+                                 1183   ;;static void _intPWCINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWCINT);      }
+                                 1184   CLINEA 0000H 0000H 0138H 0001H 003BH
+00:000A 17 00                    1185           mov     r0,     #017h
+00:000C 01-F0'00-00'             1186           bl      __branchHdr
+00:0010 0E-F0                    1187           pop     r0
+00:0012 11-90 00-F0              1188           st      r0,     DSR
+00:0016 2E-F0                    1189           pop     xr0
+00:0018 8E-F9                    1190           pop     ea, lr
+00:001A 0F-FE                    1191           rti
+                                 1192   CBLOCKEND 31 1 312
+                                 1193   CFUNCTIONEND 31
+                                 1194   
+                                 1195   
+  --------------------------     1196           rseg $$_intPWDINT$irq
+                                 1197   CFUNCTION 32
+                                 1198   
+00:0000                          1199   __intPWDINT     :
+                                 1200   CBLOCK 32 1 313
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  27 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1201   
+                                 1202   ;;static void _intPWDINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWDINT);      }
+                                 1203   CLINEA 0000H 0001H 0139H 0001H 003BH
+                                 1204   ;;*************************************
+                                        ****
+                                 1205   ;;      register/stack information
+                                 1206   ;;*************************************
+                                        ****
+                                 1207   ;;*************************************
+                                        ****
+                                 1208   
+00:0000 CE-F9                    1209           push    lr, ea
+00:0002 6E-F0                    1210           push    xr0
+00:0004 10-90 00-F0              1211           l       r0,     DSR
+00:0008 4E-F0                    1212           push    r0
+                                 1213   CBLOCK 32 2 313
+                                 1214   
+                                 1215   ;;static void _intPWDINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWDINT);      }
+                                 1216   CLINEA 0000H 0000H 0139H 0001H 003BH
+00:000A 18 00                    1217           mov     r0,     #018h
+00:000C 01-F0'00-00'             1218           bl      __branchHdr
+00:0010 0E-F0                    1219           pop     r0
+00:0012 11-90 00-F0              1220           st      r0,     DSR
+00:0016 2E-F0                    1221           pop     xr0
+00:0018 8E-F9                    1222           pop     ea, lr
+00:001A 0F-FE                    1223           rti
+                                 1224   CBLOCKEND 32 1 313
+                                 1225   CFUNCTIONEND 32
+                                 1226   
+                                 1227   
+  --------------------------     1228           rseg $$_intPWEINT$irq
+                                 1229   CFUNCTION 33
+                                 1230   
+00:0000                          1231   __intPWEINT     :
+                                 1232   CBLOCK 33 1 314
+                                 1233   
+                                 1234   ;;static void _intPWEINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWEINT);      }
+                                 1235   CLINEA 0000H 0001H 013AH 0001H 003BH
+                                 1236   ;;*************************************
+                                        ****
+                                 1237   ;;      register/stack information
+                                 1238   ;;*************************************
+                                        ****
+                                 1239   ;;*************************************
+                                        ****
+                                 1240   
+00:0000 CE-F9                    1241           push    lr, ea
+00:0002 6E-F0                    1242           push    xr0
+00:0004 10-90 00-F0              1243           l       r0,     DSR
+00:0008 4E-F0                    1244           push    r0
+                                 1245   CBLOCK 33 2 314
+                                 1246   
+                                 1247   ;;static void _intPWEINT(void)  {      
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  28 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                         _branchHdr(IRQ_NO_PWEINT);      }
+                                 1248   CLINEA 0000H 0000H 013AH 0001H 003BH
+00:000A 19 00                    1249           mov     r0,     #019h
+00:000C 01-F0'00-00'             1250           bl      __branchHdr
+00:0010 0E-F0                    1251           pop     r0
+00:0012 11-90 00-F0              1252           st      r0,     DSR
+00:0016 2E-F0                    1253           pop     xr0
+00:0018 8E-F9                    1254           pop     ea, lr
+00:001A 0F-FE                    1255           rti
+                                 1256   CBLOCKEND 33 1 314
+                                 1257   CFUNCTIONEND 33
+                                 1258   
+                                 1259   
+  --------------------------     1260           rseg $$_intPWFINT$irq
+                                 1261   CFUNCTION 34
+                                 1262   
+00:0000                          1263   __intPWFINT     :
+                                 1264   CBLOCK 34 1 315
+                                 1265   
+                                 1266   ;;static void _intPWFINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWFINT);      }
+                                 1267   CLINEA 0000H 0001H 013BH 0001H 003BH
+                                 1268   ;;*************************************
+                                        ****
+                                 1269   ;;      register/stack information
+                                 1270   ;;*************************************
+                                        ****
+                                 1271   ;;*************************************
+                                        ****
+                                 1272   
+00:0000 CE-F9                    1273           push    lr, ea
+00:0002 6E-F0                    1274           push    xr0
+00:0004 10-90 00-F0              1275           l       r0,     DSR
+00:0008 4E-F0                    1276           push    r0
+                                 1277   CBLOCK 34 2 315
+                                 1278   
+                                 1279   ;;static void _intPWFINT(void)  {      
+                                         _branchHdr(IRQ_NO_PWFINT);      }
+                                 1280   CLINEA 0000H 0000H 013BH 0001H 003BH
+00:000A 1A 00                    1281           mov     r0,     #01ah
+00:000C 01-F0'00-00'             1282           bl      __branchHdr
+00:0010 0E-F0                    1283           pop     r0
+00:0012 11-90 00-F0              1284           st      r0,     DSR
+00:0016 2E-F0                    1285           pop     xr0
+00:0018 8E-F9                    1286           pop     ea, lr
+00:001A 0F-FE                    1287           rti
+                                 1288   CBLOCKEND 34 1 315
+                                 1289   CFUNCTIONEND 34
+                                 1290   
+                                 1291   
+  --------------------------     1292           rseg $$_intT128HINT$irq
+                                 1293   CFUNCTION 35
+                                 1294   
+00:0000                          1295   __intT128HINT   :
+                                 1296   CBLOCK 35 1 317
+                                 1297   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  29 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1298   ;;static void _intT128HINT(void)       
+                                         {       _branchHdr(IRQ_NO_T128HINT);  
+                                          }
+                                 1299   CLINEA 0000H 0001H 013DH 0001H 003FH
+                                 1300   ;;*************************************
+                                        ****
+                                 1301   ;;      register/stack information
+                                 1302   ;;*************************************
+                                        ****
+                                 1303   ;;*************************************
+                                        ****
+                                 1304   
+00:0000 CE-F9                    1305           push    lr, ea
+00:0002 6E-F0                    1306           push    xr0
+00:0004 10-90 00-F0              1307           l       r0,     DSR
+00:0008 4E-F0                    1308           push    r0
+                                 1309   CBLOCK 35 2 317
+                                 1310   
+                                 1311   ;;static void _intT128HINT(void)       
+                                         {       _branchHdr(IRQ_NO_T128HINT);  
+                                          }
+                                 1312   CLINEA 0000H 0000H 013DH 0001H 003FH
+00:000A 1B 00                    1313           mov     r0,     #01bh
+00:000C 01-F0'00-00'             1314           bl      __branchHdr
+00:0010 0E-F0                    1315           pop     r0
+00:0012 11-90 00-F0              1316           st      r0,     DSR
+00:0016 2E-F0                    1317           pop     xr0
+00:0018 8E-F9                    1318           pop     ea, lr
+00:001A 0F-FE                    1319           rti
+                                 1320   CBLOCKEND 35 1 317
+                                 1321   CFUNCTIONEND 35
+                                 1322   
+                                 1323   
+  --------------------------     1324           rseg $$_intT32HINT$irq
+                                 1325   CFUNCTION 36
+                                 1326   
+00:0000                          1327   __intT32HINT    :
+                                 1328   CBLOCK 36 1 318
+                                 1329   
+                                 1330   ;;static void _intT32HINT(void) {      
+                                         _branchHdr(IRQ_NO_T32HINT);     }
+                                 1331   CLINEA 0000H 0001H 013EH 0001H 003DH
+                                 1332   ;;*************************************
+                                        ****
+                                 1333   ;;      register/stack information
+                                 1334   ;;*************************************
+                                        ****
+                                 1335   ;;*************************************
+                                        ****
+                                 1336   
+00:0000 CE-F9                    1337           push    lr, ea
+00:0002 6E-F0                    1338           push    xr0
+00:0004 10-90 00-F0              1339           l       r0,     DSR
+00:0008 4E-F0                    1340           push    r0
+                                 1341   CBLOCK 36 2 318
+                                 1342   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  30 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1343   ;;static void _intT32HINT(void) {      
+                                         _branchHdr(IRQ_NO_T32HINT);     }
+                                 1344   CLINEA 0000H 0000H 013EH 0001H 003DH
+00:000A 1C 00                    1345           mov     r0,     #01ch
+00:000C 01-F0'00-00'             1346           bl      __branchHdr
+00:0010 0E-F0                    1347           pop     r0
+00:0012 11-90 00-F0              1348           st      r0,     DSR
+00:0016 2E-F0                    1349           pop     xr0
+00:0018 8E-F9                    1350           pop     ea, lr
+00:001A 0F-FE                    1351           rti
+                                 1352   CBLOCKEND 36 1 318
+                                 1353   CFUNCTIONEND 36
+                                 1354   
+                                 1355   
+  --------------------------     1356           rseg $$_intT16HINT$irq
+                                 1357   CFUNCTION 37
+                                 1358   
+00:0000                          1359   __intT16HINT    :
+                                 1360   CBLOCK 37 1 319
+                                 1361   
+                                 1362   ;;static void _intT16HINT(void) {      
+                                         _branchHdr(IRQ_NO_T16HINT);     }
+                                 1363   CLINEA 0000H 0001H 013FH 0001H 003DH
+                                 1364   ;;*************************************
+                                        ****
+                                 1365   ;;      register/stack information
+                                 1366   ;;*************************************
+                                        ****
+                                 1367   ;;*************************************
+                                        ****
+                                 1368   
+00:0000 CE-F9                    1369           push    lr, ea
+00:0002 6E-F0                    1370           push    xr0
+00:0004 10-90 00-F0              1371           l       r0,     DSR
+00:0008 4E-F0                    1372           push    r0
+                                 1373   CBLOCK 37 2 319
+                                 1374   
+                                 1375   ;;static void _intT16HINT(void) {      
+                                         _branchHdr(IRQ_NO_T16HINT);     }
+                                 1376   CLINEA 0000H 0000H 013FH 0001H 003DH
+00:000A 1D 00                    1377           mov     r0,     #01dh
+00:000C 01-F0'00-00'             1378           bl      __branchHdr
+00:0010 0E-F0                    1379           pop     r0
+00:0012 11-90 00-F0              1380           st      r0,     DSR
+00:0016 2E-F0                    1381           pop     xr0
+00:0018 8E-F9                    1382           pop     ea, lr
+00:001A 0F-FE                    1383           rti
+                                 1384   CBLOCKEND 37 1 319
+                                 1385   CFUNCTIONEND 37
+                                 1386   
+                                 1387   
+  --------------------------     1388           rseg $$_intT2HINT$irq
+                                 1389   CFUNCTION 38
+                                 1390   
+00:0000                          1391   __intT2HINT     :
+                                 1392   CBLOCK 38 1 320
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  31 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                 1393   
+                                 1394   ;;static void _intT2HINT(void)  {      
+                                         _branchHdr(IRQ_NO_T2HINT);      }
+                                 1395   CLINEA 0000H 0001H 0140H 0001H 003BH
+                                 1396   ;;*************************************
+                                        ****
+                                 1397   ;;      register/stack information
+                                 1398   ;;*************************************
+                                        ****
+                                 1399   ;;*************************************
+                                        ****
+                                 1400   
+00:0000 CE-F9                    1401           push    lr, ea
+00:0002 6E-F0                    1402           push    xr0
+00:0004 10-90 00-F0              1403           l       r0,     DSR
+00:0008 4E-F0                    1404           push    r0
+                                 1405   CBLOCK 38 2 320
+                                 1406   
+                                 1407   ;;static void _intT2HINT(void)  {      
+                                         _branchHdr(IRQ_NO_T2HINT);      }
+                                 1408   CLINEA 0000H 0000H 0140H 0001H 003BH
+00:000A 1E 00                    1409           mov     r0,     #01eh
+00:000C 01-F0'00-00'             1410           bl      __branchHdr
+00:0010 0E-F0                    1411           pop     r0
+00:0012 11-90 00-F0              1412           st      r0,     DSR
+00:0016 2E-F0                    1413           pop     xr0
+00:0018 8E-F9                    1414           pop     ea, lr
+00:001A 0F-FE                    1415           rti
+                                 1416   CBLOCKEND 38 1 320
+                                 1417   CFUNCTIONEND 38
+                                 1418   
+                                 1419           public _irq_init
+                                 1420           public _irq_di
+                                 1421           public _irq_ei
+                                 1422           public _irq_setHdr
+                                 1423           extrn code near : _main
+                                 1424   
+  --------------------------     1425           cseg #00h at 08h
+00:0008 00-00'                   1426           dw      __intWDTINT
+                                 1427   
+  --------------------------     1428           cseg #00h at 0Ch
+00:000C 00-00'                   1429           dw      __intVLSINT
+00:000E 00-00'                   1430           dw      __intUndefHdr
+00:0010 00-00'                   1431           dw      __intPA0INT
+00:0012 00-00'                   1432           dw      __intPA1INT
+00:0014 00-00'                   1433           dw      __intPA2INT
+00:0016 00-00'                   1434           dw      __intUndefHdr
+00:0018 00-00'                   1435           dw      __intPB0INT
+00:001A 00-00'                   1436           dw      __intPB1INT
+00:001C 00-00'                   1437           dw      __intPB2INT
+00:001E 00-00'                   1438           dw      __intPB3INT
+00:0020 00-00'                   1439           dw      __intSIO0INT
+00:0022 00-00'                   1440           dw      __intUndefHdr
+00:0024 00-00'                   1441           dw      __intSADINT
+00:0026 00-00'                   1442           dw      __intUndefHdr
+00:0028 00-00'                   1443           dw      __intUndefHdr
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:  32 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:002A 00-00'                   1444           dw      __intUndefHdr
+00:002C 00-00'                   1445           dw      __intI2CSINT
+00:002E 00-00'                   1446           dw      __intI2CMINT
+00:0030 00-00'                   1447           dw      __intUndefHdr
+00:0032 00-00'                   1448           dw      __intUndefHdr
+00:0034 00-00'                   1449           dw      __intTM8INT
+00:0036 00-00'                   1450           dw      __intTM9INT
+00:0038 00-00'                   1451           dw      __intUndefHdr
+00:003A 00-00'                   1452           dw      __intUndefHdr
+00:003C 00-00'                   1453           dw      __intUndefHdr
+00:003E 00-00'                   1454           dw      __intUndefHdr
+00:0040 00-00'                   1455           dw      __intUA0INT
+00:0042 00-00'                   1456           dw      __intUA1INT
+00:0044 00-00'                   1457           dw      __intUndefHdr
+00:0046 00-00'                   1458           dw      __intUndefHdr
+00:0048 00-00'                   1459           dw      __intUndefHdr
+00:004A 00-00'                   1460           dw      __intUndefHdr
+00:004C 00-00'                   1461           dw      __intCMP0INT
+00:004E 00-00'                   1462           dw      __intCMP1INT
+00:0050 00-00'                   1463           dw      __intUndefHdr
+00:0052 00-00'                   1464           dw      __intUndefHdr
+00:0054 00-00'                   1465           dw      __intUndefHdr
+00:0056 00-00'                   1466           dw      __intUndefHdr
+00:0058 00-00'                   1467           dw      __intTMEINT
+00:005A 00-00'                   1468           dw      __intTMFINT
+00:005C 00-00'                   1469           dw      __intTMAINT
+00:005E 00-00'                   1470           dw      __intTMBINT
+00:0060 00-00'                   1471           dw      __intPWCINT
+00:0062 00-00'                   1472           dw      __intPWDINT
+00:0064 00-00'                   1473           dw      __intPWEINT
+00:0066 00-00'                   1474           dw      __intPWFINT
+00:0068 00-00'                   1475           dw      __intUndefHdr
+00:006A 00-00'                   1476           dw      __intT128HINT
+00:006C 00-00'                   1477           dw      __intUndefHdr
+00:006E 00-00'                   1478           dw      __intT32HINT
+00:0070 00-00'                   1479           dw      __intT16HINT
+00:0072 00-00'                   1480           dw      __intUndefHdr
+00:0074 00-00'                   1481           dw      __intUndefHdr
+00:0076 00-00'                   1482           dw      __intT2HINT
+                                 1483   
+  --------------------------     1484           rseg $$NVARirq
+00:0000                          1485   __sIrqHdr :
+00:0000                          1486           ds      03eh
+                                 1487   
+                                 1488           end
+
+
+
+  Target       : ML610111 (nX-U8/100)
+  Memory Model : SMALL
+  Data   Model : NEAR
+  ROM WINDOW   : (not specified)
+  Internal RAM : E000H to E7FFH
+
+  Errors   : 0
+  Warnings : 0  (/Wrpeast)
+  Lines    : 1488

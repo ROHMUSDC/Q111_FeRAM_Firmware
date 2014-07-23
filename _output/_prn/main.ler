@@ -1,0 +1,1983 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+      1 //*********************************************************************
+        ********
+      2 //
+      3 // USDC TEMPLATE FIRMWARE for Q111 MCU  
+      4 //
+      5 // Program:	 LAPIS MCU Development Board Demo Code 
+      6 //
+      7 // Purpose:	 Demonstration Code for use with LAPIS MCU Development Boar
+        d 
+      8 //
+      9 // This single Example code Demonstrates all the following modules work
+        ing: 
+     10 //		 1.) MCU Initialization (OSC; PORTS; PERIPHERIALS; WDT; etc.) 
+     11 //		 2.) Demo of 2Hz INTERRUPT on TBC
+     12 //		 3.) Demo of Timer-overflow INTERRUPTS on TMR 8/9
+     13 //		 4.) Demo of Timer-overflow INTERRUPTS on TMR A/B
+     14 //		 5.) Demo of Timer-overflow INTERRUPTS on TMR E/F
+     15 //		 6.) Demo of Hardware PWM Control 
+     16 //		 7.) UART TX Demo 
+     17 //		 8.) UART RX Demo
+     18 //		 9.) ADC Demo...
+     19 //		10.) IsC Master Demo...    
+     20 //
+     21 // Authors:	 C. Schell, K. Bahar & F. Lee 
+     22 //		 	 ROHM Semiconductor USA, LLC
+     23 //		 	 US Design Center
+     24 //
+     25 // Notes: 	
+     26 //		1.) RTLU8 RUNTIME LIBRARIES:
+     27 //				RTLU8 is a C runtime library for mcu's that use the LAPIS nX-U8 a
+        s the CPU core
+     28 //				RTLU8 provides a large number of routines that can be used when p
+        rogramming 
+     29 //				in C. Much effort and time can be saved by using these library ro
+        utines.
+     30 //				For Example, to use the sprintf library for UART commands, you ne
+        ed to add 
+     31 //				the "LU8100SW.lib" RT Library. To do this open the LAPIS IDE & se
+        lect:
+     32 //				'Project -> Options -> Target' from the menu bar.  In the "Genera
+        l" Tab, 
+     33 //				type in "LU8100SW.lib" to add the RTLU8 runtime library for small
+         memory 
+     34 //				model containing sprintf and many other routines
+     35 //		2.) CHECKING THE PROGRAM SIZE:
+     36 //				You can check the program size from the map file generated during
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+         "Compile" step by the Linker. 
+     37 //				Please refer to CCU8 programming guide: (3.1. Map Files and 3.1.4
+        . Program and Data size)
+     38 //				Results will look something like this:
+     39 //					Program and Data Sizes
+     40 //					This portion of the map file gives aggregate program and data si
+        zes for each segment type.
+     41 //						Total size (CODE  ) = 02CE4   (11492)
+     42 //						Total size (DATA  ) = 002E7   (743)
+     43 //						Total size (BIT   ) = 00000.0 (0.0)
+     44 //						Total size (NVDATA) = 00000   (0)
+     45 //						Total size (NVBIT ) = 00000.0 (0.0)
+     46 //						Total size (TABLE ) = 0828A   (33418)
+     47 //
+     48 // Started:  April 6th, 2013
+     49 // Updated:	 JULY 17th, 2014
+     50 //*********************************************************************
+        ********
+     51 
+     52 // ================================ ML610Q111 =========================
+        ======== 
+     53 //	ML610Q111 MCU PINOUT - TSSOP20 Package
+     54 //
+     55 // 		Pin 01 of mcu => PC0 / TM9OUT / PWMF0 
+     56 // 		Pin 02 of mcu => RESET_N
+     57 // 		Pin 03 of mcu => TEST
+     58 // 		Pin 04 of mcu => PB0 / CMP1OUT / OUTCLK / PWMC / RXD0 / AIN2 / EXI
+        4
+     59 // 		Pin 05 of mcu => PB1 / TXD1 / TXD0 / PWMD / AIN3 / EXI5 
+     60 // 		Pin 06 of mcu => PB2 / PWME / RXD1 / EXI6 
+     61 // 		Pin 07 of mcu => PB3 / TXD1 / SIN / EXI7 
+     62 // 		Pin 08 of mcu => PA2 / CMP0OUT / CLKIN / PWME / EXI2 
+     63 // 		Pin 09 of mcu => TESTF
+     64 // 		Pin 10 of mcu => PC3 / TMFOUT
+     65 
+     66 // 		Pin 11 of mcu => PC2 / PWMF2 
+     67 // 		Pin 12 of mcu => PA1 / EXI1 / AIN1 / CMP1P / PWMD / LSCLK / TMFOUT
+        
+     68 // 		Pin 13 of mcu => PB4 / CMP0P / SOUT / TXD0 / TXD1
+     69 // 		Pin 14 of mcu => PB5 / CMP0M / RXD0 / SCK / SCL / PWMF2
+     70 // 		Pin 15 of mcu => PB6 / AIN4 / CLKIN / SDA / PWMF1
+     71 // 		Pin 16 of mcu => VSS
+     72 // 		Pin 17 of mcu => VDD
+     73 // 		Pin 18 of mcu => PB7 / AIN5 / RXD1 / LSCLK / PWMF0 / PWMC
+     74 // 		Pin 19 of mcu => PA0 / EXI0 / AIN0 / PWMC / OUTCLK / TM9OUT
+     75 // 		Pin 20 of mcu => PC1 / PWMF1
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+     76 //
+     77 //=====================================================================
+        ========
+     78 
+     79 //*********************************************************************
+        ********
+     80 // Microcontroller's connections on the LAPIS MCU Development Board to 
+        the 
+     81 //  Plug 'n Play, Raspberry Pi Compatible, Universal Connectors:
+     82 //
+     83 // Pin-01 => 3.3V Power					Pin-02 => 5.0V Power (VBUS)
+     84 // Pin-03 => I2C-SDA  (Q111 I/O B.6)	Pin-04 => no connection
+     85 // Pin-05 => I2C-SCL  (Q111 I/O B.5)*	Pin-06 => GROUND
+     86 // Pin-07 => no connection*				Pin-08 => UART-TX  (Q111 I/O B.1)
+     87 // Pin-09 => no connection				Pin-10 => UART-RX  (Q111 I/O B.0) 
+     88 // Pin-11 => GPIO #17 (Q111 I/O A.0)	Pin-12 => GPIO #18 (Q111 I/O B.7)
+     89 // Pin-13 => GPIO #21 (Q111 I/O A.1)	Pin-14 => no connection
+     90 // Pin-15 => GPIO #22 (Q111 I/O A.2)	Pin-16 => GPIO #23 (Q111 I/O C.2)
+     91 // Pin-17 => no connection				Pin-18 => GPIO #24 (Q111 I/O C.3)
+     92 // Pin-19 => SPI-MOSI (Q111 I/O B.4)	Pin-20 => no connection
+     93 // Pin-21 => SPI-MISO (Q111 I/O B.3)	Pin-22 => GPIO #25 (Q111 I/O B.2)
+     94 // Pin-23 => SPI-SCLK (Q111 I/O B.5)*	Pin-24 => SPI-CS0  (Q111 I/O C.0)
+        
+     95 // Pin-25 => no connection				Pin-26 => SPI-CS1  (Q111 I/O C.1)
+     96 // 
+     97 //=====================================================================
+        ========
+     98 //*********************************************************************
+        ********
+     99 
+    100 //*********************************************************************
+        ********
+    101 // Q111 Microcontroller's I/O Pins at J3 on the LAPIS MCU Development B
+        oard 
+    102 //
+    103 // Pin-01 => A.0				Pin-02 => A.1
+    104 // Pin-03 => A.2				Pin-04 => B.0
+    105 // Pin-05 => B.1				Pin-06 => B.2
+    106 // Pin-07 => B.3				Pin-08 => B.4
+    107 // Pin-09 => B.5				Pin-10 => B.6 
+    108 // Pin-11 => B.7				Pin-12 => C.0
+    109 // Pin-13 => C.1				Pin-14 => C.2
+    110 // Pin-15 => C.3				Pin-16 => GROUND
+    111 //
+    112 //=====================================================================
+        ========
+
+                                                              Page :          4
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    113 //*********************************************************************
+        ********
+    114 
+    115 
+    116 //***** PREPROCESSOR DIRECTIVES ***************************************
+        ********
+    117  // INCLUDED FILES...
+    118 	#include	<ML610111.H>	// Lapis Micro ML610Q111 on LAPIS MCU Developmen
+        t Board
+    119 	#include	<stdlib.h>		// General-purpose utilities
+    120 	#include	<stdio.h>		// I/O-related processing
+    121 	#include 	<common.h>		// Common Definitions
+    122 	#include 	<irq.h>			// IRQ Definitions
+    123 	#include 	<mcu.h>			// MCU Definition
+    124 	#include	<i2c.h>			// I2C Definition
+    125 	#include 	<tbc.h>			// Set TBC (Timer Based Clock) API
+    126 	#include 	<timer.h>		// Timer Macros & APIs
+    127 	#include	<math.h>		// Mathematical functions
+    128 	#include 	<uart.h>		// UART Function Prototypes	
+    129 	//#include	<float.h>		// Numerical limits for floating-point numbers	
+    130 	//#include	<string.h>		// Character string manipulation routines
+    131 	//#include	<yvals.h>		// Called for by most Header Files
+    132 
+    133 	//#include 	<main.h>		// Clear WDT API
+    134 	//#include	<ctype.h>		// Character classification and conversion 
+    135 	//#include	<errno.h>		// Error identifiers Library
+    136 	//#include	<limits.h>		// Numerical limits for integers
+    137 	//#include	<muldivu8.h>	// Multiplication and Division accelerator
+    138 	//#include	<setjmp.h>		// Global jump (allow jumps to locations outsid
+        e the current function) 
+    139 	//#include	<signal.h>		// Signal handling functions
+    140 	//#include	<stdarg.h>		// Variable numbers of arguments
+    141 	//#include	<stddef.h>		// Standard types and macros 
+    142 	//#include	<yfuns.h>		//  
+    143 	
+    144 //*********************************************************************
+        ********
+    145  // I/O PIN DATA ALIASES...
+    146 // Connections for Q111 Universal Socket
+    147 	#define RX 			PB0D 
+    148 	#define TX 			PB1D
+    149  
+    150 	#define I2C_SDA 	PB6D 
+    151 	#define I2C_SCL 	PB5D 
+    152 
+    153 	#define GPIO_17		PA0D
+
+                                                              Page :          5
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    154 	#define GPIO_21		PA1D
+    155 	#define GPIO_22		PA2D
+    156 	#define GPIO_18		PB7D
+    157 	#define GPIO_23		PC2D
+    158 	#define GPIO_24		PC3D
+    159 	#define GPIO_25		PB2D
+    160 
+    161 	#define SPI_MOSI	PB4D
+    162 	#define SPI_MISO	PB3D
+    163 	#define SPI_SCL 	PB5D
+    164 	#define SPI_CS0		PC0D
+    165 	#define SPI_CS1 	PC1D 	
+    166 	
+    167 	
+    168 
+    169 //*********************************************************************
+        ********
+    170 //=====================================================================
+        ======
+    171 //   MACROS: 
+    172 //=====================================================================
+        ======
+    173 
+    174 // ===== Peripheral setting.=====
+    175 	#define HSCLK_KHZ	( 8192u )	// 8MHz = 8000kHz (will be multiplied by 1
+        024 to give 8,192,000Hz)
+    176 	#define FLG_SET	    ( 0x01u ) 	
+    177 
+    178 // ===== SET DESIRED UART SETTINGS HERE! (Options in UART.h) ==========
+        ======
+    179 #define UART_BAUDRATE		( UART_BR_9600BPS) 	// Data Bits Per Second - Te
+        sted at rates from 2400bps to 512000bps!
+    180 #define UART_DATA_LENGTH	( UART_LG_8BIT )		// x-Bit Data
+    181 #define UART_PARITY_BIT		( UART_PT_NON )			// Parity
+    182 #define UART_STOP_BIT		( UART_STP_1BIT )		// x Stop-Bits
+    183 #define UART_LOGIC			( UART_NEG_POS )		// Desired Logic
+    184 #define UART_DIRECTION		( UART_DIR_LSB )		// LSB or MSB First 
+    185 
+    186 		// ===== UART Settings =====
+    187 		//STRUCTURE:
+    188 			static const tUartSetParam  _uartSetParam = {		// UART Parameters
+    189 				UART_BAUDRATE,						// Members of Structure...
+    190 				UART_DATA_LENGTH,					// Members of Structure...
+    191 				UART_PARITY_BIT,					// Members of Structure...
+    192 				UART_STOP_BIT,						// Members of Structure...
+    193 				UART_LOGIC,							// Members of Structure...
+
+                                                              Page :          6
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    194 				UART_DIRECTION						// Members of Structure...
+    195 			};
+    196 //=====================================================================
+        ======
+    197 
+    198 
+    199 
+    200 //*********************************************************************
+        ********
+    201 //=====================================================================
+        ======
+    202 //   STRUCTURES: 
+    203 //=====================================================================
+        ======
+    204 	//Example Structure Declaration
+    205 	typedef struct {
+    206 		unsigned char state     : 1;
+    207 		unsigned char state_sub : 2;
+    208 		unsigned char reserve   : 5;
+    209 	} STRUCT_STATE;	 
+    210 
+    211 
+    212 //*********************************************************************
+        ********
+    213 
+    214 
+    215 //*********************************************************************
+        ********
+    216 //=====================================================================
+        ======
+    217 //   FUNCTION PROTOTYPES: 
+    218 //	Establishes the name and return type of a function and may specify t
+        he 
+    219 // 	types, formal parameter names and number of arguments to the functi
+        on                                 
+    220 //=====================================================================
+        ======
+    221 	void main_clrWDT( void );				// no return value and no arguments
+    222 	void Initialization( void );			// no return value and no arguments
+    223 	void SetOSC( void );					// no return value and no arguments
+    224 
+    225 	static void NOPms(unsigned int ms);		// no return value - Delay in ms 
+        as Argument
+    226 	void NOPx( unsigned int MyCount );		// no return value - Count in ms a
+        s Argument
+    227 	void PWM_B0_ON(int myPeriod, int myDutyCycle);		// no return value - P
+
+                                                              Page :          7
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+        eriod & DutyCycle Variables as Arguments
+    228 
+    229 	void analog_comparator( void );			
+    230 	void PortA_Low( void );					// no return value and no arguments
+    231 	void PortB_Low( void );					// no return value and no arguments
+    232 	void PortC_Low( void );					// no return value and no arguments
+    233 	void PortA_Digital_Inputs( void );		// no return value and no argument
+        s
+    234 	void PinB0_PWM( void ); 				// no return value and no arguments
+    235 	void main_reqNotHalt( void );			// no return value and no arguments
+    236 
+    237 	static void _initPeri( void );
+    238 	static void _intWdt( void );
+    239 	static void _intTimer( void );
+    240 
+    241 	void _funcUartFin( unsigned int size, unsigned char errStat );
+    242 	void _intUart( void );
+    243 
+    244 	void _funcI2CFin( unsigned int size, unsigned char errStat );
+    245 	void checkI2C( void );
+    246 	void _intI2c( void );
+    247 
+    248 	void _intADC( void );
+    249 	
+    250 	void TBC_ISR( void );			// TBC Interrupt Service Routine...
+    251 	void TMR89_ISR( void );			// TIMER 8/9 Interrupt Service Routine...
+    252 	void TMRAB_ISR( void );			// TIMER A/B Interrupt Service Routine...
+    253 	void TMREF_ISR( void );			// TIMER E/F Interrupt Service Routine...
+    254 	void ExtInt_ISR( void );		// External Interrupt Interrupt Service Rout
+        ine...
+    255 	
+    256 	void SerialLCD_Init_and_Clear (void);	// no return value and no argume
+        nts 
+    257 
+    258 	void UART_TX_TEST (void);				// no return value and no arguments
+    259 	void UART_RX_TEST (void);				// no return value and no arguments
+    260 
+    261 	void Jerrys_Function (void);
+    262 
+    263 //*********************************************************************
+        ********
+    264 //GLOBALS...
+    265 
+    266 	//UART, I2C & ADC Variables
+    267 	unsigned char	_flgUartFin;
+    268 	unsigned char 	_flgI2CFin;
+
+                                                              Page :          8
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    269 	unsigned char	_flgADCFin;
+    270 	unsigned char	_reqNotHalt;
+    271 	
+    272 
+    273 /*######################################50#############################
+        #########*/
+    274 /*#                                  APIs                              
+              #*/
+    275 /*#####################################################################
+        #######*/
+    276 //*********************************************************************
+        ********
+    277 //=====================================================================
+        ======
+    278 //  	Start of MAIN FUNCTION
+    279 //=====================================================================
+        ======
+    280 int main(void) 
+    281 {
+    282 	//LOCAL VARIABLES
+    283 	char char_a;				// -128 to 127
+    284 	unsigned char uchar;		// 0-255
+    285 	unsigned int uint, delay;	// 0 to 65,535
+    286 	long long_a;				// -2,147,483,648 to 2,147,483,647
+    287 	float float_a;				// 1.17549435e-38 to 3.40282347e+38
+    288 	double double_a;			// 2.2250738585072014e-308 to 1.7976931348623157e+3
+        08 
+    289 	int i,j,k,x,y;				// -32,768 to 32767
+    290 
+    291 	Init:
+    292 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, 
+        etc...)
+    293 		
+    294 	Primary_Loop:		
+    295 		//PLACE USER CODE HERE...
+    296 		//PWM_B0_ON(4000, 125);	//period, Duty Cycle variables
+    297 
+    298 		//Heartbeat_LED_pin ^= 1;
+    299 		Jerrys_Function();
+    300 		main_clrWDT();
+    301 
+    302 	goto Primary_Loop;
+    303 		
+    304 
+    305 }//end main
+    306 
+
+                                                              Page :          9
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    307 //=====================================================================
+        ======
+    308 //  	End of MAIN FUNCTION
+    309 //=====================================================================
+        ======
+    310 //*********************************************************************
+        ********
+    311 
+    312 
+    313 
+    314 
+    315 //*********************************************************************
+        ********
+    316 //=====================================================================
+        ======
+    317 //  	Start of Other Functions...
+    318 //=====================================================================
+        ======
+    319 //*********************************************************************
+        ********
+    320 
+    321 
+    322 /**********************************************************************
+        *********
+    323 	Routine Name:	main_clrWDT
+    324 	Form:			void main_clrWDT( void )
+    325 	Parameters:		void
+    326 	Return value:	void
+    327 	Description:	clear WDT.
+    328 ***********************************************************************
+        *******/
+    329 
+    330 void main_clrWDT( void )
+***** main\main.c(305) : Warning : W5029 : 'y': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'x': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'k': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'j': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'i': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'double_a': unreferenced local varia
+        ble
+***** main\main.c(305) : Warning : W5029 : 'float_a': unreferenced local variab
+        le
+***** main\main.c(305) : Warning : W5029 : 'long_a': unreferenced local variabl
+        e
+***** main\main.c(305) : Warning : W5029 : 'delay': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'uint': unreferenced local variable
+
+                                                              Page :         10
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+***** main\main.c(305) : Warning : W5029 : 'uchar': unreferenced local variable
+***** main\main.c(305) : Warning : W5029 : 'char_a': unreferenced local variabl
+        e
+***** main\main.c(305) : Warning : W6002 : 'Init': unreferenced label
+    331 {
+    332 	//__DI(); // Disable multi-interrupts
+    333 		do {
+    334 			WDTCON = 0x5Au;
+    335 		} while (WDP != 1);
+    336 		WDTCON = 0xA5u;
+    337 
+    338 	//__EI(); // Re-Enable multi-interrupts
+    339 }
+    340 
+    341 //=====================================================================
+        ======
+    342 //	Initialize Micro to Desired State...
+    343 //=====================================================================
+        ======
+    344 static void Initialization(void){
+    345 
+    346 	//Initialize Peripherals	
+    347 		//BLKCON2 Control Bits...Manually Set 4/12/2013
+    348 			DSIO0 = 1; // 0=> Enables Synchronous Serial Port 0 
+    349 			DUA0  = 0; // 0=> Enables the operation of UART0 
+    350 			DUA1  = 1; // 0=> Enables Uart1 
+    351 			DI2C1 = 1; // 0=> Enables I2C bus Interface (Slave) 
+    352 			DI2C0 = 0; // 0=> Enables I2C bus Interface (Master)	
+    353 	
+    354 		BLKCON4 = 0x00; // SA-ADC: 0=> Enables ; 0xFF=> Disables
+    355 		BLKCON6 = 0x00; // Timers 8, 9, A, E, F : 0=> Enables ; 0xFF=> Disabl
+        es
+    356 		BLKCON7 = 0x00; // PWM (PWMC, PWMD, PWME, PWMF : 0=> Enables ; 0xFF=>
+         Disables
+    357 
+    358 	// Port Initialize...
+    359 		PortA_Low();	//Initialize all 3 Ports of Q111 Port A to GPIO-Low
+    360 		PortB_Low();	//Initialize all 8 Ports of Q111 Port B to GPIO-Low
+    361 		PortC_Low();	//Initialize all 4 Ports of Q111 Port C to GPIO-Low
+    362 
+    363 	// UART INIT...	
+    364 		//uart_0_Init();
+    365 				
+    366 				
+    367 	// ===== Set Oscillator Rate =====
+    368      	SetOSC(); 	//8MHz
+
+                                                              Page :         11
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    369 
+    370 	// ===== PWM =========================================================
+        =======
+    371 	//
+    372 	//	NOTE: Possible conflict of B.0 with RX pin from UART0
+    373 	//	
+    374 	//	PinB0_PWM();		// Set up PWM peripheral (Pin on B.0)
+    375 	//====================================================================
+        =======	
+    376 		
+    377 	// ===== Comparator =====	
+    378 		//analog_comparator();	//Set up anaolg comparator peripheral
+    379 
+    380 
+    381 /* 	// ===== SET SPECIFIC DESIRED PINS AS INPUTS =====
+    382 		//Setup PIR Sensor Input on B.4
+    383 			//Step 1: Set Pin Direction...
+    384 				PB4DIR = 1;			// PortB Bit4 set Direction to INPUT...
+    385 			//Step 2: Set Pin I/O Type...
+    386 				PB4C1  = 0;			// PortB Bit4 set Type to HIGH-IMPEDANCE INPUT...
+    387 				PB4C0  = 0;	
+    388 			//Step 3: Set Pin Purpose...
+    389 				PB4MD1  = 0;		// PortB Bit4 set Purpose to GENERAL PURPOSE Input/Ou
+        tput...
+    390 				PB4MD0  = 0;
+    391 
+    392 		//Setup HALL Sensor Input on B.3
+    393 			//Step 1: Set Pin Direction...
+    394 				PB3DIR = 1;			// PortB Bit3 set Direction to INPUT...
+    395 			//Step 2: Set Pin I/O Type...
+    396 				PB3C1  = 0;			// PortB Bit3 set Type to HIGH-IMPEDANCE INPUT...
+    397 				PB3C0  = 0;	
+    398 			//Step 3: Set Pin Purpose...
+    399 				PB3MD1  = 0;		// PortB Bit3 set Purpose to GENERAL PURPOSE Input/Ou
+        tput...
+    400 				PB3MD0  = 0;
+    401 
+    402 		//Setup ACCELEROMETER X-SIGNAL Sensor Input on A.2
+    403 			//Step 1: Set Pin Direction...
+    404 				PA2DIR = 1;			// PortA Bit2 set Direction to INPUT...
+    405 			//Step 2: Set Pin I/O Type...
+    406 				PA2C1  = 0;			// PortA Bit2 set Type to HIGH-IMPEDANCE INPUT...
+    407 				PA2C0  = 0;	
+    408 			//Step 3: Set Pin Purpose...
+    409 				PA2MD1  = 0;		// PortA Bit2 set Purpose to GENERAL PURPOSE Input/Ou
+        tput...
+
+                                                              Page :         12
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    410 				PA2MD0  = 0;
+    411 		
+    412 		//Setup ACCELEROMETER Y-SIGNAL Sensor Input on A.1
+    413 			//Step 1: Set Pin Direction...
+    414 				PA1DIR = 1;			// PortA Bit1 set Direction to INPUT...
+    415 			//Step 2: Set Pin I/O Type...
+    416 				PA1C1  = 0;			// PortA Bit1 set Type to HIGH-IMPEDANCE INPUT...
+    417 				PA1C0  = 0;	
+    418 			//Step 3: Set Pin Purpose...
+    419 				PA1MD1  = 0;		// PortA Bit1 set Purpose to GENERAL PURPOSE Input/Ou
+        tput...
+    420 				PA1MD0  = 0;
+    421 
+    422 		//Setup ACCELEROMETER Temperature-SIGNAL Sensor Input on A.0
+    423 			//Step 1: Set Pin Direction...
+    424 				PA0DIR = 1;			// PortA Bit0 set Direction to INPUT...
+    425 			//Step 2: Set Pin I/O Type...
+    426 				PA0C1  = 0;			// PortA Bit0 set Type to HIGH-IMPEDANCE INPUT...
+    427 				PA0C0  = 0;	
+    428 			//Step 3: Set Pin Purpose...
+    429 				PA0MD1  = 0;		// PortA Bit0 set Purpose to GENERAL PURPOSE Input/Ou
+        tput...
+    430 				PA0MD0  = 0; */
+    431 
+    432 	//================== STANDBY CONTROL REGISTER=========================
+        ==========
+    433 	//
+    434 	// SBYCON is a 2-bit special function register to control operating mo
+        de of MCU
+    435 	//		STP   :   HLT
+    436 	// 		BIT 1 :  BIT 0
+    437 	//  	 0         0     => Program RUN mode (initial value)
+    438 	//  	 0         1     => HALT mode
+    439 	//  	 1         0     => STOP mode
+    440 	//  	 1         1     => (Prohibited)
+    441 	// See ML610Q111/ML610Q112 User Manual - Section 4: MCU Control Functi
+        on
+    442 	//	SBYCON = 0;		// Program RUN mode
+    443 	//====================================================================
+        ==========
+    444 
+    445 	//================== VOLTAGE LEVEL SUPERVISOR REGISTER ===============
+        ==========
+    446 	// 
+    447 	// The Q11x mcu's have two channels of VOLTAGE LEVEL SUPERVISORs
+    448 	// Accuracy is ±3%
+
+                                                              Page :         13
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    449 	//
+    450 	// The threshold voltages of VLS0 (VDD fall) : 2.85V (Typ. )
+    451 	//								  (VDD rise) : 2.92V (Typ. )
+    452 	//
+    453 	// The threshold voltages of VLS1 (VDD fall) : 4 types selectable 3.3V
+        / 3.6V/ 3.9V/ 4.2V (Typ.)
+    454 	// The VLS0 can be used as the low voltage level detector reset.
+    455 	// 
+    456 	// See ML610Q111/ML610Q112 User Manual - Section 22: Voltage Level Sup
+        ervisor
+    457 	//
+    458 	//====================================================================
+        ==========
+    459 
+    460    	// IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    461 	// INTERRUPT SETUP...
+    462 		//	The ML610Q1xx mcu's have 31 hardware interrupt sources 
+    463 		//		 7 External Interrupt Sources
+    464 		//		24 Internal Interrupt Sources 
+    465 		// EXAMPLE: WDT; VLS; EXTERNAL INT Pins (6); SPI; ADC; I2C (Slave); I
+        2C (Master);
+    466 		//			TIMERS (6); UART; Comparators (2); PWM's ((4); TBC (4)		
+    467 	
+    468 		irq_di();	// Disable Interrupts
+    469 		//irq_init();	// Initialize Interrupts (All Off and NO Requests)
+    470 			//==================================================================
+        ==
+    471 			//FOR NOTES ONLY...This is all taken care of in "irq_init()"
+    472 				// INTERRUPT ENABLE REGISTERS...
+    473 				//  IE0 = VOLTAGE LEVEL SUPERVISOR Int.
+    474 				//  IE1 = EXTERNAL Ints on B3, B2, B1, B0, A2, A1, & A0
+    475 				//  IE2 = SPI, A/D, I2C Slave & I2C Master Int.
+    476 				//  IE3 = TIMERS 8 & 9 Ints.
+    477 				//  IE4 = UART & COMPARATOR Ints.
+    478 				//  IE5 = TIMERS A, B, E & F Ints.
+    479 				//  IE6 = PWMC, PWMD, PWME, PWMF & 128Hz & 32Hz TBC Ints.
+    480 				//  IE7 = 16Hz & 2Hz TBC Ints.
+    481 				//IE0 = IE1 = IE2 = IE3 = IE4 = IE5 = IE6 = IE7 = 0;
+    482 				//--------------------------------------------------------------
+    483 				// INTERRUPT REQUEST FLAG REGISTERS...
+    484 				//  IRQ0 = WDT & VLS Int Requests
+    485 				//  IRQ1 = EXTERNAL Int Requests
+    486 				//  IRQ2 = SPI, A/D, I2C Slave & I2C Master Int Requests
+    487 				//  IRQ3 = TIMERS 8 & 9 Int Requests 
+    488 				//  IRQ4 = UART & COMPARATOR Int Requests 
+    489 				//  IRQ5 = TIMERS A, B, E & F Int Requests 
+
+                                                              Page :         14
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    490 				//  IRQ6 = PWMC &  128Hz & 32Hz TBC Int Requests 
+    491 				//  IRQ7 = 16Hz & 2Hz TBC Int Requests 
+    492 				//IRQ0 = IRQ1 = IRQ2 = IRQ3 = IRQ4 = IRQ5 = IRQ6 = IRQ7 = 0;
+    493 			//==================================================================
+        ==
+    494 
+    495 			// INTERRUPT ENABLE REGISTERS...
+    496 				IE0 = IE1 = IE2 = IE3 = IE4 = IE5 = IE6 = IE7 = 0;
+    497 
+    498 
+    499 			// INTERRUPT REQUEST REGISTERS...
+    500 				IRQ0 = IRQ1 = IRQ2 = IRQ3 = IRQ4 = IRQ5 = IRQ6 = IRQ7 = 0;
+    501 
+    502  			//------------- SET UP UART Interrupts Handler --------------------
+        -----------------------
+    503 				(void)irq_setHdr( (unsigned char)IRQ_NO_UA0INT, _intUart );
+    504 					EUA0 = 1; 	// EUA0 is the enable flag for the UART0 interrupt (1=E
+        NABLED)
+***** main\main.c(503) : Warning : W5027 : Meaningless use of an expression
+    505 					QUA0 = 0;	// Request Flag for the UART_0 	INTERRUPT (1=REQUEST, 0-
+        NO-REQUEST)
+    506 			//------------------------------------------------------------------
+        ----------------------
+    507 			
+    508  			//------------- SET UP I2C MASTER Interrupts Handler --------------
+        -----------------------
+    509 				(void)irq_setHdr( (unsigned char)IRQ_NO_I2CMINT, _intI2c );
+    510 					EI2CM = 1; // EI2CM is the enable flag for the I2C MASTER interrup
+        t (1=ENABLED)
+***** main\main.c(509) : Warning : W5027 : Meaningless use of an expression
+    511 					QI2CM = 0;
+    512 			//------------------------------------------------------------------
+        ----------------------
+    513 			
+    514 			//------------- SET UP ADC Interrupts Handler ----------------------
+        ----------------------
+    515 				(void)irq_setHdr( (unsigned char)IRQ_NO_SADINT, _intADC );
+    516 					ESAD = 1; // ESAD is the enable flag for the ADC interrupt (1=ENAB
+        LED)
+***** main\main.c(515) : Warning : W5027 : Meaningless use of an expression
+    517 					QSAD = 0; // Request Flag for the ADC INTERRUPT (1=REQUEST, 0-NO-R
+        EQUEST)
+    518 			//------------------------------------------------------------------
+        ----------------------
+    519 			
+    520 			//------------- SET UP  xHz TBC Interrupt (Options: 128Hz, 32Hz, 16H
+
+                                                              Page :         15
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+        z, 2Hz) --------------
+    521 				(void)irq_setHdr( (unsigned char)IRQ_NO_T2HINT, TBC_ISR );  //Clear
+         interrupt request flag
+    522 					E2H = 1;	  // Enable x Hz TBC Interrupt (1=ENABLED)
+***** main\main.c(521) : Warning : W5027 : Meaningless use of an expression
+    523 					Q2H = 0;	  // Request flag for the TIME BASE COUNTER 2Hz Interrupt
+        
+    524 			// -----			
+    525 			//------------- TBC...Set Ratio: : 1:1 => 1_1 ----------------------
+        ----------------------
+    526 				(void)tb_setHtbdiv( (unsigned char)TB_HTD_1_1 ); //Set the ratio of
+         dividing frequency of the time base counter
+    527 			//------------------------------------------------------------------
+        ---------------------- 
+    528 			
+    529  			//------------- SET UP TIMER 8/9 Interrupt to increment timers ever
+        y ~X ms ---------------
+    530 				(void)irq_setHdr( (unsigned char)IRQ_NO_TM9INT, TMR89_ISR );  //Cle
+        ar interrupt request flag
+***** main\main.c(526) : Warning : W5027 : Meaningless use of an expression
+    531 					ETM8 = 1;	  	// Enable timer 8 Interrupt (1=ENABLED
+***** main\main.c(530) : Warning : W5027 : Meaningless use of an expression
+    532 					ETM9 = 1;	  	// Enable timer 9 Interrupt (1=ENABLED)
+    533 					QTM8 = 0;		// Timer 8 IRQ request flag; 1=REQUEST
+    534 					QTM9 = 0;		// Timer 9 IRQ request flag; 1=REQUEST
+    535 					T8CS0 = 1;		// 111 => Select PLLCLK
+    536 					T8CS1 = 1;
+    537 					T8CS2 = 1;
+    538 					T9CS0 = 1;		// 111 => Select PLLCLK
+    539 					T9CS1 = 1;
+    540 					T9CS2 = 1; 
+    541 					tm_init(TM_CH_NO_89);
+    542 					tm_set89Data(8192);				//A value of 1023 should yield 125us interr
+        upts at 8.192 MHz
+    543 					tm_set89Source(TM_CS_HTBCLK);
+    544 					tm_start89();
+    545 					T89M16 = 1;		//1 => sets 16-bit timer mode
+    546 				
+    547 					HTD3 = 1;	//High-Speed Time Base Counter Divide Register: 1111 = 9
+        182kHz
+    548 					HTD2 = 1;
+    549 					HTD1 = 1;
+    550 					HTD0 = 1; 
+    551 			//------------------------------------------------------------------
+        ----------------------
+    552 
+
+                                                              Page :         16
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    553 			
+    554  			//------------- SET UP TIMER A/B Interrupt to increment timers ever
+        y ~X ms ---------------
+    555 				(void)irq_setHdr( (unsigned char)IRQ_NO_TMBINT, TMRAB_ISR );  //Cle
+        ar interrupt request flag
+    556 					ETMA = 1;	  	// Enable timer 8 Interrupt (1=ENABLED
+***** main\main.c(555) : Warning : W5027 : Meaningless use of an expression
+    557 					ETMB = 1;	  	// Enable timer 9 Interrupt (1=ENABLED)
+    558 					QTMA = 0;		// timer 8 IRQ request flag; 1=REQUEST
+    559 					QTMB = 0;		// timer 9 IRQ request flag; 1=REQUEST
+    560 					TACS0 = 1;		// 111 => Select PLLCLK
+    561 					TACS1 = 1;
+    562 					TACS2 = 1;
+    563 					TBCS0 = 1;		// 111 => Select PLLCLK
+    564 					TBCS1 = 1;
+    565 					TBCS2 = 1; 
+    566 					tm_init(TM_CH_NO_AB);
+    567 					tm_setABData(8192);				//A value of 1023 should yield 125us interr
+        upts at 8.192 MHz
+    568 					tm_setABSource(TM_CS_HTBCLK);
+    569 					tm_startAB();
+    570 					TABM16 = 1;		//1 => sets 16-bit timer mode
+    571 				
+    572 					HTD3 = 1;	//High-Speed Time Base Counter Divide Register: 1111 = 9
+        182kHz
+    573 					HTD2 = 1;
+    574 					HTD1 = 1;
+    575 					HTD0 = 1; 
+    576 			//------------------------------------------------------------------
+        ----------------------
+    577 
+    578 			
+    579 			//------------- SET UP TIMER E/F Interrupt to increment timers every
+         ~X ms ---------------
+    580 				(void)irq_setHdr( (unsigned char)IRQ_NO_TMFINT, TMREF_ISR );  //Cle
+        ar interrupt request flag
+    581 					ETME = 1;	  	// Enable timer E Interrupt (1=ENABLED
+***** main\main.c(580) : Warning : W5027 : Meaningless use of an expression
+    582 					ETMF = 1;	  	// Enable timer F Interrupt (1=ENABLED)
+    583 					QTME = 0;		// Timer E IRQ request flag; 1=REQUEST
+    584 					QTMF = 0;		// Timer F IRQ request flag; 1=REQUEST
+    585 					TECS0 = 1;		// 111 => Select PLLCLK
+    586 					TECS1 = 1;
+    587 					TECS2 = 1;
+    588 					TFCS0 = 1;		// 111 => Select PLLCLK
+    589 					TFCS1 = 1;
+
+                                                              Page :         17
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    590 					TFCS2 = 1;
+    591 					tm_init(TM_CH_NO_EF);
+    592 					tm_setEFData(8192);				//A value of 1023 should yield 125us interr
+        upts at 8.192 MHz
+    593 					tm_setEFSource(TM_CS_HTBCLK);
+    594 					tm_startEF();
+    595 					TEFM16 = 1;		//1 => sets 16-bit timer mode
+    596 				
+    597 					HTD3 = 1;	//High-Speed Time Base Counter Divide Register: 1111 = 9
+        182kHz
+    598 					HTD2 = 1;
+    599 					HTD1 = 1;
+    600 					HTD0 = 1; 
+    601 			//------------------------------------------------------------------
+        ----------------------
+    602 			
+    603 			//------------- SET UP B.3 as an input, and prepare to use as an ext
+        ernal interrupt ------
+    604 					PB3DIR = 1;
+    605 					PB3C1 = 0;
+    606 					PB3C0 = 0;
+    607 					PB3MD1 = 0;
+    608 					PB3MD0 = 0;
+    609 					PB3E1 = 1;
+    610 					PB3E0 = 0;		//PBnE0-1 are used to choose the Rising-Edge Mode for 
+        this interrupt
+    611 					PB3SM = 0;
+    612 			// -----
+    613 			//------------- SET UP EXTERNAL INTERRUPT on B.3 -------------------
+        ----------------------
+    614 			//Options include following pins: A.0; A.1; A.2. B.0; B.1; B.2 & B.3
+        
+    615 			(void)irq_setHdr( (unsigned char)IRQ_NO_PB3INT, ExtInt_ISR );  //Cle
+        ar interrupt request flag
+    616 					EPB3 = 0;	// 1=> Enables Interrupt
+***** main\main.c(615) : Warning : W5027 : Meaningless use of an expression
+    617 					QPB3 = 0;	// EXT IRQ request flag; 1=REQUEST	
+    618 			//------------------------------------------------------------------
+        ----------------------   
+    619 	
+    620 			
+    621 	irq_ei(); // Enable Interrupts
+    622 	// IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII  
+    623 
+    624 	// ===== SET UP WATCH DOG TIMER ======================================
+        =======
+
+                                                              Page :         18
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    625 		WDTMOD = 0x03; 	// 0x03=overflow 8sec...
+    626 		main_clrWDT(); 	// Clear WDT   
+    627 	//====================================================================
+        =======
+    628 	
+    629 	
+    630 	// ===== UART Initialization =========================================
+        =======
+    631 	//
+    632 	//	Pin PB0 of mcu => RX  
+    633 	// 	Pin PB1 of mcu => TX 
+    634 	// 
+    635 		(void)uart_init( (unsigned char)UART_CS_HSCLK,	// Generator       			
+        	
+    636 				 (unsigned short)HSCLK_KHZ,				// HSCLK frequency 				
+    637 				 &_uartSetParam );						// Parameters from Structure    
+    638 		uart_PortSet();									// Set UART Port Pins
+***** main\main.c(637) : Warning : W5027 : Meaningless use of an expression
+    639 		_flgUartFin = 0;
+    640 		uart_stop();
+    641 
+    642 	//	
+    643 	//====================================================================
+        =======
+    644 
+    645 	// ===== I2C Initialization ==========================================
+        =======
+    646 	//	(void)i2c_init(I2C_MOD_FST, (unsigned short)HSCLK_KHZ, I2C_SYN_ON);
+        
+    647 	//	I20SYN = 1;		//Enable Clock Stretching	
+    648 	//====================================================================
+        =======
+    649 
+    650 
+    651 
+    652 		
+    653 		
+    654 }//End Initialization
+    655 //=====================================================================
+        ======
+    656 
+    657 
+    658 //=====================================================================
+        ======
+    659 //	OSC set
+    660 //=====================================================================
+
+                                                              Page :         19
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+        ======
+    661 static void SetOSC(void){
+    662 
+    663 	//Frequency Control Register 0 (FCON0) 	
+    664 	//	used to control the high-speed clock generation circuit and to sele
+        ct system clock.
+    665 		SYSC0  = 0;			// Used to select the frequency of the HSCLK => 00=8.19
+        2MHz.
+    666 		SYSC1  = 0;			//...
+    667 		OSCM1  = 1;			// 10 => Built-in PLL oscillation mode
+    668 		OSCM0  = 0;			//...
+    669 		
+    670 	// Frequency Control Register 1 (FCON1)
+    671 		ENOSC  = 1;			// 1=Enable High Speed Oscillator...
+    672 		SYSCLK = 1;			// Select System Clock: 1=HSCLK; 0=LSCLK 
+    673 		LPLL   = 1;			// 1=Enables the use of PLL oscillation - ADDED 4/30/20
+        13
+    674 
+    675 	__EI();					//INT enable
+    676 }
+    677 //=====================================================================
+        ======
+    678 
+    679 
+    680 //=====================================================================
+        ======
+    681 //	Analog Comparator setup
+    682 //=====================================================================
+        ======
+    683 void analog_comparator(void){
+    684 
+    685 //Carl's Notes...
+    686 
+    687 //Step 1: Select the Interrupt Mode
+    688 // 	a.) Interrupt Disabled      => CMPxE1 = 0; CMPxE0 = 0;	  
+    689 // 	b.) Falling-Edge Int. Mode  => CMPxE1 = 0; CMPxE0 = 1;
+    690 // 	c.) Rising-Edge Int. Mode   => CMPxE1 = 1; CMPxE0 = 0;
+    691 // 	d.) Both-Edge Int. Mode     => CMPxE1 = 1; CMPxE0 = 1;
+    692 
+    693 
+    694 //Step 2: Enable the Comparator                       => CMPxEN = 1;	
+    695 
+    696 //Step 3: Wait 3ms to allow Comparator to stabilize
+    697 
+    698 //Step 4: Read the comparison result			=> CMPxD: 0= +<-; 1= +>-
+    699 
+
+                                                              Page :         20
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    700 //Step 5: Disable the Comparator				=> CMPxEN = 0;	
+    701 
+    702 
+    703 
+    704    //Comparator 0...
+    705 	CMP0EN  = 0x01; 	// Comparator ON...
+    706 	CMP0E1  = 0x00; 	// No Interupt...
+    707 	CMP0E0  = 0x00;
+    708 	CMP0SM1 = 0x00; 	// Detect without Sampling... 
+    709 	CMP0RFS = 0x01; 	// Differential Input on B5
+    710 
+    711    //Comparator 0 OFF
+    712 	CMP0EN  = 0x00;
+    713 
+    714 
+    715 }
+    716 //=====================================================================
+        ======
+    717 
+    718 
+    719 
+    720 //=====================================================================
+        ======
+    721 //	Clear All 3 Bits of Port A
+    722 //=====================================================================
+        ======
+    723 void PortA_Low(void){
+    724 
+    725 //Carl's Notes...
+    726 
+    727 //Step 1: Set Pin Direction...
+    728 //Step 2: Set Pin I/O Type...
+    729 //Step 3: Set Pin Purpose...
+    730 //Step 4: Set Pin Data...
+    731 
+    732 	//Direction...	
+    733 	PA0DIR = 0;		// PortA Bit0 set to Output Mode...
+    734 	PA1DIR = 0;		// PortA Bit1 set to Output Mode...
+    735 	PA2DIR = 0;		// PortA Bit2 set to Output Mode...
+    736 
+    737 	//I/O Type...
+    738 	PA0C1  = 1;		// PortA Bit0 set to CMOS Output...
+    739 	PA0C0  = 1;		
+    740 	PA1C1  = 1;		// PortA Bit1 set to CMOS Output...
+    741 	PA1C0  = 1;	
+    742 	PA2C1  = 1;		// PortA Bit2 set to CMOS Output...
+
+                                                              Page :         21
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    743 	PA2C0  = 1;	
+    744 
+    745 	//Purpose...
+    746 	PA0MD1  = 0;	// PortA Bit0 set to General Purpose Output...
+    747 	PA0MD0  = 0;	
+    748 	PA1MD1  = 0;	// PortA Bit1 set to General Purpose Output...
+    749 	PA1MD0  = 0;	
+    750 	PA2MD1  = 0;	// PortA Bit2 set to General Purpose Output...
+    751 	PA2MD0  = 0;	
+    752 
+    753 	//Data...
+    754 	PA0D = 0;		// A.0 Output OFF....
+    755 	PA1D = 0;		// A.1 Output OFF....
+    756 	PA2D = 0;		// A.2 Output OFF....
+    757 
+    758 	main_clrWDT(); 	// Clear WDT
+    759 
+    760 }
+    761 //=====================================================================
+        ======
+    762 
+    763 //=====================================================================
+        ======
+    764 //	Clear All 8 Bits of Port B
+    765 //=====================================================================
+        ======
+    766 void PortB_Low(void){
+    767 
+    768 //Carl's Notes...
+    769 
+    770 //Step 1: Set Pin Direction...
+    771 //Step 2: Set Pin I/O Type...
+    772 //Step 3: Set Pin Purpose...
+    773 //Step 4: Set Pin Data...
+    774 
+    775 	//Direction...	
+    776 	PB0DIR = 0;		// PortB Bit0 set to Output Mode...
+    777 	PB1DIR = 0;		// PortB Bit1 set to Output Mode...
+    778 	PB2DIR = 0;		// PortB Bit2 set to Output Mode...
+    779 	PB3DIR = 0;		// PortB Bit3 set to Output Mode...
+    780 	PB4DIR = 0;		// PortB Bit4 set to Output Mode...
+    781 	PB5DIR = 0;		// PortB Bit5 set to Output Mode...
+    782 	PB6DIR = 0;		// PortB Bit6 set to Output Mode...
+    783 	PB7DIR = 0;		// PortB Bit7 set to Output Mode...
+    784 
+    785 	//I/O Type...
+
+                                                              Page :         22
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    786 	PB0C1  = 1;		// PortB Bit0 set to CMOS Output...
+    787 	PB0C0  = 1;		
+    788 	PB1C1  = 1;		// PortB Bit1 set to CMOS Output...
+    789 	PB1C0  = 1;	
+    790 	PB2C1  = 1;		// PortB Bit2 set to CMOS Output...
+    791 	PB2C0  = 1;	
+    792 	PB3C1  = 1;		// PortB Bit3 set to CMOS Output...
+    793 	PB3C0  = 1;		
+    794 	PB4C1  = 1;		// PortB Bit4 set to CMOS Output...
+    795 	PB4C0  = 1;	
+    796 	PB5C1  = 1;		// PortB Bit5 set to CMOS Output...
+    797 	PB5C0  = 1;	
+    798 	PB6C1  = 1;		// PortB Bit6 set to CMOS Output...
+    799 	PB6C0  = 1;	
+    800 	PB7C1  = 1;		// PortB Bit7 set to CMOS Output...
+    801 	PB7C0  = 1;	
+    802 
+    803 	//Purpose...
+    804 	PB0MD1  = 0;	// PortB Bit0 set to General Purpose Output...
+    805 	PB0MD0  = 0;	
+    806 	PB1MD1  = 0;	// PortB Bit1 set to General Purpose Output...
+    807 	PB1MD0  = 0;	
+    808 	PB2MD1  = 0;	// PortB Bit2 set to General Purpose Output...
+    809 	PB2MD0  = 0;	
+    810 	PB3MD1  = 0;	// PortB Bit3 set to General Purpose Output...
+    811 	PB3MD0  = 0;	
+    812 	PB4MD1  = 0;	// PortB Bit4 set to General Purpose Output...
+    813 	PB4MD0  = 0;	
+    814 	PB5MD1  = 0;	// PortB Bit5 set to General Purpose Output...
+    815 	PB5MD0  = 0;
+    816 	PB6MD1  = 0;	// PortB Bit6 set to General Purpose Output...
+    817 	PB6MD0  = 0;	
+    818 	PB7MD1  = 0;	// PortB Bit7 set to General Purpose Output...
+    819 	PB7MD0  = 0;
+    820 
+    821 	//Data...
+    822 	PB0D = 0;		// B.0 Output OFF....
+    823 	PB1D = 0;		// B.1 Output OFF....
+    824 	PB2D = 0;		// B.2 Output OFF....
+    825 	PB3D = 0;		// B.3 Output OFF....
+    826 	PB4D = 0;		// B.4 Output OFF....
+    827 	PB5D = 0;		// B.5 Output OFF....
+    828 	PB6D = 0;		// B.6 Output OFF....
+    829 	PB7D = 0;		// B.7 Output OFF....
+    830 
+    831 	main_clrWDT(); 	// Clear WDT
+
+                                                              Page :         23
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    832 
+    833 }
+    834 //=====================================================================
+        ======
+    835 
+    836 //=====================================================================
+        ======
+    837 //	Clear All 4 Bits of Port C
+    838 //=====================================================================
+        ======
+    839 void PortC_Low(void){
+    840 
+    841 //Carl's Notes...
+    842 
+    843 //Step 1: Set Pin Direction...
+    844 //Step 2: Set Pin I/O Type...
+    845 //Step 3: Set Pin Purpose...
+    846 //Step 4: Set Pin Data...
+    847 
+    848 	//Direction...	
+    849 	PC0DIR = 0;		// PortC Bit0 set to Output Mode...
+    850 	PC1DIR = 0;		// PortC Bit1 set to Output Mode...
+    851 	PC2DIR = 0;		// PortC Bit2 set to Output Mode...
+    852 	PC3DIR = 0;		// PortC Bit3 set to Output Mode...
+    853 
+    854 
+    855 	//I/O Type...
+    856 	PC0C1  = 1;		// PortC Bit0 set to CMOS Output...
+    857 	PC0C0  = 1;		
+    858 	PC1C1  = 1;		// PortC Bit1 set to CMOS Output...
+    859 	PC1C0  = 1;	
+    860 	PC2C1  = 1;		// PortC Bit2 set to CMOS Output...
+    861 	PC2C0  = 1;	
+    862 	PC3C1  = 1;		// PortC Bit3 set to CMOS Output...
+    863 	PC3C0  = 1;		
+    864 
+    865 	//Purpose...
+    866 	PC0MD1  = 0;	// PortC Bit0 set to General Purpose Output...
+    867 	PC0MD0  = 0;	
+    868 	PC1MD1  = 0;	// PortC Bit1 set to General Purpose Output...
+    869 	PC1MD0  = 0;	
+    870 	PC2MD1  = 0;	// PortC Bit2 set to General Purpose Output...
+    871 	PC2MD0  = 0;	
+    872 	PC3MD1  = 0;	// PortC Bit3 set to General Purpose Output...
+    873 	PC3MD0  = 0;	
+    874 
+
+                                                              Page :         24
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    875 	//Data...
+    876 	PC0D = 0;		// C.0 Output OFF....
+    877 	PC1D = 0;		// C.1 Output OFF....
+    878 	PC2D = 0;		// C.2 Output OFF....
+    879 	PC3D = 0;		// C.3 Output OFF....
+    880 
+    881 	main_clrWDT(); 	// Clear WDT
+    882 
+    883 }
+    884 //=====================================================================
+        ======
+    885 
+    886 //=====================================================================
+        ======
+    887 //	Set All 3 Bits of Port A as Digital Input Pins
+    888 //=====================================================================
+        ======
+    889 void PortA_Digital_Inputs(void){
+    890 
+    891 //Carl's Notes...
+    892 
+    893 //Step 1: Set Pin Direction...
+    894 //Step 2: Set Pin I/O Type...
+    895 //Step 3: Set Pin Purpose...
+    896 //Step 4: Set Pin Data...
+    897 
+    898 	//Direction...	
+    899 	PA0DIR = 1;		// PortA Bit0 set to Input Mode...
+    900 	PA1DIR = 1;		// PortA Bit1 set to Input Mode...
+    901 	PA2DIR = 1;		// PortA Bit2 set to Input Mode...
+    902 
+    903 
+    904 	//I/O Type...
+    905 	PA0C1  = 1;		// PortA Bit0 set to Input with Pull-Up Resistor...
+    906 	PA0C0  = 0;		
+    907 	PA1C1  = 1;		// PortA Bit1 set to Input with Pull-Up Resistor...
+    908 	PA1C0  = 0;	
+    909 	PA2C1  = 1;		// PortA Bit2 set to Input with Pull-Up Resistor...
+    910 	PA2C0  = 0;	
+    911 
+    912 	//Purpose...
+    913 	PA0MD1  = 0;	// PortA Bit0 set to General Purpose I/O...
+    914 	PA0MD0  = 0;	
+    915 	PA1MD1  = 0;	// PortA Bit1 set to General Purpose I/O...
+    916 	PA1MD0  = 0;	
+    917 	PA2MD1  = 0;	// PortA Bit2 set to General Purpose I/O...
+
+                                                              Page :         25
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    918 	PA2MD0  = 0;	
+    919 
+    920 	main_clrWDT(); 	// Clear WDT
+    921 
+    922 }
+    923 //=====================================================================
+        ======
+    924 
+    925 //=====================================================================
+        ======
+    926 //	PWM Output on Port B - Pin 0
+    927 //=====================================================================
+        ======
+    928 void PWM_B0_ON(int myPeriod, int myDutyCycle){
+    929 
+    930 		
+    931 		//SET THE PERIOD...
+    932 			PWCP = myPeriod;		// Init Period to (1=255kHz; 10=46kHz; 50=10kHz; 2
+        00=2.5kH; ; 3185 = 160Hz; 3400=150Hz; 4250=120Hz; 5000=102Hz)
+    933 
+    934 		//PWCD =    10;		//10    ~  0.2 % duty cycle @ 120Hz
+    935 		//PWCD =   100;		//100   ~  2.4 % duty cycle @ 120Hz
+    936 		//PWCD =  1000;		//1000  ~ 23.5 % duty cycle @ 120Hz
+    937 		//PWCD = 4000;		//4000  ~ 94.0 % duty cycle @ 120Hz
+    938 		//PWCD = 4150;		//4150  ~ 99.0 % duty cycle @ 120Hz
+    939 		//PWCD =    20;		//20    ~  0.4 % duty cycle @ 120Hz	
+    940 			PWCD =    myDutyCycle;		//12    ~  0.25% duty cycle @ 160Hz
+    941 		
+    942 		PCRUN = 1;		// TURN PWM ON
+    943 
+    944 }//END PWM_B0_ON Function
+    945 //=====================================================================
+        ======
+    946 
+    947 
+    948 
+    949 //=====================================================================
+        ======
+    950 //	PWM Output on Port B - Pin 0
+    951 //=====================================================================
+        ======
+    952 void PinB0_PWM(void){
+    953 
+    954 //Carl's Notes...
+    955 
+    956 //Step 1: Set Pin Direction...
+
+                                                              Page :         26
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+    957 //Step 2: Set Pin I/O Type...
+    958 //Step 3: Set Pin Purpose...
+    959 //Step 4: Select the Clock Mode...
+    960 //Step 5: Set the Duty Cycle...
+    961 //Step 5: Start the PWM Counter...
+    962 
+    963 	//Direction...	
+    964 	PB0DIR = 0;		// PortB Bit0 set to Output Mode...
+    965 
+    966 	//I/O Type...
+    967 	PB0C1  = 1;		// PortB Bit0 set to CMOS Output...
+    968 	PB0C0  = 1;		
+    969 
+    970 	//Purpose...
+    971 	PB0MD1  = 0;	// PortB Bit0 set to PWM Output (0,1)...
+    972 	PB0MD0  = 1;	
+    973 
+    974 
+    975 	//Select the Clock Mode...
+    976 	PCCS1 = 0;	//00= LS; 01=HS; 10=PLL
+    977 	PCCS0 = 1;
+    978 
+    979 	//SET THE PERIOD...(Added April 4th, 2013)
+    980 	PWCP = 4250;		// Init Period to (1=255kHz; 10=46kHz; 50=10kHz; 200=2.5
+        kH; ; 3185 = 160Hz; 3400=150Hz; 4250=120Hz; 5000=102Hz)
+    981 
+    982 	//SET THE DUTY CYCLE...(Added April 15th, 2013)
+    983 
+    984 	//PWCD =    10;		//10    ~  0.2 % duty cycle @ 120Hz
+    985 	//PWCD =   100;		//100   ~  2.4 % duty cycle @ 120Hz
+    986 	//PWCD =  1000;		//1000  ~ 23.5 % duty cycle @ 120Hz
+    987 	//PWCD = 4000;		//4000  ~ 94.0 % duty cycle @ 120Hz
+    988 	//PWCD = 4150;		//4150  ~ 99.0 % duty cycle @ 120Hz
+    989 	//PWCD =    20;		//20    ~  0.4 % duty cycle @ 120Hz	
+    990 	PWCD =    12;		//12    ~  0.25% duty cycle @ 160Hz
+    991 
+    992 	PCRUN = 0;		// OFF to start
+    993 
+    994 }
+    995 //=====================================================================
+        ======
+    996 
+    997 
+    998 
+    999 
+   1000 
+
+                                                              Page :         27
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1001 
+   1002 
+   1003 
+   1004 /**********************************************************************
+        *********
+   1005 	Routine Name:	NOPms
+   1006 	Form:			void NOP1000( unsigned int ms )
+   1007 	Parameters:		unsigned int sec = "Number of seconds where the device is
+         
+   1008 						not doing anything"
+   1009 	Return value:	void
+   1010 	Description:	NOP for x seconds. Uses HTB* clock (512kHz) and 
+   1011 					timer A+B (max 0xFFFF)*(HTBCLK = 1/16 * HSCLK 
+   1012 					= (1/16)*8192kHz = 512kHz, see HTBDR to change if 
+   1013 					we need an even smaller increment timer...)
+   1014 					1/(512kHz) * 0xFFFF = 127ms
+   1015 					
+   1016 ***********************************************************************
+        *******/
+   1017 /* 
+   1018 	void NOPms( unsigned int ms )
+   1019 	{
+   1020 	unsigned int timerThres;
+   1021 	unsigned char TimeFlag;
+   1022 	unsigned int TempSec;
+   1023 	unsigned int timer;
+   1024 	unsigned int timertest;
+   1025 
+   1026 		TempSec = ms;
+   1027 		TimeFlag = 0;
+   1028 
+   1029 		tm_init(TM_CH_NO_AB);
+   1030 		tm_setABSource(TM_CS_HTBCLK);
+   1031 		tm_setABData(0xffff);
+   1032 
+   1033 		if(ms < 128){
+   1034 			timerThres = 0x1FF * ms;
+   1035 			TimeFlag = 0;
+   1036 		}
+   1037 		if(ms == 128){
+   1038 			timerThres = 0xFFFF;
+   1039 			TimeFlag = 0;
+   1040 		}
+   1041 		if(ms > 128){
+   1042 			while(TempSec > 128){
+   1043 				TempSec -= 128;
+
+                                                              Page :         28
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1044 				TimeFlag++;
+   1045 			}
+   1046 			if(TempSec != 0){
+   1047 				timerThres = 0x1FF * TempSec;
+   1048 			}
+   1049 			else{
+   1050 				timerThres = 0xFFFF;
+   1051 				TimeFlag--;
+   1052 			}
+   1053 		}
+   1054 
+   1055 	TimerRestart:
+   1056 		main_clrWDT();	
+   1057 		//tm_restart89();	//using LSCLK, the maximum delay time we have is ~2
+         secs
+   1058 		tm_startAB();
+   1059 		timer = tm_getABCounter();
+   1060 		while(timer < timerThres){
+   1061 			timer = tm_getABCounter();
+   1062 			timertest = timer;
+   1063 		}
+   1064 		if(TimeFlag !=0){
+   1065 			tm_stopAB();
+   1066 			TimeFlag--;
+   1067 			timerThres = 0xFFFF;
+   1068 			goto TimerRestart;
+   1069 		}
+   1070 	} //End NOPms 
+   1071 */
+   1072 
+   1073 /**********************************************************************
+        *********
+   1074 	Routine Name:	_funcUartFin
+   1075 	Form:			static void _funcUartFin( unsigned int size, unsigned char err
+        Stat )
+   1076 	Parameters:		unsigned int size		 : 
+   1077 					unsigned char errStat	 : 
+   1078 	Return value:	void
+   1079 	Description:	UART transmission completion callback function.
+   1080 ***********************************************************************
+        *******/
+   1081 static void _funcUartFin( unsigned int size, unsigned char errStat )
+   1082 {
+   1083 	uart_continue();						// Function in UART.c: process to continue send 
+        & receive...
+   1084 	_flgUartFin = (unsigned char)FLG_SET;
+
+                                                              Page :         29
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1085 	main_reqNotHalt();						// uncommented 5/2/2013
+   1086 }
+   1087 
+   1088 /**********************************************************************
+        *********
+   1089 	Routine Name:	_funcI2CFin
+   1090 	Form:			static void _funcUartFin( unsigned int size, unsigned char err
+        Stat )
+   1091 	Parameters:		unsigned int size		 : 
+   1092 					unsigned char errStat	 : 
+   1093 	Return value:	void
+   1094 	Description:	UART transmission completion callback function.
+   1095 ***********************************************************************
+        *******/
+   1096 static void _funcI2CFin( unsigned int size, unsigned char errStat )
+***** main\main.c(1086) : Warning : W5025 : 'errStat': unreferenced formal para
+        meter
+***** main\main.c(1086) : Warning : W5025 : 'size': unreferenced formal paramet
+        er
+   1097 {
+   1098 	i2c_continue();							// Function in UART.c: process to continue send 
+        & receive...
+   1099 	_flgI2CFin = (unsigned char)FLG_SET;
+   1100 	main_reqNotHalt();						// uncommented 5/2/2013
+   1101 }
+   1102 
+   1103 /**********************************************************************
+        *********
+   1104 	Routine Name:	_intI2c
+   1105 	Form:			static void _intI2c( void )
+   1106 	Parameters:		void
+   1107 	Return value:	void
+   1108 	Description:	I2C handler.
+   1109 ***********************************************************************
+        *******/
+   1110 static void _intI2c( void )
+***** main\main.c(1101) : Warning : W5025 : 'errStat': unreferenced formal para
+        meter
+***** main\main.c(1101) : Warning : W5025 : 'size': unreferenced formal paramet
+        er
+   1111 {
+   1112 	(void)i2c_continue();
+   1113 	main_reqNotHalt();
+***** main\main.c(1112) : Warning : W5027 : Meaningless use of an expression
+   1114 }
+   1115 
+
+                                                              Page :         30
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1116 /**********************************************************************
+        *********
+   1117 	Routine Name:	_intADC
+   1118 	Form:			static void _intADC( void )
+   1119 	Parameters:		void
+   1120 	Return value:	void
+   1121 	Description:	I2C handler.
+   1122 ***********************************************************************
+        *******/
+   1123 static void _intADC( void )
+   1124 {
+   1125 	_flgADCFin = 1;
+   1126 }
+   1127 
+   1128 /**********************************************************************
+        *********
+   1129 	Routine Name:	main_reqNotHalt
+   1130 	Form:			void reqNotHalt( void )
+   1131 	Parameters:		void
+   1132 	Return value:	void
+   1133 	Description:	request not halt.
+   1134 ***********************************************************************
+        *******/
+   1135 void main_reqNotHalt( void )
+   1136 {
+   1137 	_reqNotHalt = (unsigned char)FLG_SET;
+   1138 }
+   1139 
+   1140 /**********************************************************************
+        *********
+   1141 	Routine Name:	_intUart
+   1142 	Form:			static void _intUart( void )
+   1143 	Parameters:		void
+   1144 	Return value:	void
+   1145 	Description:	UART handler.
+   1146 ***********************************************************************
+        *******/
+   1147 static void _intUart( void )
+   1148 {
+   1149 	uart_continue(); 	//in UART.c: process to continue send and receive...
+        
+   1150 }
+   1151 
+   1152 
+   1153 //=====================================================================
+        ======
+
+                                                              Page :         31
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1154 //INTERRUPT SERVICE ROUTINE FOR TBC
+   1155 static void TBC_ISR( void ) 
+   1156 {
+   1157 	//Your Code Here...
+   1158 	//LED2_pin ^= 1;	// Toggle LED
+   1159 	tb_setHtbdiv( (unsigned char)TB_HTD_1_1 ); //Set the ratio of dividing
+         frequency of the time base counter
+   1160 }
+   1161 //=====================================================================
+        ======
+   1162 
+   1163 //=====================================================================
+        ======
+   1164 //INTERRUPT SERVICE ROUTINE FOR Timer8/9
+   1165 static void TMR89_ISR( void ) 
+   1166 {
+   1167 	//Your Code Here...
+   1168 	//LED1_pin ^= 1;
+   1169 	tm_init(TM_CH_NO_89);
+   1170 	tm_start89();		//Clear & Restart Timer...
+   1171 }
+   1172 //=====================================================================
+        ======
+   1173 
+   1174 //=====================================================================
+        ======
+   1175 //INTERRUPT SERVICE ROUTINE FOR TimerA/B
+   1176 static void TMRAB_ISR( void ) 
+   1177 {
+   1178 	//Your Code Here...
+   1179 	//LED4_pin ^= 1;
+   1180 	tm_init(TM_CH_NO_AB);
+   1181 	tm_startAB();		//Clear & Restart Timer...
+   1182 }
+   1183 //=====================================================================
+        ======
+   1184 
+   1185 //=====================================================================
+        ======
+   1186 //INTERRUPT SERVICE ROUTINE FOR TimerE/F
+   1187 static void TMREF_ISR( void ) 
+   1188 {
+   1189 	//Your Code Here...
+   1190 	//LED7_pin ^= 1;
+   1191 	tm_init(TM_CH_NO_EF);
+   1192 	tm_startEF();		//Clear & Restart Timer...
+
+                                                              Page :         32
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1193 }
+   1194 //=====================================================================
+        ======
+   1195 
+   1196 
+   1197 //=====================================================================
+        ======
+   1198 // ----- ISR for External Interrupt Pin 
+   1199 static void ExtInt_ISR( void ) 
+   1200 {
+   1201 	//Your Code Here...
+   1202 	//LED9_pin ^= 1;
+   1203 	
+   1204 }
+   1205 //=====================================================================
+        ======
+   1206 
+   1207 //=====================================================================
+        ======
+   1208 void NOPx( unsigned int MyCount )
+   1209 {
+   1210 unsigned int ONCNT = 0;
+   1211 unsigned int xxx;
+   1212 
+   1213 xxx = MyCount;
+   1214 
+   1215 	while(ONCNT < xxx) {	// NOP for "xxx" Cycles
+   1216 		ONCNT++;
+   1217 	}
+   1218 	ONCNT = 0;			// Reset Counter 
+   1219 }
+   1220 //=====================================================================
+        ======
+   1221 
+   1222 
+   1223 
+   1224 
+   1225 
+   1226 
+   1227 
+   1228 
+   1229 
+   1230 
+   1231 
+   1232 
+   1233 //=====================================================================
+
+                                                              Page :         33
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+        ======
+   1234 //Simple function to demonstrate Serial LCD
+   1235 void UART_TX_TEST (void)
+   1236 {
+   1237 	// ===== START UART TX TEST... =====
+   1238 		unsigned char UARTStartupMessage[26] = {"ML610Q111 UART - TX Demo: "}
+        ;
+   1239 		
+   1240 		//CLEAR Parallax LCD Display!
+   1241 		_flgUartFin = 0;
+   1242 		uart_stop();
+   1243 		uart_startSend(UARTStartupMessage, 26, _funcUartFin);
+   1244 		while(_flgUartFin != 1){
+   1245 			main_clrWDT(); 
+   1246 		}
+   1247 			
+   1248 	// ===== END UART TX TEST =====  
+   1249 	
+   1250 
+   1251 }
+   1252 //=====================================================================
+        ======
+   1253 
+   1254 //=====================================================================
+        ======
+   1255 void UART_RX_TEST(void){
+   1256 
+   1257 	unsigned char	MyRx[1];	//Small Array...for UART Receive, etc
+   1258 	int i;
+   1259  	
+   1260 	// CLEAR the Array...
+   1261 		for(i = 0; i<1; i++) 
+   1262 		{
+   1263 			MyRx[i] = 0x20;	// 0x20 = "Space" => Clear Array
+   1264 		} 
+   1265 	 
+   1266 	
+   1267 	// ===== START UART RX TEST... =====
+   1268 		_flgUartFin = 0;
+   1269 		uart_stop();
+   1270 		uart_startReceive(MyRx, 1, _funcUartFin);	// RX!
+   1271 		while(_flgUartFin != 1){
+   1272 			main_clrWDT();	
+   1273 			//LED5_pin ^= 1;	//waiting for data...
+   1274 		}
+   1275 		
+
+                                                              Page :         34
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+   1276  		//If data in RX Buffer...echo it out the TX port
+   1277 		if(MyRx[0] != 0x20){			
+   1278 			//Echo the Received Data
+   1279 			_flgUartFin = 0;
+   1280 			uart_stop();
+   1281 			uart_startSend(MyRx, 1, _funcUartFin);	// TX!
+   1282 			while(_flgUartFin != 1){
+   1283 				main_clrWDT(); 
+   1284 			}
+   1285 		} 
+   1286 	// ===== END UART RX TEST =====
+   1287 		
+   1288 }
+   1289 //=====================================================================
+        ======
+   1290 
+   1291 //=====================================================================
+        ======
+   1292 void Jerrys_Function(void){
+   1293 	int i;
+   1294 
+   1295 		
+   1296 }
+   1297 //=====================================================================
+        ======
+   1298  	
+   1299 
+   1300 ***** main\main.c(1296) : Warning : W5029 : 'i': unreferenced local variable
+***** main\main.c(1300) : Warning : W5030 : 'tm_get89Counter': unreferenced sta
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_getEFSource': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_getABSource': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_get89Source': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_restartAB': unreferenced static
+         function
+***** main\main.c(1300) : Warning : W5030 : 'tm_clrABCounter': unreferenced sta
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_restartEF': unreferenced static
+         function
+***** main\main.c(1300) : Warning : W5030 : 'tm_clrEFCounter': unreferenced sta
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_getABCounter': unreferenced sta
+
+                                                              Page :         35
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+ Line #  Source Line
+
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_getEFCounter': unreferenced sta
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_stop89': unreferenced static fu
+        nction
+***** main\main.c(1300) : Warning : W5030 : 'tm_stopEF': unreferenced static fu
+        nction
+***** main\main.c(1300) : Warning : W5030 : 'tm_stopAB': unreferenced static fu
+        nction
+***** main\main.c(1300) : Warning : W5030 : 'tm_setAOneshot': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_setBOneshot': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_set9Oneshot': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_set8Oneshot': unreferenced stat
+        ic function
+***** main\main.c(1300) : Warning : W5030 : '_funcI2CFin': unreferenced static 
+        function
+***** main\main.c(1300) : Warning : W5030 : 'tm_clr89Counter': unreferenced sta
+        tic function
+***** main\main.c(1300) : Warning : W5030 : 'tm_restart89': unreferenced static
+         function
+
+
+
+Error(s)     :  0
+Warning(s)   :  49
+
+
+
+                                                              Page :         36
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : main\main.c
+
+
+
+                            STACK INFORMATION
+                            -----------------
+
+  FUNCTION                         LOCALS    CONTEXT    OTHERS    TOTAL
+  --------                         ------    -------    ------    -----
+  _main                            0         0          0         0         
+  _main_clrWDT                     0         0          0         0         
+  _Initialization                  0         2          2         4         
+  _SetOSC                          0         0          0         0         
+  _analog_comparator               0         0          0         0         
+  _PortA_Low                       0         0          0         0         
+  _PortB_Low                       0         0          0         0         
+  _PortC_Low                       0         0          0         0         
+  _PortA_Digital_Inputs            0         0          0         0         
+  _PWM_B0_ON                       0         0          0         0         
+  _PinB0_PWM                       0         0          0         0         
+  __funcUartFin                    0         2          0         2         
+  __funcI2CFin                     0         2          0         2         
+  __intI2c                         0         2          0         2         
+  __intADC                         0         0          0         0         
+  _main_reqNotHalt                 0         0          0         0         
+  __intUart                        0         0          0         0         
+  _TBC_ISR                         0         0          0         0         
+  _TMR89_ISR                       0         2          0         2         
+  _TMRAB_ISR                       0         2          0         2         
+  _TMREF_ISR                       0         2          0         2         
+  _ExtInt_ISR                      0         0          0         0         
+  _NOPx                            4         4          0         8         
+  _UART_TX_TEST                    26        4          2         32        
+  _UART_RX_TEST                    2         4          2         8         
+  _Jerrys_Function                 0         0          0         0         

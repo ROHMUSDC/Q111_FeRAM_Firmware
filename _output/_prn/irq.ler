@@ -1,0 +1,537 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+      1 /**********************************************************************
+        *******
+      2 	irq.c
+      3 
+      4 	Copyright (C) 2013 LAPIS Semiconductor Co., Ltd.
+      5 	All rights reserved.
+      6 
+      7 	LAPIS SEMICONDUCTOR shall not be liable for any direct, indirect, 
+      8 	consequential or incidental damages arising from using or modifying th
+        is 
+      9 	program.
+     10 
+     11     History
+     12     2008.08.20  ver.1.00
+     13     2008.10.17  ver.1.20
+     14     2008.11.20  ver.1.30
+     15     2009.03.18  ver.1.33
+     16     2009.12.21  ver.1.40
+     17     2010.03.18  ver.1.50	improvement of the register access method.
+     18     2013.05.07  ver.1.60      Re-Written for Q100 Series Micros...C. Sc
+        hell  
+     19 ***********************************************************************
+        *******/
+     20 #include "mcu.h"
+     21 #include "irq.h"
+     22 
+     23 /*#####################################################################
+        #######*/
+     24 /*#                                  Macro                             
+              #*/
+     25 /*#####################################################################
+        #######*/
+     26 
+     27 /*#####################################################################
+        #######*/
+     28 /*#                                Variable                            
+              #*/
+     29 /*#####################################################################
+        #######*/
+     30 /*--- Handler table. ---*/
+     31 static void ( *_sIrqHdr[IRQ_SIZE] )( void );
+     32 
+     33 /*#####################################################################
+        #######*/
+     34 /*#                               Prototype                            
+              #*/
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+     35 /*#####################################################################
+        #######*/
+     36 static void _intUndefHdr( void );
+     37 static void _intNullHdr( void );
+     38 static void _intWDTINT( void );		//Watch Dog Timer Interrupt
+     39 static void _intVLSINT( void );		//Voltage Level Supervisor Interrupt
+     40 
+     41 
+     42 static void _intPA0INT( void );		//PA0 External Interrupt
+     43 static void _intPA1INT( void );		//PA1 External Interrupt
+     44 static void _intPA2INT( void );		//PA2 External Interrupt
+     45 
+     46 static void _intPB0INT( void );		//PB0 External Interrupt
+     47 static void _intPB1INT( void );		//PB1 External Interrupt
+     48 static void _intPB2INT( void );		//PB2 External Interrupt
+     49 static void _intPB3INT( void );		//PB3 External Interrupt
+     50 
+     51 static void _intSIO0INT( void );	//Synchronous Serial Port0 Interrupt
+     52 
+     53 static void _intSADINT( void );		//Successive approximation type A/D co
+        nverter Interrupt
+     54 
+     55 static void _intI2CSINT( void ); 	//I2C Bus Interface (Slave)  Interrup
+        t
+     56 static void _intI2CMINT( void ); 	//I2C Bus Interface (Master) Interrup
+        t
+     57 
+     58 static void _intTM8INT( void );		//Timer 8 Interrupt
+     59 static void _intTM9INT( void );		//Timer 9 Interrupt	
+     60 
+     61 static void _intUA0INT( void );		//UART 0 Interrupt
+     62 static void _intUA1INT( void );		//UART 1 Interrupt
+     63 
+     64 static void _intCMP0INT( void );	//Comparator 0 Interrupt
+     65 static void _intCMP1INT( void );	//Comparator 1 Interrupt
+     66 
+     67 static void _intTMEINT( void );		//Timer E Interrupt
+     68 static void _intTMFINT( void );		//Timer F Interrupt
+     69 static void _intTMAINT( void );		//Timer A Interrupt
+     70 static void _intTMBINT( void );		//Timer B Interrupt
+     71 
+     72 static void _intPWCINT( void );		//PWMC Interrupt
+     73 static void _intPWDINT( void );		//PWMD Interrupt
+     74 static void _intPWEINT( void );		//PWME Interrupt
+     75 static void _intPWFINT( void );		//PWMF Interrupt
+     76 
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+     77 static void _intT128HINT( void );	//TBC128Hz Interrupt
+     78 static void _intT32HINT( void );	//TBC32Hz  Interrupt
+     79 static void _intT16HINT( void );	//TBC16Hz  Interrupt
+     80 static void _intT2HINT( void );		//TBC2Hz   Interrupt
+     81 
+     82 /*=== set Interrupt Vector ===*/
+     83 //Note: The vector table, has 16-bit long data
+     84 #pragma INTERRUPT _intWDTINT		0x08	2	//Watch Dog Timer Interrupt
+     85 #pragma INTERRUPT _intVLSINT		0x0C	1	//Voltage Level Supervisor Interru
+        pt
+     86 #pragma INTERRUPT _intUndefHdr		0x0E	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+     87 #pragma INTERRUPT _intPA0INT		0x10	1	//PA0 External Interrupt
+     88 #pragma INTERRUPT _intPA1INT		0x12	1	//PA1 External Interrupt
+     89 #pragma INTERRUPT _intPA2INT		0x14	1	//PA2 External Interrupt
+     90 #pragma INTERRUPT _intUndefHdr		0x16	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+     91 #pragma INTERRUPT _intPB0INT		0x18	1	//PB0 External Interrupt
+     92 #pragma INTERRUPT _intPB1INT		0x1A	1	//PB1 External Interrupt
+     93 #pragma INTERRUPT _intPB2INT		0x1C	1	//PB2 External Interrupt
+     94 #pragma INTERRUPT _intPB3INT		0x1E	1	//PB3 External Interrupt
+     95 #pragma INTERRUPT _intSIO0INT		0x20	1	//Synchronous Serial Port0 Interr
+        upt
+     96 #pragma INTERRUPT _intUndefHdr		0x22	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+     97 #pragma INTERRUPT _intSADINT		0x24	1	//Successive approximation type A/
+        D converter Interrupt
+     98 #pragma INTERRUPT _intUndefHdr		0x26	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+     99 #pragma INTERRUPT _intUndefHdr		0x28	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    100 #pragma INTERRUPT _intUndefHdr		0x2A	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    101 #pragma INTERRUPT _intI2CSINT		0x2C	1	//I2C Bus Interface (Slave)  Inte
+        rrupt
+    102 #pragma INTERRUPT _intI2CMINT		0x2E	1	//I2C Bus Interface (Master) Inte
+        rrupt
+    103 #pragma INTERRUPT _intUndefHdr		0x30	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    104 #pragma INTERRUPT _intUndefHdr		0x32	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    105 #pragma INTERRUPT _intTM8INT		0x34	1	//Timer 8 Interrupt
+    106 #pragma INTERRUPT _intTM9INT		0x36	1	//Timer 9 Interrupt
+    107 #pragma INTERRUPT _intUndefHdr		0x38	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    108 #pragma INTERRUPT _intUndefHdr		0x3A	1	//...define vector tables for al
+
+                                                              Page :          4
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+        l unused interrupts for fail safe.
+    109 #pragma INTERRUPT _intUndefHdr		0x3C	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    110 #pragma INTERRUPT _intUndefHdr		0x3E	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    111 #pragma INTERRUPT _intUA0INT		0x40	1	//UART 0 Interrupt
+    112 #pragma INTERRUPT _intUA1INT		0x42	1	//UART 1 Interrupt
+    113 #pragma INTERRUPT _intUndefHdr		0x44	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    114 #pragma INTERRUPT _intUndefHdr		0x46	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    115 #pragma INTERRUPT _intUndefHdr		0x48	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    116 #pragma INTERRUPT _intUndefHdr		0x4A	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    117 #pragma INTERRUPT _intCMP0INT		0x4C	1	//Comparator 0 Interrupt
+    118 #pragma INTERRUPT _intCMP1INT		0x4E	1	//Comparator 1 Interrupt
+    119 #pragma INTERRUPT _intUndefHdr		0x50	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    120 #pragma INTERRUPT _intUndefHdr		0x52	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    121 #pragma INTERRUPT _intUndefHdr		0x54	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    122 #pragma INTERRUPT _intUndefHdr		0x56	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    123 #pragma INTERRUPT _intTMEINT		0x58	1	//Timer E Interrupt
+    124 #pragma INTERRUPT _intTMFINT		0x5A	1	//Timer F Interrupt
+    125 #pragma INTERRUPT _intTMAINT		0x5C	1	//Timer A Interrupt
+    126 #pragma INTERRUPT _intTMBINT		0x5E	1	//Timer B Interrupt
+    127 #pragma INTERRUPT _intPWCINT		0x60	1	//PWMC Interrupt
+    128 #pragma INTERRUPT _intPWDINT		0x62	1	//PWMD Interrupt
+    129 #pragma INTERRUPT _intPWEINT		0x64	1	//PWME Interrupt
+    130 #pragma INTERRUPT _intPWFINT		0x66	1	//PWMF Interrupt
+    131 #pragma INTERRUPT _intUndefHdr		0x68	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    132 #pragma INTERRUPT _intT128HINT		0x6A	1	//TBC128Hz Interrupt
+    133 #pragma INTERRUPT _intUndefHdr		0x6C	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    134 #pragma INTERRUPT _intT32HINT		0x6E	1	//TBC32HZ  Interrupt
+    135 #pragma INTERRUPT _intT16HINT		0x70	1	//TBC16Hz  Interrupt
+    136 #pragma INTERRUPT _intUndefHdr		0x72	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    137 #pragma INTERRUPT _intUndefHdr		0x74	1	//...define vector tables for al
+        l unused interrupts for fail safe.
+    138 #pragma INTERRUPT _intT2HINT		0x76	1	//TBC2Hz   Interrupt
+    139 
+
+                                                              Page :          5
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+    140 /*#####################################################################
+        #######*/
+    141 /*#                                  API                               
+              #*/
+    142 /*#####################################################################
+        #######*/
+    143 /**********************************************************************
+        *********
+    144 	Routine Name:	irq_init
+    145 	Form:			void irq_init( void )
+    146 	Parameters:		void
+    147 	Return value:	void
+    148 	Description:	irq module initialize.
+    149 ***********************************************************************
+        *******/
+    150 void irq_init( void )
+    151 {
+    152 	int		irqNo;
+    153 	
+    154 	/*=== register setting. ===*/
+    155 	IE1 = (unsigned char)0x00u;
+    156 	IE2 = (unsigned char)0x00u;
+    157 	IE3 = (unsigned char)0x00u;
+    158 	IE4 = (unsigned char)0x00u;
+    159 	IE5 = (unsigned char)0x00u;
+    160 	IE6 = (unsigned char)0x00u;
+    161 	IE7 =  (unsigned char)0x00u;
+    162 
+    163 	IRQ0 = (unsigned char)0x00u;
+    164 	IRQ1 = (unsigned char)0x00u;
+    165 	IRQ2 = (unsigned char)0x00u;
+    166 	IRQ3 = (unsigned char)0x00u;
+    167 	IRQ4 = (unsigned char)0x00u;
+    168 	IRQ5 = (unsigned char)0x00u;
+    169 	IRQ6 = (unsigned char)0x00u;
+    170 	IRQ7 = (unsigned char)0x00u;
+    171 
+    172 	/*=== handler setting. ===*/
+    173 	for( irqNo = 0; irqNo < IRQ_SIZE; irqNo++ ) {
+    174 		_sIrqHdr[irqNo] = _intNullHdr;
+    175 	}
+    176 }
+    177 
+    178 /**********************************************************************
+        *********
+    179 	Routine Name:	irq_ei
+
+                                                              Page :          6
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+    180 	Form:			void irq_ei( void )
+    181 	Parameters:		void
+    182 	Return value:	void
+    183 	Description:	Enable Interrupts
+    184 ***********************************************************************
+        *******/
+    185 void irq_ei( void )
+    186 {
+    187 	__EI();
+    188 }
+    189 
+    190 /**********************************************************************
+        *********
+    191 	Routine Name:	irq_di
+    192 	Form:			void irq_di( void )
+    193 	Parameters:		void
+    194 	Return value:	void
+    195 	Description:	Disable Interrupts
+    196 ***********************************************************************
+        *******/
+    197 void irq_di( void )
+    198 {
+    199 	__DI();
+    200 }
+    201 
+    202 /**********************************************************************
+        *********
+    203 	Routine Name:	irq_setHdr
+    204 	Form:			int irq_setHdr( unsigned char intNo, void (*func)( void ) )
+    205 	Parameters:		unsigned char intNo : Interrupt number.
+    206 						IRQ_NO_WDTINT(= 0)
+    207 						...
+    208 						IRQ_NO_T2HINT(=56)
+    209 				void (*func)( void ) : Handler.
+    210 	Return value:	int
+    211 					IRQ_R_OK(=0)
+    212 					IRQ_R_ERR_INTNO(=-1)
+    213 	Description:	Clear interrupt request flag.
+    214 ***********************************************************************
+        *******/
+    215 int irq_setHdr( unsigned char intNo, void (*func)( void ) )
+    216 {
+    217 	/*=== parameter check. ===*/
+    218 	/*--- check [intNo]. ---*/
+    219 	if( intNo >= (unsigned char)IRQ_SIZE ) {
+    220 		return ( IRQ_R_ERR_INTNO );
+
+                                                              Page :          7
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+    221 	}
+    222 	/*=== Handler setting.  ===*/
+    223 	if( func != (void *)0 ) {
+    224 		_sIrqHdr[intNo] = func;
+    225 	}
+    226 	else {
+    227 		_sIrqHdr[intNo] = _intNullHdr;
+    228 	}
+    229 	return ( IRQ_R_OK );
+    230 }
+    231 
+    232 
+    233 /*#####################################################################
+        #######*/
+    234 /*#                              Subroutine                            
+              #*/
+    235 /*#####################################################################
+        #######*/
+    236 /**********************************************************************
+        *********
+    237 	Routine Name:	_intUndefHdr
+    238 	Form:			static void _intUndefHdr( void )
+    239 	Parameters:		void
+    240 	Return value:	void
+    241 	Description:	NULL Handler.
+    242 ***********************************************************************
+        *******/
+    243 static void _intUndefHdr( void )
+    244 {
+    245 	return;
+    246 }
+    247 
+    248 /**********************************************************************
+        *********
+    249 	Routine Name:	_intNullHdr
+    250 	Form:			static void _intNullHdr( void )
+    251 	Parameters:		void
+    252 	Return value:	void
+    253 	Description:	NULL Handler.
+    254 ***********************************************************************
+        *******/
+    255 static void _intNullHdr( void )
+    256 {
+    257 	return;
+    258 }
+    259 
+
+                                                              Page :          8
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+    260 /**********************************************************************
+        *********
+    261 	Routine Name:	_intbranchHdr
+    262 	Form:			static void _branchHdr( void )
+    263 	Parameters:		unsigned char intNo : Interrupt number.
+    264 						IRQ_NO_WDTINT(= 0)
+    265 						...
+    266 						IRQ_NO_T2HINT(=56)
+    267 	Return value:	void
+    268 	Description:	Branch to Handler.
+    269 ***********************************************************************
+        *******/
+    270 static void _branchHdr( unsigned char intNo )
+    271 {
+    272 	_sIrqHdr[intNo]();
+    273 }
+    274 
+    275 /*#####################################################################
+        #######*/
+    276 /*#                               Handler                              
+              #*/
+    277 /*#####################################################################
+        #######*/
+    278 
+    279 static void _intWDTINT(void)	{	_branchHdr(IRQ_NO_WDTINT);	}
+    280 static void _intVLSINT(void)	{	_branchHdr(IRQ_NO_VLSINT);	}
+    281 
+    282 static void _intPA0INT(void)	{	_branchHdr(IRQ_NO_PA0INT);	}
+    283 static void _intPA1INT(void)	{	_branchHdr(IRQ_NO_PA1INT);	}
+    284 static void _intPA2INT(void)	{	_branchHdr(IRQ_NO_PA2INT);	}
+    285 
+    286 static void _intPB0INT(void)	{	_branchHdr(IRQ_NO_PB0INT);	}
+    287 static void _intPB1INT(void)	{	_branchHdr(IRQ_NO_PB1INT);	}
+    288 static void _intPB2INT(void)	{	_branchHdr(IRQ_NO_PB2INT);	}
+    289 static void _intPB3INT(void)	{	_branchHdr(IRQ_NO_PB3INT);	}
+    290 
+    291 static void _intSIO0INT(void)	{	_branchHdr(IRQ_NO_SIO0INT);	}
+    292 
+    293 static void _intSADINT(void)	{	_branchHdr(IRQ_NO_SADINT);	}
+    294 
+    295 static void _intI2CSINT(void)	{	_branchHdr(IRQ_NO_I2CSINT);	}
+    296 static void _intI2CMINT(void)	{	_branchHdr(IRQ_NO_I2CMINT);	}
+    297 
+    298 static void _intTM8INT(void)	{	_branchHdr(IRQ_NO_TM8INT);	}
+    299 static void _intTM9INT(void)	{	_branchHdr(IRQ_NO_TM9INT);	}
+    300 
+
+                                                              Page :          9
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+ Line #  Source Line
+
+    301 static void _intUA0INT(void)	{	_branchHdr(IRQ_NO_UA0INT);	}
+    302 static void _intUA1INT(void)	{	_branchHdr(IRQ_NO_UA1INT);	}
+    303 
+    304 static void _intCMP0INT(void)	{	_branchHdr(IRQ_NO_CMP0INT);	}
+    305 static void _intCMP1INT(void)	{	_branchHdr(IRQ_NO_CMP1INT);	}
+    306 
+    307 static void _intTMEINT(void)	{	_branchHdr(IRQ_NO_TMEINT);	}
+    308 static void _intTMFINT(void)	{	_branchHdr(IRQ_NO_TMFINT);	}
+    309 static void _intTMAINT(void)	{	_branchHdr(IRQ_NO_TMAINT);	}
+    310 static void _intTMBINT(void)	{	_branchHdr(IRQ_NO_TMBINT);	}
+    311 
+    312 static void _intPWCINT(void)	{	_branchHdr(IRQ_NO_PWCINT);	}
+    313 static void _intPWDINT(void)	{	_branchHdr(IRQ_NO_PWDINT);	}
+    314 static void _intPWEINT(void)	{	_branchHdr(IRQ_NO_PWEINT);	}
+    315 static void _intPWFINT(void)	{	_branchHdr(IRQ_NO_PWFINT);	}
+    316 
+    317 static void _intT128HINT(void)	{	_branchHdr(IRQ_NO_T128HINT);	}
+    318 static void _intT32HINT(void)	{	_branchHdr(IRQ_NO_T32HINT);	}
+    319 static void _intT16HINT(void)	{	_branchHdr(IRQ_NO_T16HINT);	}
+    320 static void _intT2HINT(void)	{	_branchHdr(IRQ_NO_T2HINT);	}
+    321 
+
+
+Error(s)     :  0
+Warning(s)   :  0
+
+
+
+                                                              Page :         10
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:43
+CCU8 C Compiler Ver.3.41, Source List
+Source File : irq\irq.c
+
+
+
+                            STACK INFORMATION
+                            -----------------
+
+  FUNCTION                         LOCALS    CONTEXT    OTHERS    TOTAL
+  --------                         ------    -------    ------    -----
+  _irq_init                        2         2          0         4         
+  _irq_ei                          0         0          0         0         
+  _irq_di                          0         0          0         0         
+  _irq_setHdr                      0         4          0         4         
+  __intUndefHdr                    0         0          0         0         
+  __intNullHdr                     0         0          0         0         
+  __branchHdr                      0         0          0         0         
+  __intWDTINT                      0         14         0         14        
+  __intVLSINT                      0         10         0         10        
+  __intPA0INT                      0         10         0         10        
+  __intPA1INT                      0         10         0         10        
+  __intPA2INT                      0         10         0         10        
+  __intPB0INT                      0         10         0         10        
+  __intPB1INT                      0         10         0         10        
+  __intPB2INT                      0         10         0         10        
+  __intPB3INT                      0         10         0         10        
+  __intSIO0INT                     0         10         0         10        
+  __intSADINT                      0         10         0         10        
+  __intI2CSINT                     0         10         0         10        
+  __intI2CMINT                     0         10         0         10        
+  __intTM8INT                      0         10         0         10        
+  __intTM9INT                      0         10         0         10        
+  __intUA0INT                      0         10         0         10        
+  __intUA1INT                      0         10         0         10        
+  __intCMP0INT                     0         10         0         10        
+  __intCMP1INT                     0         10         0         10        
+  __intTMEINT                      0         10         0         10        
+  __intTMFINT                      0         10         0         10        
+  __intTMAINT                      0         10         0         10        
+  __intTMBINT                      0         10         0         10        
+  __intPWCINT                      0         10         0         10        
+  __intPWDINT                      0         10         0         10        
+  __intPWEINT                      0         10         0         10        
+  __intPWFINT                      0         10         0         10        
+  __intT128HINT                    0         10         0         10        
+  __intT32HINT                     0         10         0         10        
+  __intT16HINT                     0         10         0         10        
+  __intT2HINT                      0         10         0         10        

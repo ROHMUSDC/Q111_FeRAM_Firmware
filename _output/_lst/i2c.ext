@@ -1,0 +1,11 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _i2c_checkIRQ
+	EXTRN	CODE NEAR	: _i2c_getTransSize
+	EXTRN	CODE NEAR	: _i2c_init
+	EXTRN	CODE NEAR	: _i2c_startReceive
+	EXTRN	CODE NEAR	: _i2c_continue
+	EXTRN	CODE NEAR	: _i2c_clearIRQ
+	EXTRN	CODE NEAR	: _i2c_startSend
+	EXTRN	CODE NEAR	: _i2c_stop
+;; End of listing.

@@ -1,0 +1,782 @@
+
+                                                              Page :          1
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+      1 /**********************************************************************
+        *******
+      2 	i2c.c
+      3 
+      4 	Copyright (C) 2008 LAPIS Semiconductor Co., Ltd.
+      5 	All rights reserved.
+      6 
+      7 	LAPIS Semiconductor shall not be liable for any direct, indirect, 
+      8 	consequential or incidental damages arising from using or modifying th
+        is 
+      9 	program.
+     10 
+     11     History
+     12     2008.09.26  ver.1.00
+     13     2008.10.17  ver.1.20
+     14     2008.11.20  ver.1.30
+     15     2008.12.22  ver.1.40
+     16     2010.03.16  ver.1.50	improvement of the register access method.
+     17     2012.11.09	ver.1.60	added preprocessor for MCU that does not suppor
+        t I2C Control module
+     18 ***********************************************************************
+        *******/
+     19 #include "mcu.h"
+     20 #ifndef _NO_I2C_MODE
+     21 #include "i2c.h"
+     22 
+     23 /*#####################################################################
+        #######*/
+     24 /*#                                  Macro                             
+              #*/
+     25 /*#####################################################################
+        #######*/
+     26 /*--- Register bit. ---*/
+     27 /* IRQ2 */
+     28 #define IRQ2_QSIO0			( 0x1u	)		/* IRQ2 Register QSIO0 bit */
+     29 #define IRQ2_QSAD			( 0x4u	)		/* IRQ2 Register QSAD bit */
+     30 #define IRQ2_QI2C0			( 0x80u )		/* IRQ2 Register QI2C0 bit */
+     31 /* I2C0RD */
+     32 #define I2C0RD_I20R0		( 0x1u )		/* I2C0RD Register I20R0 bit */
+     33 #define I2C0RD_I20R1		( 0x2u )		/* I2C0RD Register I20R1 bit */
+     34 #define I2C0RD_I20R2		( 0x4u )		/* I2C0RD Register I20R2 bit */
+     35 #define I2C0RD_I20R3		( 0x8u )		/* I2C0RD Register I20R3 bit */
+     36 #define I2C0RD_I20R4		( 0x10u )		/* I2C0RD Register I20R4 bit */
+     37 #define I2C0RD_I20R5		( 0x20u )		/* I2C0RD Register I20R5 bit */
+     38 #define I2C0RD_I20R6		( 0x40u )		/* I2C0RD Register I20R6 bit */
+     39 #define I2C0RD_I20R7		( 0x80u )		/* I2C0RD Register I20R7 bit */
+
+                                                              Page :          2
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+     40 /* I2C0SA */
+     41 #define I2C0SA_I20RW		( 0x1u )		/* I2C0SA Register I20RW bit */
+     42 #define I2C0RD_I20A0		( 0x2u )		/* I2C0SA Register I20A0 bit */
+     43 #define I2C0RD_I20A1		( 0x4u )		/* I2C0SA Register I20A1 bit */
+     44 #define I2C0RD_I20A2		( 0x8u )		/* I2C0SA Register I20A2 bit */
+     45 #define I2C0RD_I20A3		( 0x10u )		/* I2C0SA Register I20A3 bit */
+     46 #define I2C0RD_I20A4		( 0x20u )		/* I2C0SA Register I20A4 bit */
+     47 #define I2C0RD_I20A5		( 0x40u )		/* I2C0SA Register I20A5 bit */
+     48 #define I2C0RD_I20A6		( 0x80u )		/* I2C0SA Register I20A6 bit */
+     49 /* I2C0TD */
+     50 #define I2C0TD_I20T0		( 0x1u )		/* I2C0TD Register I20T0 bit */
+     51 #define I2C0TD_I20T1		( 0x2u )		/* I2C0TD Register I20T1 bit */
+     52 #define I2C0TD_I20T2		( 0x4u )		/* I2C0TD Register I20T2 bit */
+     53 #define I2C0TD_I20T3		( 0x8u )		/* I2C0TD Register I20T3 bit */
+     54 #define I2C0TD_I20T4		( 0x10u )		/* I2C0TD Register I20T4 bit */
+     55 #define I2C0TD_I20T5		( 0x20u )		/* I2C0TD Register I20T5 bit */
+     56 #define I2C0TD_I20T6		( 0x40u )		/* I2C0TD Register I20T6 bit */
+     57 #define I2C0TD_I20T7		( 0x80u )		/* I2C0TD Register I20T7 bit */
+     58 /* I2C0CON */
+     59 #define I2C0CON_I20ST		( 0x1u )		/* I2C0CON Register I20ST bit */
+     60 #define I2C0CON_I20SP		( 0x2u )		/* I2C0CON Register I20SP bit */
+     61 #define I2C0CON_I20RS		( 0x4u )		/* I2C0CON Register I20RS bit */
+     62 #define I2C0CON_I20ACT		( 0x80u )		/* I2C0CON Register I20ACT bit */
+     63 /* I2C0MOD */
+     64 #define I2C0MOD_I20EN		( 0x1u )		/* I2C0MOD Register I20EN bit */
+     65 #define I2C0MOD_I20MD		( 0x2u )		/* I2C0MOD Register I20MD bit */
+     66 #define I2C0MOD_I20DW0		( 0x4u )		/* I2C0MOD Register I20DW0 bit */
+     67 #define I2C0MOD_I20DW1		( 0x8u )		/* I2C0MOD Register I20DW1 bit */
+     68 #define I2C0MOD_I20SYN		( 0x10u )		/* I2C0MOD Register I20SYN bit */
+     69 /* I2C0STAT */
+     70 #define I2C0STAT_I20BB		( 0x1u )		/* I2C0STAT Register I20BB bit */
+     71 #define I2C0STAT_I20ACR		( 0x2u )		/* I2C0STAT Register I20ACR bit */
+     72 #define I2C0STAT_I20ER		( 0x4u )		/* I2C0STAT Register I20ER bit */
+     73 /* P4DIR */
+     74 #define P4DIR_P40DIR		( 0x01u )
+     75 #define P4DIR_P41DIR		( 0x02u )
+     76 /* P4CON0 */
+     77 #define P4CON0_P40C0		( 0x01u )
+     78 #define P4CON0_P41C0		( 0x02u )
+     79 /* P4CON1 */
+     80 #define P4CON1_P40C1		( 0x01u )
+     81 #define P4CON1_P41C1		( 0x02u )
+     82 /* P4MOD0 */
+     83 #define P4MOD0_P40MD0		( 0x01u )
+     84 #define P4MOD0_P41MD0		( 0x02u )
+     85 /* P4MOD1 */
+
+                                                              Page :          3
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+     86 #define P4MOD1_P40MD1		( 0x01u )
+     87 #define P4MOD1_P41MD1		( 0x02u )
+     88 
+     89 /*--- mode select. ---*/
+     90 #define I2C_STD_CYC			( 80 )					/* standard mode 1cycle time coefficie
+        nt	*/
+     91 #define I2C_FST_CYC			( 20 )					/* fast mode 1cycle time coefficient		
+        */
+     92 #define I2C_STD_KHZ			( 100 )					/* standard mode frequency					*/
+     93 #define I2C_FST_KHZ			( 400 )					/* fast mode frequency						*/
+     94 #define I2C_DW_0			( 0x0u )				/* not down		*/
+     95 #define I2C_DW_10			( 0x1u )				/* 10% down		*/
+     96 #define I2C_DW_20			( 0x2u )				/* 20% down		*/
+     97 #define I2C_DW_30			( 0x3u )				/* 30% down		*/
+     98 
+     99 /*--- receive fase. ---*/
+    100 #define	I2C_TRANS_END			( 0 )				/* Transfer completion			*/
+    101 #define I2C_SEND_SLAVE_ADDRESS	( 1 )				/* slave address send mode		*/
+    102 #define I2C_SEND_ADDRESS		( 2 )				/* write/read address send mode	*/
+    103 #define I2C_SEND_DATA			( 3 )				/* data send mode				*/
+    104 #define	I2C_RECEIVE_DATA		( 4 )				/* data receive mode			*/
+    105 
+    106 /*=== control parameter for I2C ===*/
+    107 typedef struct {
+    108 	unsigned char	mode;			/* transfer mode(0:send, 1:receive)	*/
+    109 	unsigned char*	addr;			/* pointer to area where the send/receive addre
+        ss is stored	*/
+    110 	unsigned int	addr_size;		/* size of send address										*/
+    111 	unsigned char*	data;			/* pointer to area where the send/receive data 
+        is stored	*/
+    112 	unsigned int	data_size;		/* size of send/receive data								*/
+    113 	unsigned int	cnt;			/* size of data which is sent/received						*/
+    114 	cbfI2c			callBack;		/* callback function										*/
+    115 	unsigned char	errStat;		/* error status												*/
+    116 	unsigned char	status;			/* send/receive status										*/
+    117 } tI2cCtrlParam;
+    118 
+    119 
+    120 /*#####################################################################
+        #######*/
+    121 /*#                                Variable                            
+              #*/
+    122 /*#####################################################################
+        #######*/
+    123 /*=== control parameter for I2C ===*/
+    124 static tI2cCtrlParam _gsCtrlParam = { 0, (void *)0, 0, (void *)0, 0, 0,
+
+                                                              Page :          4
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+         (void *)0, 0, I2C_TRANS_END };
+    125 
+    126 /*#####################################################################
+        #######*/
+    127 /*#                               Prototype                            
+              #*/
+    128 /*#####################################################################
+        #######*/
+    129 
+    130 
+    131 /*#####################################################################
+        #######*/
+    132 /*#                                  API                               
+              #*/
+    133 /*#####################################################################
+        #######*/
+    134 
+    135 /**********************************************************************
+        *********
+    136 	Routine Name:	i2c_init
+    137 	Form:			int i2c_init( unsigned char mode, unsigned short kHz , unsigne
+        d char syn)
+    138 	Parameters:		unsigned char mode : choice of transmission rate mode
+    139 						I2C_MOD_STD(=0) : standard mode(100kHz)
+    140 						I2C_MOD_FST(=1) : fast mode(400kHz)
+    141 					unsigned short kHz : frequency of HSCLK (this parameter is referre
+        d only HSCLK is chosen as the clock oscillator)
+    142 					unsigned char syn : choice of handshake function use
+    143 	Return value:	int
+    144 						I2C_R_OK(=0)     : the I2C is initialized
+    145 						I2C_R_ERR_SYN(=-1)  : improper choice of the clock oscillator
+    146 						I2C_R_ERR_MODE(=-2)  : improper choice of baud rate
+    147 						I2C_R_ERR_FREQ(=-3)  : data length is out of range
+    148 	Description:	initialize I2C
+    149 ***********************************************************************
+        *******/
+    150 int i2c_init( unsigned char mode, unsigned short kHz , unsigned char sy
+        n )
+    151 {
+    152 	unsigned char setbit;
+    153 	unsigned char down;
+    154 	unsigned short rate_cyc;
+    155 	unsigned short rate_khz;
+    156 
+    157 	/*=== parameter check. ===*/
+    158 	if( syn > (unsigned char)I2C_SYN_ON ){
+
+                                                              Page :          5
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    159 		return( I2C_R_ERR_SYN );
+    160 	}
+    161 
+    162 	if( mode == (unsigned char)I2C_MOD_STD ){
+    163 		rate_cyc = (unsigned short)I2C_STD_CYC;
+    164 		rate_khz = (unsigned short)I2C_STD_KHZ;
+    165 	}
+    166 	else if( mode == (unsigned char)I2C_MOD_FST ){
+    167 		rate_cyc = (unsigned short)I2C_FST_CYC;
+    168 		rate_khz = (unsigned short)I2C_FST_KHZ;
+    169 	}
+    170 	else{
+    171 		return( I2C_R_ERR_MODE );
+    172 	}
+    173 
+    174 	if( ( kHz / rate_cyc ) <= rate_khz ){
+    175 		down = (unsigned char)I2C_DW_0;
+    176 	}
+    177 	else if( ( kHz / (unsigned short)( ( rate_cyc * 11 ) / 10 ) ) <= rate_
+        khz ){
+    178 		down = (unsigned char)I2C_DW_10;
+    179 	}
+    180 	else if( ( kHz / (unsigned short)( ( rate_cyc * 12 ) / 10 ) ) <= rate_
+        khz ){
+    181 		down = (unsigned char)I2C_DW_20;
+    182 	}
+    183 	else if( ( kHz / (unsigned short)( ( rate_cyc * 13 ) / 10 ) ) <= rate_
+        khz ){
+    184 		down = (unsigned char)I2C_DW_30;
+    185 	}
+    186 	else{
+    187 		return( I2C_R_ERR_FREQ );
+    188 	}
+    189 
+    190 	/*=== Variable setting. ===*/
+    191 	_gsCtrlParam.mode		= 0;
+    192 	_gsCtrlParam.addr		= (void *)0;
+    193 	_gsCtrlParam.addr_size	= 0;
+    194 	_gsCtrlParam.data		= (void *)0;
+    195 	_gsCtrlParam.data_size	= 0;
+    196 	_gsCtrlParam.cnt		= 0;
+    197 	_gsCtrlParam.callBack	= (void *)0;
+    198 	_gsCtrlParam.errStat	= 0;
+    199 	_gsCtrlParam.status		= 0;
+    200 
+    201 	/*=== Register setting. ===*/
+
+                                                              Page :          6
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    202 	/*--- i2c communication action stop ---*/
+    203 	I20EN = 0;
+    204 	/*---	Port setting.	---*/
+    205 	/* SCL */
+    206 	PB5DIR = 0;		/* Output */
+    207 	PB5C0 = 0;
+    208 	PB5C1 = 1;		/* Nch */
+    209 	PB5MD0 = 0;
+    210 	PB5MD1 = 1;		/* I2C SCL */
+    211 	/* SDA */
+    212 	PB6DIR = 0;		/* Output */
+    213 	PB6C0 = 0;
+    214 	PB6C1 = 1;		/* Nch */
+    215 	PB6MD0 = 0;
+    216 	PB6MD1 = 1;		/* I2C SD */
+    217 
+    218 	/*---	Communication setting	---*/
+    219 	setbit = (unsigned char)( I2C0MOD_I20EN |
+    220 								(mode << 1) | 
+    221 								(down << 2) | 
+    222 								(syn  << 4) );
+    223 	I2C0MOD = setbit;
+    224 
+    225 	return ( I2C_R_OK );
+    226 }
+    227 
+    228 /**********************************************************************
+        *********
+    229 	Routine Name:	i2c_startSend
+    230 	Form:			int i2c_startSend( unsigned char *data,unsigned int size,unsig
+        ned char address,cbfI2c func)
+    231 	Parameters:		unsigned char *data : pointer to area where the send data
+         is stored
+    232 					unsigned int size : size of data (unit is byte)
+    233 					unsigned char slave_adr : destination device address
+    234 					unsigned char ctrl : I2C control()
+    235 					cbfI2c func : callback function
+    236 	Return value:	int
+    237 						I2C_R_TRANS_START_OK(=0)	: transmission start
+    238 						I2C_R_BUS_BUSY(=-1)			: I2C bus is busy
+    239 	Description:	start to send the data
+    240 ***********************************************************************
+        *******/
+    241 int i2c_startSend(unsigned char slave_adr, unsigned char *addr, unsigne
+        d int addr_size, 
+    242 	unsigned char *data, unsigned int data_size, cbfI2c func )
+
+                                                              Page :          7
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    243 {
+    244 	unsigned char errStat;
+    245 
+    246 	/*=== Transmission of a message system order parameter setting. ===*/
+    247 	_gsCtrlParam.mode		= 0;	/* send */
+    248 	_gsCtrlParam.addr		= addr;
+    249 	_gsCtrlParam.addr_size	= addr_size;
+    250 	_gsCtrlParam.data		= data;
+    251 	_gsCtrlParam.data_size	= data_size;
+    252 	_gsCtrlParam.cnt		= 0;
+    253 	_gsCtrlParam.callBack	= func;
+    254 	_gsCtrlParam.errStat	= 0;
+    255 	_gsCtrlParam.status		= 0;
+    256 
+    257 	if( (_gsCtrlParam.addr_size == 0) && (_gsCtrlParam.data_size == 0) ){
+    258 		return(I2C_R_TRANS_FIN);
+    259 	}
+    260 	/*=== I2C bus0 status check ===*/
+    261 	errStat = (unsigned char)( I2C0STAT & (unsigned char)I2C0STAT_I20BB  )
+        ;
+    262 	if( errStat == (unsigned char)I2C0STAT_I20BB ){
+    263 		return ( I2C_R_BUS_BUSY );
+    264 	}
+    265 
+    266 	/*=== transmit a adddress, and it is worked to start. ===*/
+    267 	_gsCtrlParam.status = I2C_SEND_SLAVE_ADDRESS;
+    268 
+    269 	I2C0SA = (unsigned char)( slave_adr << 1 );	/* send mode */
+    270 	I2C0CON = (unsigned char)I2C0CON_I20ST;		/* Start condition */
+    271 	return ( I2C_R_TRANS_START_OK );
+    272 }
+    273 
+    274 /**********************************************************************
+        *********
+    275 	Routine Name:	i2c_startReceive
+    276 	Form:			int i2c_startReceive( unsigned char *data,unsigned int size,un
+        signed char address,cbfI2c func)
+    277 	Parameters:		unsigned char *data : pointer to area where the receive d
+        ata is stored
+    278 					unsigned int size : receive buffer size (the unit is byte)
+    279 					unsigned char slave_adr : destination device address
+    280 					cbfI2c func : callback function
+    281 	Return value:	int
+    282 						I2C_R_TRANS_START_OK(=0)	: transmission start
+    283 						I2C_R_BUS_BUSY(=-1)			: I2c bus is busy
+    284 	Description:	start to receive the data
+
+                                                              Page :          8
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    285 ***********************************************************************
+        *******/
+    286 int i2c_startReceive(unsigned char slave_adr, unsigned char *addr, unsi
+        gned int addr_size, 
+    287 	unsigned char *data, unsigned int data_size, cbfI2c func )
+    288 {
+    289 	unsigned char errStat;
+    290 
+    291 	/*===	Reception mode setting	===*/
+    292 	/*=== Transmission of a message system order parameter setting. ===*/
+    293 	_gsCtrlParam.mode		= 1;	/* receive */
+    294 	_gsCtrlParam.addr		= addr;
+    295 	_gsCtrlParam.addr_size	= addr_size;
+    296 	_gsCtrlParam.data		= data;
+    297 	_gsCtrlParam.data_size	= data_size;
+    298 	_gsCtrlParam.cnt		= 0;
+    299 	_gsCtrlParam.callBack	= func;
+    300 	_gsCtrlParam.errStat	= 0;
+    301 	_gsCtrlParam.status		= 0;
+    302 
+    303 	if( (_gsCtrlParam.addr_size == 0) && (_gsCtrlParam.data_size == 0) ){
+    304 		return(I2C_R_TRANS_FIN);
+    305 	}
+    306 	/*=== I2C bus0 status check ===*/
+    307 	errStat = (unsigned char)( I2C0STAT & (unsigned char)I2C0STAT_I20BB  )
+        ;
+    308 	if( errStat == (unsigned char)I2C0STAT_I20BB ){
+    309 		return ( I2C_R_BUS_BUSY );
+    310 	}
+    311 	/*=== I receive it, and it is worked to start. ===*/
+    312 	_gsCtrlParam.status = I2C_SEND_SLAVE_ADDRESS;
+    313 	if(_gsCtrlParam.addr_size == 0){
+    314 		I2C0SA = (unsigned char)( ( slave_adr << 1 ) | I2C0SA_I20RW );		/* Re
+        ceive mode */
+    315 	}
+    316 	else{
+    317 		I2C0SA = (unsigned char)( ( slave_adr << 1 )/* | I2C0SA_I20RW*/ );	/*
+         Send mode */
+    318 	}
+    319 		I2C0CON = (unsigned char)I2C0CON_I20ST;	/* Start condition */
+    320 	return ( I2C_R_TRANS_START_OK );
+    321 }
+    322 
+    323 /**********************************************************************
+        *********
+    324 	Routine Name:	i2c_continue
+
+                                                              Page :          9
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    325 	Form:			int i2c_continue( void )
+    326 	Parameters:		none
+    327 	Return value:	int
+    328 						I2C_R_TRANS_FIN(=1)      : send and receive is finished
+    329 						I2C_R_TRANS_CONT_OK(=0)  : send and receive is continued (success
+        )
+    330 						I2C_R_TRANS_CONT_NG(=-1) : send and receive is continued (failure
+        )
+    331 						I2C_R_TRANS_FIN_NG(=-2)  : send and receive is finished (failure)
+        
+    332 	Description:	process to continue send and receive
+    333 ***********************************************************************
+        *******/
+    334 int i2c_continue( void )
+    335 {
+    336 	unsigned char i2c0stat;
+    337 	unsigned char setbit;
+    338 	cbfI2c callbackFunc;
+    339 
+    340 	i2c0stat = I2C0STAT;
+    341 	switch(_gsCtrlParam.status){
+    342 		case I2C_SEND_SLAVE_ADDRESS:
+    343 			/* transmission error check */
+    344 			if((i2c0stat&I2C0STAT_I20ER) == I2C0STAT_I20ER){
+    345 				_gsCtrlParam.status = I2C_TRANS_END;
+    346 				_gsCtrlParam.errStat = I2C_ERR_SEND_ERR;
+    347 				I2C0CON = (unsigned char)0x00;	/* stop i2c */
+    348 				if( _gsCtrlParam.callBack != (void *)0 ){
+    349 					callbackFunc = _gsCtrlParam.callBack;
+    350 					_gsCtrlParam.callBack = (void *)0;
+    351 					callbackFunc( _gsCtrlParam.cnt, _gsCtrlParam.errStat );
+    352 				}
+    353 				return ( I2C_R_TRANS_FIN );
+    354 			}
+    355 			/* NACK reception check */
+    356 			else if((i2c0stat&I2C0STAT_I20ACR) == I2C0STAT_I20ACR){
+    357 				_gsCtrlParam.status = I2C_TRANS_END;
+    358 				_gsCtrlParam.errStat = I2C_ERR_ACR;
+    359 				I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    360 			}
+    361 			/* Slave address transmission success */
+    362 			else{
+    363 				if(_gsCtrlParam.addr_size != 0){
+    364 					_gsCtrlParam.status = I2C_SEND_ADDRESS;
+    365 					I2C0TD = (unsigned char)*_gsCtrlParam.addr;
+    366 					_gsCtrlParam.addr++;
+
+                                                              Page :         10
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    367 					_gsCtrlParam.addr_size--;
+    368 					I2C0CON = (unsigned char)I2C0CON_I20ST;	/* i2c start */
+    369 				}
+    370 				else{
+    371 					if(_gsCtrlParam.mode != 0 ){
+    372 						_gsCtrlParam.status = I2C_RECEIVE_DATA;
+    373 						setbit = I2C0CON_I20ST;
+    374 						if( ( _gsCtrlParam.data_size - 1) == _gsCtrlParam.cnt ){
+    375 							setbit |= (unsigned char)I2C0CON_I20ACT;
+    376 						}
+    377 						I2C0CON = setbit;
+    378 					}
+    379 					else{
+    380 						_gsCtrlParam.status = I2C_SEND_DATA;
+    381 						I2C0TD = (unsigned char)*_gsCtrlParam.data;
+    382 						_gsCtrlParam.data++;
+    383 						_gsCtrlParam.cnt++;
+    384 						I2C0CON = (unsigned char)I2C0CON_I20ST;
+    385 					}
+    386 				}
+    387 			}
+    388 			return(I2C_R_TRANS_CONT_OK);
+    389 
+    390 		case I2C_SEND_ADDRESS:
+    391 			if((i2c0stat&I2C0STAT_I20ACR) == I2C0STAT_I20ACR){
+    392 				_gsCtrlParam.status = I2C_TRANS_END;
+    393 				_gsCtrlParam.errStat = I2C_ERR_ACR;
+    394 				I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    395 			}
+    396 			else{
+    397 				if( _gsCtrlParam.addr_size != 0 ){
+    398 					I2C0TD = (unsigned char)*_gsCtrlParam.addr;
+    399 					_gsCtrlParam.addr++;
+    400 					_gsCtrlParam.addr_size--;
+    401 					I2C0CON = (unsigned char)I2C0CON_I20ST;	/* i2c start */
+    402 				}
+    403 				/* Address transmission success */
+    404 				else{
+    405 					if(_gsCtrlParam.data_size == 0){
+    406 						_gsCtrlParam.status = I2C_TRANS_END;
+    407 						I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    408 					}
+    409 					else{
+    410 						if(_gsCtrlParam.mode != 0 ){/* receive mode */
+    411 							_gsCtrlParam.status = I2C_SEND_SLAVE_ADDRESS;
+    412 							I20RW = 1;		/* Receive mode */
+
+                                                              Page :         11
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    413 							I20RS = 1;		/* Restart condition */
+    414 						}
+    415 						else{/* send mode */
+    416 							_gsCtrlParam.status = I2C_SEND_DATA;
+    417 							I2C0TD = (unsigned char)*_gsCtrlParam.data;
+    418 							_gsCtrlParam.data++;
+    419 							_gsCtrlParam.cnt++;
+    420 							I2C0CON = (unsigned char)I2C0CON_I20ST;
+    421 						}
+    422 					}
+    423 				}
+    424 			}
+    425 			return ( I2C_R_TRANS_CONT_OK );
+    426 
+    427 		case I2C_SEND_DATA:
+    428 			if((i2c0stat&I2C0STAT_I20ACR) == I2C0STAT_I20ACR){
+    429 				_gsCtrlParam.status = I2C_TRANS_END;
+    430 				_gsCtrlParam.errStat = I2C_ERR_ACR;
+    431 				I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    432 			}
+    433 			else if( _gsCtrlParam.data_size != _gsCtrlParam.cnt ){
+    434 				I2C0TD = (unsigned char)*_gsCtrlParam.data;
+    435 				_gsCtrlParam.data++;
+    436 				_gsCtrlParam.cnt++;
+    437 				I2C0CON = (unsigned char)I2C0CON_I20ST;
+    438 			}
+    439 			else{
+    440 				_gsCtrlParam.status = (unsigned char)I2C_TRANS_END;
+    441 				/*---	Stop condition send ?	---*/
+    442 				I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    443 			}
+    444 			return ( I2C_R_TRANS_CONT_OK );
+    445 
+    446 		case I2C_RECEIVE_DATA:
+    447 			*_gsCtrlParam.data = I2C0RD;
+    448 			_gsCtrlParam.data++;
+    449 			_gsCtrlParam.cnt++;
+    450 			if( _gsCtrlParam.data_size != _gsCtrlParam.cnt ){
+    451 				setbit = (unsigned char)I2C0CON_I20ST;
+    452 				if( ( _gsCtrlParam.data_size - 1) == _gsCtrlParam.cnt ){
+    453 					setbit |= (unsigned char)I2C0CON_I20ACT;
+    454 				}
+    455 				I2C0CON = setbit;
+    456 			}
+    457 			else{
+    458 				_gsCtrlParam.status = (unsigned char)I2C_TRANS_END;
+
+                                                              Page :         12
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    459 				I2C0CON = (unsigned char)I2C0CON_I20SP;	/* Stop condition */
+    460 			}
+    461 			return(I2C_R_TRANS_CONT_OK);
+    462 
+    463 		case I2C_TRANS_END:
+    464 		default:
+    465 			if( _gsCtrlParam.callBack != (void *)0 ){
+    466 				callbackFunc = _gsCtrlParam.callBack;
+    467 				_gsCtrlParam.callBack = (void *)0;
+    468 				callbackFunc( _gsCtrlParam.cnt, _gsCtrlParam.errStat );
+    469 			}
+    470 			break;
+    471 	}
+    472 	return ( I2C_R_TRANS_FIN );
+    473 }
+    474 
+    475 /**********************************************************************
+        *********
+    476 	Routine Name:	i2c_stop
+    477 	Form:			void i2c_stop( void )
+    478 	Parameters:		none
+    479 	Return value:	void
+    480 	Description:	stop to send and receive
+    481 ***********************************************************************
+        *******/
+    482 void i2c_stop( void )
+    483 {
+    484 	I20ST = 0;
+    485 	_gsCtrlParam.mode		= 0;
+    486 	_gsCtrlParam.addr		= (void *)0;
+    487 	_gsCtrlParam.addr_size	= 0;
+    488 	_gsCtrlParam.data		= (void *)0;
+    489 	_gsCtrlParam.data_size	= 0;
+    490 	_gsCtrlParam.cnt		= 0;
+    491 	_gsCtrlParam.callBack	= (void *)0;
+    492 	_gsCtrlParam.errStat	= 0;
+    493 	_gsCtrlParam.status		= I2C_TRANS_END;
+    494 }
+    495 
+    496 /**********************************************************************
+        *********
+    497 	Routine Name:	i2c_checkIRQ
+    498 	Form:			int i2c_checkIRQ( void )
+    499 	Parameters:		none
+    500 	Return value:	int
+    501 						I2C_R_IRQ(=1)     : interrupt request is set
+
+                                                              Page :         13
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    502 						I2C_R_NON_IRQ(=0) : interrupt request is not set
+    503 	Description:	check interrupt request
+    504 ***********************************************************************
+        *******/
+    505 int i2c_checkIRQ( void )
+    506 {
+    507 	unsigned char qua0;
+    508 	int ret;
+    509 	
+    510 	qua0 = (unsigned char)( IRQ2 & (unsigned char)IRQ2_QI2C0 );
+    511 	if( qua0 == (unsigned char)IRQ2_QI2C0 ){
+    512 		ret = ( I2C_R_IRQ );
+    513 	}
+    514 	else{
+    515 		ret = ( I2C_R_NON_IRQ );
+    516 	}
+    517 	
+    518 	return ret;
+    519 }
+    520 
+    521 /**********************************************************************
+        *********
+    522 	Routine Name:	i2c_clearIRQ
+    523 	Form:			void i2c_clearIRQ( void )
+    524 	Parameters:		none
+    525 	Return value:	void
+    526 	Description:	clear interrupt request
+    527 ***********************************************************************
+        *******/
+    528 void i2c_clearIRQ( void )
+    529 {
+    530 //#ifndef _ML610Q419 //rldp
+    531 	//QI2C0 = 0;
+    532 //#else
+    533 	QI2CM = 0;
+    534 //#endif
+    535 }
+    536 
+    537 /**********************************************************************
+        *********
+    538 	Routine Name:	i2c_getTransSize
+    539 	Form:			unsigned int i2c_getTransSize( void )
+    540 	Parameters:		none
+    541 	Return value:	unsigned int
+    542 						size of data which is sent or received
+    543 	Description:	get size of data which is sent or received
+
+                                                              Page :         14
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+ Line #  Source Line
+
+    544 ***********************************************************************
+        *******/
+    545 unsigned int i2c_getTransSize( void )
+    546 {
+    547 	return _gsCtrlParam.cnt;
+    548 }
+    549 
+    550 /*#####################################################################
+        #######*/
+    551 /*#                              Subroutine                            
+              #*/
+    552 /*#####################################################################
+        #######*/
+    553 #endif
+    554 
+    555 
+
+
+Error(s)     :  0
+Warning(s)   :  0
+
+
+
+                                                              Page :         15
+                                                              Date : 07-23-2014
+                                                              Time :   16:22:42
+CCU8 C Compiler Ver.3.41, Source List
+Source File : i2c\i2c.c
+
+
+
+                            STACK INFORMATION
+                            -----------------
+
+  FUNCTION                         LOCALS    CONTEXT    OTHERS    TOTAL
+  --------                         ------    -------    ------    -----
+  _i2c_init                        6         8          0         14        
+  _i2c_startSend                   2         4          0         6         
+  _i2c_startReceive                2         4          0         6         
+  _i2c_continue                    6         8          0         14        
+  _i2c_stop                        0         0          0         0         
+  _i2c_checkIRQ                    4         2          0         6         
+  _i2c_clearIRQ                    0         0          0         0         
+  _i2c_getTransSize                0         0          0         0         

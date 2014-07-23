@@ -1,0 +1,16 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _uart_ErrClr
+	EXTRN	CODE NEAR	: _uart_getTransSize
+	EXTRN	CODE NEAR	: _uart_PortClear
+	EXTRN	CODE NEAR	: _uart_clearIRQ
+	EXTRN	CODE NEAR	: _uart_stop
+	EXTRN	CODE NEAR	: _uart_ErrGet
+	EXTRN	CODE NEAR	: _uart_ErrSet
+	EXTRN	CODE NEAR	: _uart_PortSet
+	EXTRN	CODE NEAR	: _uart_startReceive
+	EXTRN	CODE NEAR	: _uart_startSend
+	EXTRN	CODE NEAR	: _uart_init
+	EXTRN	CODE NEAR	: _uart_continue
+	EXTRN	CODE NEAR	: _uart_checkIRQ
+;; End of listing.
