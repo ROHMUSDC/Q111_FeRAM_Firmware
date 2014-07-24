@@ -2,7 +2,7 @@
 //
 // USDC TEMPLATE FIRMWARE for Q111 MCU  
 //
-// Program:	 LAPIS MCU Development Board Demo Code 
+// Program:	 LAPIS FeRAM Development Board Demo Code 
 //
 // Purpose:	 Demonstration Code for use with LAPIS MCU Development Board 
 //
@@ -18,7 +18,7 @@
 //		 9.) ADC Demo...
 //		10.) IsC Master Demo...    
 //
-// Authors:	 C. Schell, K. Bahar & F. Lee 
+// Authors:	 C. Schell, K. Bahar, F. Lee, & J. Fontus
 //		 	 ROHM Semiconductor USA, LLC
 //		 	 US Design Center
 //
@@ -46,7 +46,7 @@
 //						Total size (TABLE ) = 0828A   (33418)
 //
 // Started:  April 6th, 2013
-// Updated:	 JULY 17th, 2014
+// Updated:	 JULY 24th, 2014
 //*****************************************************************************
 
 // ================================ ML610Q111 ================================= 
@@ -296,8 +296,10 @@ int main(void)
 		//PWM_B0_ON(4000, 125);	//period, Duty Cycle variables
 
 		//Heartbeat_LED_pin ^= 1;
+		GPIO_17 ^=1; 
 		Jerrys_Function();
 		main_clrWDT();
+		NOPx(65000);
 
 	goto Primary_Loop;
 		

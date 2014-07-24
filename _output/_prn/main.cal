@@ -61,6 +61,7 @@ main
 |   |   uart_stop?
 |   Jerrys_Function
 |   main_clrWDT...
+|   NOPx
 analog_comparator
 PortA_Digital_Inputs
 |   main_clrWDT...
@@ -90,7 +91,6 @@ TMREF_ISR
 |   tm_init?
 |   tm_startEF...
 ExtInt_ISR
-NOPx
 UART_TX_TEST
 |   uart_stop?
 |   uart_startSend?

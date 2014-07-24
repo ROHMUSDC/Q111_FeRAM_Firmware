@@ -1,15 +1,11 @@
-Q111----001-TEMPLATE
+Q111_FeRAM_Firmware
 ====================
 
-Clean Template for starting development on LAPIS ML610Q111 MCU
+FeRAM firmware for starting development on LAPIS ML610Q111 MCU
 
-This code was written specifically for the ML610Q111 mcu on the LAPIS Development Platform, 
-but should be good example code for anyone writting code for any of the ML610Q1xx family 
-of microcontrollers.
-
-This template will demonstrate how to use the internal peripherials of this "Q111" mcu.
+This template will allow you to evaluate PNs MR44V064A & MR45V256A of this "Q111" mcu.
 
 Hope this helps!
 
 Best Regards,
-Carl
+Jerry
