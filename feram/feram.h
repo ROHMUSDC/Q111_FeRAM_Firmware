@@ -21,7 +21,7 @@
 /*#                                  Macro                                   #*/
 /*############################################################################*/
 /*=== Return value. ===*/
-#define FERAM_R_OK					(0)
+#define FERAM_R_OK					(0)   /*  Data write / read start processing succeeded */
 #define FERAM_R_NG					(-1)
 
 #define FERAM_R_PROCESS				(1)
@@ -38,6 +38,5 @@ int feram_read(unsigned int address, unsigned char *data, unsigned int size);
 int feram_continue(void);
 int eeprom_getStatus(void);
 void feram_stop(void);
-void feram_writeProtect( unsigned char wp );
 
 #endif /*_EEPROM_H_*/
