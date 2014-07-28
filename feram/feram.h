@@ -39,4 +39,4 @@ int feram_continue(void);
 int eeprom_getStatus(void);
 void feram_stop(void);
 
-#endif /*_EEPROM_H_*/
+#endif /*_FERAM_H_*/
