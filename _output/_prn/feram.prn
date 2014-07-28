@@ -1,0 +1,199 @@
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   1 
+ Source File: _output\_obj\feram.asm
+ Object File: _output\_obj\feram.obj
+ Date  : 2014/07/28 Mon.[16:16]
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                    1   ;; Compile Options : /TML610111 /MS /ne
+                                        ar /LE /Ii2c /Iirq /Imain /Itbc /Itimer
+                                         /Iuart /Icommon /Imath /Istdio /Istdli
+                                        b /Istring /Iyvals /CT _output\_prn\fer
+                                        am.cal /SS 256 /SD /Oa /Ot /W 3 /Zg /Fa
+                                        _output\_obj\ /Lv /Zs 
+                                    2   ;; Version Number  : Ver.3.41.8
+                                    3   ;; File Name       : feram.c
+                                    4   
+                                    5           type (ML610111) 
+                                    6           model small, near
+                                    7           $$NINITVAR segment data 2h #0h
+                                    8           $$NINITTAB segment table 2h any
+                                    9           $$feram_init$feram segment code
+                                         2h #0h
+                                   10   CVERSION 3.41.8
+                                   11   CGLOBAL 01H 03H 0000H "feram_init" 08H 
+                                        02H 09H 00H 81H 04H 00H 00H 07H
+                                   12   CSTRUCTTAG 0000H 0000H 0001H 0007H 0000
+                                        000EH "_Notag"
+                                   13   CSTRUCTMEM 42H 00000002H 00000000H "add
+                                        ress" 05H 01H 02H 00H 00H 00H
+                                   14   CSTRUCTMEM 42H 00000002H 00000002H "dat
+                                        a" 04H 03H 00H 00H 00H
+                                   15   CSTRUCTMEM 42H 00000002H 00000004H "rem
+                                        ain_size" 02H 00H 01H
+                                   16   CSTRUCTMEM 42H 00000002H 00000006H "tot
+                                        al_size" 02H 00H 01H
+                                   17   CSTRUCTMEM 42H 00000002H 00000008H "pro
+                                        c_size" 02H 00H 01H
+                                   18   CSTRUCTMEM 43H 00000002H 0000000AH "res
+                                        ult" 02H 00H 01H
+                                   19   CSTRUCTMEM 43H 00000002H 0000000CH "int
+                                        ernal_status" 02H 00H 01H
+                                   20   CSTRUCTTAG 0000H 0000H 0000H 0008H 0000
+                                        0001H "_Notag"
+                                   21   CSTRUCTMEM 52H 00000001H 00000000H "b0"
+                                         02H 00H 00H
+                                   22   CSTRUCTMEM 52H 00000001H 00000001H "b1"
+                                         02H 00H 00H
+                                   23   CSTRUCTMEM 52H 00000001H 00000002H "b2"
+                                         02H 00H 00H
+                                   24   CSTRUCTMEM 52H 00000001H 00000003H "b3"
+                                         02H 00H 00H
+                                   25   CSTRUCTMEM 52H 00000001H 00000004H "b4"
+                                         02H 00H 00H
+                                   26   CSTRUCTMEM 52H 00000001H 00000005H "b5"
+                                         02H 00H 00H
+                                   27   CSTRUCTMEM 52H 00000001H 00000006H "b6"
+                                         02H 00H 00H
+                                   28   CSTRUCTMEM 52H 00000001H 00000007H "b7"
+                                         02H 00H 00H
+                                   29   CTYPEDEF 0000H 0000H 43H "tFERAMCtrlPar
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   2 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                        am" 04H 00H 05H 01H 00H
+                                   30   CTYPEDEF 0000H 0000H 43H "cbfI2c" 0AH 0
+                                        3H 00H 02H 00H 00H 00H 00H 00H 00H 07H
+                                   31   CTYPEDEF 0000H 0000H 43H "_BYTE_FIELD" 
+                                        04H 00H 05H 00H 00H
+                                   32   CSGLOBAL 43H 000EH "_gsCtrlParam" 04H 0
+                                        0H 05H 01H 00H
+                                   33   CFILE 0001H 00000024H "main\\mcu.h"
+                                   34   CFILE 0002H 000007EEH "main\\ML610111.H
+                                        "
+                                   35   CFILE 0003H 00000045H "i2c\\i2c.h"
+                                   36   CFILE 0004H 0000002BH "main\\feram.h"
+                                   37   CFILE 0000H 0000005DH "feram\\feram.c"
+                                   38   
+  --------------------------       39           rseg $$feram_init$feram
+                                   40   CFUNCTION 9
+                                   41   
+00:0000                            42   _feram_init     :
+                                   43   CBLOCK 9 1 76
+                                   44   
+                                   45   ;;{
+                                   46   CLINEA 0000H 0001H 004CH 0001H 0001H
+                                   47   ;;*************************************
+                                        ****
+                                   48   ;;      register/stack information
+                                   49   ;;*************************************
+                                        ****
+                                   50   ;;*************************************
+                                        ****
+                                   51   
+00:0000 CE-F8                      52           push    lr
+                                   53   CBLOCK 9 2 76
+                                   54   CRET 0000H
+                                   55   
+                                   56   ;;      _gsCtrlParam.address[0] = 0x00;
+                                   57   CLINEA 0000H 0001H 0051H 0002H 0020H
+00:0002 00 00                      58           mov     r0,     #00h
+00:0004 11-90 00-00'               59           st      r0,     NEAR __gsCtrlPa
+                                        ram
+                                   60   
+                                   61   ;;      _gsCtrlParam.address[1] = 0x00;
+                                   62   CLINEA 0000H 0001H 0052H 0002H 0020H
+00:0008 11-90 00-00'               63           st      r0,     NEAR __gsCtrlPa
+                                        ram+01h
+                                   64   
+                                   65   ;;      _gsCtrlParam.data = (void *)0;
+                                   66   CLINEA 0000H 0001H 0053H 0002H 001FH
+00:000C 00 E0                      67           mov     er0,    #0 
+00:000E 13-90 00-00'               68           st      er0,    NEAR __gsCtrlPa
+                                        ram+02h
+                                   69   
+                                   70   ;;      _gsCtrlParam.remain_size = 0;
+                                   71   CLINEA 0000H 0001H 0054H 0002H 001EH
+00:0012 13-90 00-00'               72           st      er0,    NEAR __gsCtrlPa
+                                        ram+04h
+                                   73   
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   3 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+                                   74   ;;      _gsCtrlParam.total_size = 0;
+                                   75   CLINEA 0000H 0001H 0055H 0002H 001DH
+00:0016 13-90 00-00'               76           st      er0,    NEAR __gsCtrlPa
+                                        ram+06h
+                                   77   
+                                   78   ;;      _gsCtrlParam.proc_size = 0;
+                                   79   CLINEA 0000H 0001H 0056H 0002H 001CH
+00:001A 13-90 00-00'               80           st      er0,    NEAR __gsCtrlPa
+                                        ram+08h
+                                   81   
+                                   82   ;;      _gsCtrlParam.result = FERAM_R_S
+                                        UCCESS;
+                                   83   CLINEA 0000H 0001H 0057H 0002H 0027H
+00:001E 13-90 00-00'               84           st      er0,    NEAR __gsCtrlPa
+                                        ram+0ah
+                                   85   
+                                   86   ;;      _gsCtrlParam.internal_status = 
+                                        ST_STOP;
+                                   87   CLINEA 0000H 0001H 0058H 0002H 0028H
+00:0022 13-90 00-00'               88           st      er0,    NEAR __gsCtrlPa
+                                        ram+0ch
+                                   89   
+                                   90   ;;      (void)i2c_init(I2C_MOD_FST, 500
+                                        , I2C_SYN_OFF); //Question// How is 500
+                                         kHz the chosen value?
+                                   91   CLINEA 0000H 0001H 005BH 0002H 005DH
+00:0026 4E-F0                      92           push    r0
+00:0028 F4 02                      93           mov     r2,     #0f4h
+00:002A 01 03                      94           mov     r3,     #01h
+00:002C 01 00                      95           mov     r0,     #01h
+00:002E 01-F0'00-00'               96           bl      _i2c_init
+00:0032 02 E1                      97           add     sp,     #2 
+                                   98   CBLOCKEND 9 2 93
+                                   99   
+                                  100   ;;} // NOT TESTED!!!!
+                                  101   CLINEA 0000H 0001H 005DH 0001H 0013H
+00:0034 8E-F2                     102           pop     pc
+                                  103   CBLOCKEND 9 1 93
+                                  104   CFUNCTIONEND 9
+                                  105   
+                                  106           public _feram_init
+                                  107           extrn code near : _i2c_init
+                                  108           extrn code near : _main
+                                  109   
+  --------------------------      110           rseg $$NINITTAB
+??:0000 00                        111           db      00h
+??:0001 00                        112           db      00h
+??:0002 00-00                     113           dw      00h
+??:0004 00-00                     114           dw      00h
+??:0006 00-00                     115           dw      00h
+??:0008 00-00                     116           dw      00h
+??:000A 00-00                     117           dw      00h
+??:000C 00-00                     118           dw      00h
+                                  119   
+  --------------------------      120           rseg $$NINITVAR
+00:0000                           121   __gsCtrlParam :
+RASU8(ML610111)Relocatable Assembler, Ver.1.61.2    assemble list. page:   4 
+ Title : 
+## Loc. Object                   Line   Source Statements
+
+00:0000                           122           ds      0eh
+                                  123   
+                                  124           end
+
+
+
+  Target       : ML610111 (nX-U8/100)
+  Memory Model : SMALL
+  Data   Model : NEAR
+  ROM WINDOW   : (not specified)
+  Internal RAM : E000H to E7FFH
+
+  Errors   : 0
+  Warnings : 0  (/Wrpeast)
+  Lines    : 124

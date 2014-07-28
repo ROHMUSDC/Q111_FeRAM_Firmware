@@ -1,0 +1,4 @@
+;; External symbol declaration file.
+
+	EXTRN	CODE NEAR	: _feram_init
+;; End of listing.

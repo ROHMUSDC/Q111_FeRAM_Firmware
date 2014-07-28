@@ -125,7 +125,8 @@
 	#include 	<tbc.h>			// Set TBC (Timer Based Clock) API
 	#include 	<timer.h>		// Timer Macros & APIs
 	#include	<math.h>		// Mathematical functions
-	#include 	<uart.h>		// UART Function Prototypes	
+	#include 	<uart.h>		// UART Function Prototypes
+	#include	<feram.h>		// FeRAM Function Prototypes
 	//#include	<float.h>		// Numerical limits for floating-point numbers	
 	//#include	<string.h>		// Character string manipulation routines
 	//#include	<yvals.h>		// Called for by most Header Files
@@ -290,6 +291,7 @@ int main(void)
 
 	Init:
 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, etc...)
+		char_a=1;
 		
 	Primary_Loop:		
 		//PLACE USER CODE HERE...
@@ -297,8 +299,9 @@ int main(void)
 
 		//Heartbeat_LED_pin ^= 1;
 		GPIO_17 ^=1; 
-		Jerrys_Function();
+		feram_init();
 		main_clrWDT();
+		NOPx(65000);
 		NOPx(65000);
 
 	goto Primary_Loop;
@@ -1152,6 +1155,8 @@ static void _intUart( void )
 }
 
 
+
+
 //===========================================================================
 //INTERRUPT SERVICE ROUTINE FOR TBC
 static void TBC_ISR( void ) 
@@ -1297,5 +1302,4 @@ void Jerrys_Function(void){
 		
 }
 //===========================================================================
- 	
 

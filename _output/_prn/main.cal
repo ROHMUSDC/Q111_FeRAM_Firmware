@@ -59,7 +59,7 @@ main
 |   |   uart_init?
 |   |   uart_PortSet?
 |   |   uart_stop?
-|   Jerrys_Function
+|   feram_init?
 |   main_clrWDT...
 |   NOPx
 analog_comparator
@@ -100,4 +100,5 @@ UART_RX_TEST
 |   uart_startReceive?
 |   main_clrWDT...
 |   uart_startSend?
+Jerrys_Function
 
