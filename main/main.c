@@ -288,12 +288,16 @@ int main(void)
 	float float_a;				// 1.17549435e-38 to 3.40282347e+38
 	double double_a;			// 2.2250738585072014e-308 to 1.7976931348623157e+308 
 	int i,j,k,x,y;				// -32,768 to 32767
+	unsigned char *holder;		//holds address
+	
+	//uint = 0xFF;				// data value
+	//holder = &uint;				// holds the address of inputting data
 	
 
 	Init:
 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, etc...)
 		feram_init();			// Intialize setting for FeRAM
-		
+		i = feram_write(0x00, 0xFF, 1);
 		
 	Primary_Loop:		
 		//PLACE USER CODE HERE...
