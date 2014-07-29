@@ -27,6 +27,8 @@ static	void tm_set8Oneshot(unsigned char ost);
 static	void tm_set9Oneshot(unsigned char ost);
 static	void tm_setAOneshot(unsigned char ost);
 static	void tm_setBOneshot(unsigned char ost);
+extern	void feram_init(void);
+extern	int feram_write(unsigned int address,unsigned char *data,unsigned int size);
 extern	int main(void);
 extern	void main_clrWDT(void);
 static	void Initialization(void);

@@ -1,5 +1,5 @@
 RLU8 Object Linker, Ver.1.51.2 Linkage Information
-[Mon Jul 28 16:16:20 2014]
+[Tue Jul 29 18:15:57 2014]
 
 
                          ------------------
@@ -19,7 +19,6 @@ Other controls: CC STACK( 0100H(256) )
                                                                 Creator
 Module Name           File Name                                 CCU8     RASU8
 -----------           ---------                                 -----    -----
-feram                 _output\_obj\feram.obj                    3.41     1.61
 i2c                   _output\_obj\i2c.obj                      3.41     1.61
 irq                   _output\_obj\irq.obj                      3.41     1.61
 main                  _output\_obj\main.obj                     3.41     1.61
@@ -33,17 +32,17 @@ UIDIVSW               longu8.lib                                -.--     1.04
 CIDIMOSW              longu8.lib                                -.--     1.04
 
 
-Number of Modules: 12
+Number of Modules: 11
 
 Number of Symbols:
  +---------------------------------------------------------------------------+
  |          | CODE | DATA | BIT  |NVDATA|NVBIT |TABLE |NUMBER| TBIT || total |
  |----------+------+------+------+------+------+------+------+------++-------|
- | SEGMENT  |   100|     4|     0|     0|     0|     7|      |      ||    111|
+ | SEGMENT  |   101|     4|     0|     0|     0|     7|      |      ||    112|
  |----------+------+------+------+------+------+------+------+------++-------|
  | COMMUNAL |     0|     4|     0|     0|     0|     0|      |      ||      4|
  |----------+------+------+------+------+------+------+------+------++-------|
- | PUBLIC   |    46|     0|     0|     0|     0|     0|     0|     0||     46|
+ | PUBLIC   |    47|     0|     0|     0|     0|     0|     0|     0||     47|
  +---------------------------------------------------------------------------+
 
 Target:  ML610111 
@@ -92,13 +91,13 @@ Link Map - Program memory space #0 ( ROMWINDOW: 0000 - 5FFF )
       S CODE   00:00FA    00:0115    001C(28)          $$_intPB0INT$irq
       S CODE   00:0116    00:0131    001C(28)          $$_intPB1INT$irq
       S CODE   00:0132    00:0241    0110(272)         $$uart_continue$uart
-      S CODE   00:0242    00:0277    0036(54)          $$feram_init$feram
-      S CODE   00:0278    00:0293    001C(28)          $$_intPA0INT$irq
-      S CODE   00:0294    00:02AF    001C(28)          $$_intPA1INT$irq
-      S CODE   00:02B0    00:02CB    001C(28)          $$_intCMP1INT$irq
-      S CODE   00:02CC    00:02D3    0008(8)           $$main_reqNotHalt$main
-      S CODE   00:02D4    00:02EF    001C(28)          $$_intCMP0INT$irq
-      S CODE   00:02F0    00:02F3    0004(4)           $$_intUart$main
+      S CODE   00:0242    00:025D    001C(28)          $$_intPA0INT$irq
+      S CODE   00:025E    00:0279    001C(28)          $$_intPA1INT$irq
+      S CODE   00:027A    00:0295    001C(28)          $$_intCMP1INT$irq
+      S CODE   00:0296    00:029D    0008(8)           $$main_reqNotHalt$main
+      S CODE   00:029E    00:02B9    001C(28)          $$_intCMP0INT$irq
+      S CODE   00:02BA    00:02BD    0004(4)           $$_intUart$main
+      S CODE   00:02BE    00:02F3    0036(54)          $$feram_init$main
       S CODE   00:02F4    00:02F4    0000(0)           $$content_of_init
       S CODE   00:02F4    00:02F5    0002(2)           $$end_of_init
       S CODE   00:02F6    00:0303    000E(14)          $$uart_ErrSet$uart
@@ -215,6 +214,7 @@ Not Linked segments:
                           CODE       0012(18)          $$_funcUartFin$main
                           CODE       009C(156)         $$UART_TX_TEST$main
                           CODE       006C(108)         $$UART_RX_TEST$main
+                          CODE       0064(100)         $$feram_write$main
      --------------------------------------------------------------
       uart
                           CODE       0006(6)           $$uart_clearIRQ$uart
@@ -240,32 +240,26 @@ Total size (TABLE ) = 0803C   (32828)
 
 Module         Value     Type         Symbol
 ------         -----     ----------   ------
-feram
-               00:0242   Pub CODE     _feram_init
+i2c
+               00:0C8A   Pub CODE     _i2c_continue
+               00:06C0   Pub CODE     _i2c_init
                00:E7D6   Loc DATA     __gsCtrlParam
 
 Module         Value     Type         Symbol
 ------         -----     ----------   ------
-i2c
-               00:0C8A   Pub CODE     _i2c_continue
-               00:06C0   Pub CODE     _i2c_init
-               00:E7E4   Loc DATA     __gsCtrlParam
-
-Module         Value     Type         Symbol
-------         -----     ----------   ------
 irq
-               00:02B0   Loc CODE     __intCMP1INT
+               00:027A   Loc CODE     __intCMP1INT
                00:0F4E   Loc CODE     __intT32HINT
-               00:02D4   Loc CODE     __intCMP0INT
+               00:029E   Loc CODE     __intCMP0INT
                00:0304   Loc CODE     __intTM8INT
                00:0320   Loc CODE     __intTM9INT
                00:0FC2   Loc CODE     __intT128HINT
                00:043A   Loc CODE     __intT2HINT
                00:1126   Loc CODE     __intI2CMINT
                00:0FDE   Loc CODE     __intWDTINT
-               00:0278   Loc CODE     __intPA0INT
+               00:0242   Loc CODE     __intPA0INT
                00:0358   Loc CODE     __intTMAINT
-               00:0294   Loc CODE     __intPA1INT
+               00:025E   Loc CODE     __intPA1INT
                00:104C   Loc CODE     __intSIO0INT
                00:1030   Loc CODE     __intI2CSINT
                00:0FA6   Loc CODE     __intSADINT
@@ -296,8 +290,9 @@ irq
 Module         Value     Type         Symbol
 ------         -----     ----------   ------
 main
+               00:02BE   Pub CODE     _feram_init
                00:03D0   Pub CODE     _main_clrWDT
-               00:02CC   Pub CODE     _main_reqNotHalt
+               00:0296   Pub CODE     _main_reqNotHalt
                00:03AC   Pub CODE     _NOPx
                00:0914   Pub CODE     _main
                00:095E   Pub CODE     _PortC_Low
@@ -307,13 +302,14 @@ main
                00:0432   Loc CODE     _TBC_ISR
                00:06AC   Loc CODE     _TMRAB_ISR
                00:0A02   Loc CODE     _Initialization
-               00:02F0   Loc CODE     __intUart
+               00:02BA   Loc CODE     __intUart
                00:0C7E   Loc CODE     __intI2c
                00:0F86   Loc CODE     _SetOSC
                00:0C6A   Loc CODE     __intADC
                00:05D4   Loc CODE     _TMR89_ISR
                00:0416   Loc CODE     _TMREF_ISR
                00:00AA   Loc TABLE    __uartSetParam
+               00:E7E6   Loc DATA     __gsCtrlParam
 
 Module         Value     Type         Symbol
 ------         -----     ----------   ------

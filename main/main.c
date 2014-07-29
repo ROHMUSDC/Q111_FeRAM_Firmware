@@ -126,7 +126,7 @@
 	#include 	<timer.h>		// Timer Macros & APIs
 	#include	<math.h>		// Mathematical functions
 	#include 	<uart.h>		// UART Function Prototypes
-	#include	<feram.h>		// FeRAM Function Prototypes
+	#include	<feram_i2c.h>	// FeRAM Function Prototypes
 	//#include	<float.h>		// Numerical limits for floating-point numbers	
 	//#include	<string.h>		// Character string manipulation routines
 	//#include	<yvals.h>		// Called for by most Header Files
@@ -288,10 +288,12 @@ int main(void)
 	float float_a;				// 1.17549435e-38 to 3.40282347e+38
 	double double_a;			// 2.2250738585072014e-308 to 1.7976931348623157e+308 
 	int i,j,k,x,y;				// -32,768 to 32767
+	
 
 	Init:
 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, etc...)
-		char_a=1;
+		feram_init();			// Intialize setting for FeRAM
+		
 		
 	Primary_Loop:		
 		//PLACE USER CODE HERE...
@@ -299,7 +301,6 @@ int main(void)
 
 		//Heartbeat_LED_pin ^= 1;
 		GPIO_17 ^=1; 
-		feram_init();
 		main_clrWDT();
 		NOPx(65000);
 		NOPx(65000);

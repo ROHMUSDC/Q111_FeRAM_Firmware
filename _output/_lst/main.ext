@@ -13,5 +13,7 @@
 	EXTRN	CODE NEAR	: _PortA_Low
 	EXTRN	CODE NEAR	: _PinB0_PWM
 	EXTRN	CODE NEAR	: _Jerrys_Function
+	EXTRN	CODE NEAR	: _feram_write
 	EXTRN	CODE NEAR	: _main_clrWDT
+	EXTRN	CODE NEAR	: _feram_init
 ;; End of listing.

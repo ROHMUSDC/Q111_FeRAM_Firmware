@@ -31,6 +31,9 @@ tm_set8Oneshot
 tm_set9Oneshot
 tm_setAOneshot
 tm_setBOneshot
+feram_init
+|   i2c_init?
+feram_write
 main
 |   Initialization
 |   |   PortA_Low
@@ -59,7 +62,7 @@ main
 |   |   uart_init?
 |   |   uart_PortSet?
 |   |   uart_stop?
-|   feram_init?
+|   feram_init...
 |   main_clrWDT...
 |   NOPx
 analog_comparator
