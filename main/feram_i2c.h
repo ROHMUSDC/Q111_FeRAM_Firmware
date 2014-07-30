@@ -130,3 +130,196 @@ int feram_write(unsigned int address, unsigned char *data, unsigned int size)
 	_gsCtrlParam.internal_status = ST_I2C_SEND_START;
 	return FERAM_R_OK;
 }
+
+
+/*******************************************************************************
+	Routine Name:	feram_read
+	Form:			int feram_read(unsigned int address, unsigned char *data, unsigned int size);
+	Parameters:		unsigned int address : Address where reading is started
+					unsigned char *data : Pointer to area where data is stored
+					unsigned int size : Size of read data(unit is byte)
+	Return value:	int
+						FERAM_R_OK(=0)		: OK
+						FERAM_R_NG(=-1)		: State error
+	Description:	This function begins to read data from FERAM.
+******************************************************************************/
+int feram_read(unsigned int address, unsigned char *data, unsigned int size)
+{
+	if(_gsCtrlParam.internal_status != ST_STOP){
+		return(FERAM_R_NG);
+	}
+	_gsCtrlParam.address[0] = (unsigned char)( address >> 8 );
+	_gsCtrlParam.address[1] = (unsigned char)( address & 0x00FF );
+	_gsCtrlParam.data = data;
+	_gsCtrlParam.remain_size = size;
+	_gsCtrlParam.total_size = 0;
+	_gsCtrlParam.proc_size = size;
+	_gsCtrlParam.result = FERAM_R_PROCESS;
+	_gsCtrlParam.internal_status = ST_I2C_RECEIVE_START;
+	return FERAM_R_OK;
+}
+
+/*******************************************************************************
+	Routine Name:	feram_continue
+	Form:			int feram_continue(void)
+	Parameters:		none
+	Return value:	status
+						FERAM_R_PROCESS(1)
+						FERAM_R_SUCCESS(0)
+						FERAM_R_ERROR(-1)
+	Description:	Continuous processing of FERAM operation
+******************************************************************************/
+int feram_continue(void)
+{
+	int err = I2C_R_TRANS_START_OK;
+
+	switch( _gsCtrlParam.internal_status ){
+		case ST_I2C_SEND_START:
+			if( _gsCtrlParam.remain_size != 0 ){
+				_gsCtrlParam.internal_status = ST_I2C_SEND_EXEC;
+				err = i2c_startSend((unsigned char)FERAM_SLAVE_ADDRESS, 
+							&_gsCtrlParam.address[0], (unsigned int)2,
+							_gsCtrlParam.data, _gsCtrlParam.proc_size,
+							(cbfI2c)_i2cFin);
+			}
+			else{
+				_gsCtrlParam.result = FERAM_R_SUCCESS;
+				_gsCtrlParam.internal_status = ST_STOP;
+			}
+			break;
+
+		case ST_FERAM_WRITE_START:
+			_gsCtrlParam.internal_status = ST_FERAM_WRITE_EXEC;
+			err = i2c_startReceive((unsigned char)FERAM_SLAVE_ADDRESS, 
+						&_gsCtrlParam.address[0], (unsigned int)2,
+						(unsigned char*)0, (unsigned int)0,
+						(cbfI2c)_i2cFin);
+			break;
+
+		case ST_I2C_RECEIVE_START:
+			_gsCtrlParam.internal_status = ST_I2C_RECEIVE_EXEC;
+			err = i2c_startReceive((unsigned char)FERAM_SLAVE_ADDRESS, 
+						&_gsCtrlParam.address[0], (unsigned int)2,
+						_gsCtrlParam.data, _gsCtrlParam.proc_size,
+						(cbfI2c)_i2cFin);
+			break;
+
+		case ST_STOP:
+		case ST_I2C_SEND_EXEC:
+		case ST_I2C_RECEIVE_EXEC:
+		case ST_FERAM_WRITE_EXEC:
+		default:
+			break;
+	}
+	if(err != I2C_R_TRANS_START_OK){
+		_gsCtrlParam.result = FERAM_R_ERROR;
+		_gsCtrlParam.internal_status = ST_STOP;
+	}
+	return(_gsCtrlParam.result);
+}
+
+/*******************************************************************************
+	Routine Name:	feram_stop
+	Form:			void feram_stop( void )
+	Parameters:		none
+	Return value:	none
+	Description:	Stop processing of FERAM operation
+******************************************************************************/
+void feram_stop( void )
+{
+	i2c_stop();
+	/*=== Initialization of control information ===*/
+	_gsCtrlParam.address[0] = 0x00;
+	_gsCtrlParam.address[1] = 0x00;
+	_gsCtrlParam.data = (void *)0;
+	_gsCtrlParam.remain_size = 0;
+	_gsCtrlParam.total_size = 0;
+	_gsCtrlParam.proc_size = 0;
+	_gsCtrlParam.result = FERAM_R_SUCCESS;
+	_gsCtrlParam.internal_status = ST_STOP;
+}
+
+/*******************************************************************************
+	Routine Name:	feram_getStatus
+	Form:			int feram_getStatus(void)
+	Parameters:		none
+	Return value:	status
+						FERAM_R_PROCESS(= 1)
+						FERAM_R_SUCCESS(= 0)
+						FERAM_R_ERROR(= -1)
+	Description:	get status
+******************************************************************************/
+int feram_getStatus(void)
+{
+	return _gsCtrlParam.result;
+}
+
+
+/*############################################################################*/
+/*#                              Subroutine                                  #*/
+/*############################################################################*/
+/*******************************************************************************
+	Routine Name:	_i2cFin
+	Form:			static void _i2cFin( unsigned int size, unsigned char errStat )
+	Parameters:		none
+	Return value:	none
+	Description:	i2c handler.
+******************************************************************************/
+static void _i2cFin( unsigned int size, unsigned char errStat )
+{
+	unsigned int address;
+
+	switch( _gsCtrlParam.internal_status ){
+		case ST_I2C_SEND_EXEC:
+			if(errStat == I2C_R_OK){
+				_gsCtrlParam.total_size += size;
+				_gsCtrlParam.remain_size -= _gsCtrlParam.proc_size;
+				_gsCtrlParam.data += _gsCtrlParam.proc_size;
+				address = (((unsigned int)_gsCtrlParam.address[0]<<8) | ((unsigned int)_gsCtrlParam.address[1]));
+				address += _gsCtrlParam.proc_size;
+				_gsCtrlParam.address[0] = (unsigned char)( address >> 8 );
+				_gsCtrlParam.address[1] = (unsigned char)( address & 0x00FF );
+				_gsCtrlParam.proc_size = min((unsigned int)FERAM_PAGE_SIZE, _gsCtrlParam.remain_size);
+				_gsCtrlParam.internal_status = ST_FERAM_WRITE_START;
+			}
+			else{
+				_gsCtrlParam.result = FERAM_R_ERROR;
+				_gsCtrlParam.internal_status = ST_STOP;
+			}
+			break;
+
+		case ST_I2C_RECEIVE_EXEC:
+			if(errStat == I2C_R_OK){
+				_gsCtrlParam.total_size += size;
+				_gsCtrlParam.remain_size -= _gsCtrlParam.proc_size;
+				_gsCtrlParam.data += _gsCtrlParam.proc_size;
+				address = (((unsigned int)_gsCtrlParam.address[0]<<8) | ((unsigned int)_gsCtrlParam.address[1]));
+				address += _gsCtrlParam.proc_size;
+				_gsCtrlParam.address[0] = (unsigned char)( address >> 8 );
+				_gsCtrlParam.address[1] = (unsigned char)( address & 0x00FF );
+				_gsCtrlParam.proc_size = min((unsigned int)FERAM_PAGE_SIZE, _gsCtrlParam.remain_size);
+				_gsCtrlParam.result = FERAM_R_SUCCESS;
+			}
+			else{
+				_gsCtrlParam.result = FERAM_R_ERROR;
+			}
+			_gsCtrlParam.internal_status = ST_STOP;
+			break;
+
+		case ST_FERAM_WRITE_EXEC:
+			if(errStat == 0){
+				_gsCtrlParam.internal_status = ST_I2C_SEND_START;
+			}
+			else{
+				_gsCtrlParam.internal_status = ST_FERAM_WRITE_START;
+			}
+			break;
+
+		case ST_I2C_SEND_START:
+		case ST_FERAM_WRITE_START:
+		case ST_I2C_RECEIVE_START:
+		case ST_STOP:
+		default:
+			break;
+	}
+}

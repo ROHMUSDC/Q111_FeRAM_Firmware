@@ -34,6 +34,14 @@ tm_setBOneshot
 feram_init
 |   i2c_init?
 feram_write
+feram_read
+feram_continue
+|   i2c_startSend?
+|   i2c_startReceive?
+feram_stop
+|   i2c_stop?
+feram_getStatus
+_i2cFin
 main
 |   Initialization
 |   |   PortA_Low
@@ -64,6 +72,10 @@ main
 |   |   uart_stop?
 |   feram_init...
 |   feram_write...
+|   feram_read...
+|   feram_continue...
+|   feram_stop...
+|   feram_getStatus...
 |   main_clrWDT...
 |   NOPx
 analog_comparator

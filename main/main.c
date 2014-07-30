@@ -298,6 +298,11 @@ int main(void)
 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, etc...)
 		feram_init();			// Intialize setting for FeRAM
 		i = feram_write(0x00, 0xFF, 1);
+		j = feram_read(0x00, 0xFF, 1);
+		k = feram_continue();
+		x = feram_stop();
+		y = feram_getStatus();
+		
 		
 	Primary_Loop:		
 		//PLACE USER CODE HERE...
