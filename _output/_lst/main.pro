@@ -59,4 +59,3 @@ static	void ExtInt_ISR(void);
 extern	void NOPx(unsigned int MyCount);
 extern	void UART_TX_TEST(void);
 extern	void UART_RX_TEST(void);
-extern	void Jerrys_Function(void);

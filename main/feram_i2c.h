@@ -1,5 +1,12 @@
 /*****************************************************************************
-	mr44v064.h(For application of FeRAM)
+	feram_i2c.h(For application of FeRAM)
+	
+	PURPOSE:	Self-sufficient header file holding all the macros, prototypes,
+				and functions for I2C FeRAM products similar to PN MR44V064A in 
+				order to be included within the "main.c" folder. These format the
+				data according to the features of the MR44V064A 
+				(such as Page Write Cycle) in order to be processed by the I2C
+				functions ("i2c.h" & "i2c.c").
 
 	Copyright (C) 2009 LAPIS Semiconductor Co., Ltd.
 	All rights reserved.

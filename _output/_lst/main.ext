@@ -14,7 +14,6 @@
 	EXTRN	CODE NEAR	: _PortB_Low
 	EXTRN	CODE NEAR	: _PortA_Low
 	EXTRN	CODE NEAR	: _PinB0_PWM
-	EXTRN	CODE NEAR	: _Jerrys_Function
 	EXTRN	CODE NEAR	: _feram_stop
 	EXTRN	CODE NEAR	: _feram_read
 	EXTRN	CODE NEAR	: _feram_write
