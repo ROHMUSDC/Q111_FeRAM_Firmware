@@ -287,11 +287,54 @@ int main(void)
 	double double_a;			// 2.2250738585072014e-308 to 1.7976931348623157e+308 
 	int i,j,k,x,y;				// -32,768 to 32767
 	
+	//Write information
+	unsigned int writing_location = 0x3E8;
+	unsigned char write_data = 0xEE;
+	unsigned int write_data_size = 1;
+	unsigned char write_slave_address = 0x57;
+	unsigned char write_add_data_location = 0x3E8;
+	
+	
+	
+	
+	//Read Information (Verify address 0x00 maintains value = 0xAA)
+	unsigned int reading_location = 0x00;
+	unsigned char read_data = 0x00;
+	unsigned int read_data_size = 1;
+	unsigned char read_slave_address = 0x57;
+	
+	
+	//Read Information (Verify address 0x3E8 maintains value = 0xEE)
+	unsigned int Breading_location = 0x3E8;
+	unsigned char Bread_data = 0x3E8;
+	unsigned int Bread_data_size = 1;
+	unsigned char Bread_slave_address = 0x57;
+	
+	
+	
+	
+	
 	
 
 	Init:
 		Initialization();		// Init Micro...(Ports, Timers, OSC, IRQ's, UART, etc...)
-			
+		feram_init();			// Initialize I2C mode
+		
+		// Writing to EEPROM (0xAA @ address 0x00 & 0xEE @ address 0x3E8)
+		feram_stop();
+		feram_write(writing_location,&write_data,write_data_size );
+		feram_continue();
+		
+		// Reading from EEPROM @ address 0x00
+		feram_stop();
+		feram_read(reading_location,&read_data,read_data_size);
+		feram_continue();
+		
+		// Reading from EEPROM @ address 0x3E8
+		feram_stop();
+		feram_read(Breading_location,&Bread_data,Bread_data_size);
+		feram_continue();
+		
 		
 	Primary_Loop:		
 		//PLACE USER CODE HERE...

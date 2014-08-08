@@ -27,7 +27,7 @@
 /*#                                  Macro                                   #*/
 /*############################################################################*/
 /*=== For FeRAM MR44V064A ===*/
-#define FERAM_SLAVE_ADDRESS		0x57         // Don't know what to do with changing address
+#define FERAM_SLAVE_ADDRESS		0x57         // Use must manually change the FeRAM address in order to be sent the correct device
 #define FERAM_PAGE_SIZE			8192
 
 /*=== Internal state ===*/
